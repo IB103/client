@@ -57,7 +57,7 @@
                 android:autofillHints=""
                 android:background="#FFFFFF"
                 android:ems="10"
-                android:hint="검색어를 입력해주세요."
+                android:hint="검색어를 입력해주세요"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:paddingStart="10dp"
