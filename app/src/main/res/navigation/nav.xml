@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.hansung.capstone.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.hansung.capstone.CommunityFragment"
+        android:label="fragment_commnunity"
+        tools:layout="@layout/fragment_community" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.hansung.capstone.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/recommendFragment"
+        android:name="com.hansung.capstone.RecommendFragment"
+        android:label="fragment_recommend"
+        tools:layout="@layout/fragment_recommend" />
+    <fragment
+        android:id="@+id/mypageFragment"
+        android:name="com.hansung.capstone.MypageFragment"
+        android:label="fragment_mypage"
+        tools:layout="@layout/fragment_mypage" />
+</navigation>
+
