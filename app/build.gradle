@@ -30,6 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -46,7 +49,8 @@ dependencies {
     // naverMap
     implementation 'com.naver.maps:map-sdk:3.14.0'
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
+    // 버전 변경 20 -> 21
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -56,4 +60,7 @@ dependencies {
     // okhttp
     implementation 'com.squareup.okhttp3:okhttp:3.14.9'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+
+    // slidingUpPanel
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
 }
