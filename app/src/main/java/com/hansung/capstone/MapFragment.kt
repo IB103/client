@@ -111,7 +111,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //                    val gson = GsonBuilder().create()
 //                    val searchResult = Gson().fromJson(body, ResultGetSearchLocation::class.java)
                             val resultList = view.findViewById<RecyclerView>(R.id.resultList)
-                            activity?.runOnUiThread {
+//                            activity?.runOnUiThread {
+                            runOnUiThread {
                                 resultList.adapter =
                                     body?.let { it -> RecyclerViewAdapter(it) }
                             }
@@ -168,6 +169,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false)
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)
 
+    }
+
+    fun Fragment?.runOnUiThread(action: () -> Unit) {
+        this ?: return
+        if (!isAdded) return // Fragment not attached to an Activity
+        activity?.runOnUiThread(action)
     }
 
 }
