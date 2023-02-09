@@ -1,12 +1,15 @@
 package com.hansung.capstone
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hansung.capstone.databinding.FragmentMypageBinding
 
 class MypageFragment : Fragment() {
+    lateinit var  binding : FragmentMypageBinding
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //    }
@@ -14,6 +17,14 @@ class MypageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_mypage, container, false)
+    binding = FragmentMypageBinding.inflate(inflater, container, false)
+
+    binding.loginfor.setOnClickListener{
+
+        val intent = Intent(getActivity(),LoginActivity::class.java)
+        startActivity(intent)
+
+    }
+    return binding.root
     }
 }
