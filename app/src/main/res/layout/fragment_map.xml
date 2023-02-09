@@ -11,10 +11,7 @@
         android:name="com.naver.maps.map.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="40dp"
         tools:layout="@layout/replace_map" />
 
     <EditText
@@ -46,16 +43,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <com.naver.maps.map.widget.LocationButtonView
-        android:id="@+id/locationButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|center"
-        android:layout_margin="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <FrameLayout
         android:id="@+id/searchFrameLayout"
         android:layout_width="0dp"
@@ -71,33 +58,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-
-<!--            <EditText-->
-<!--                android:id="@+id/locationSearch"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="50dp"-->
-<!--                android:autofillHints=""-->
-<!--                android:background="#FFFFFF"-->
-<!--                android:ems="10"-->
-<!--                android:hint="검색어를 입력해주세요"-->
-<!--                android:imeOptions="actionSearch"-->
-<!--                android:inputType="text"-->
-<!--                android:paddingStart="10dp"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toStartOf="@+id/locationSearchB"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/locationSearchB"-->
-<!--                android:layout_width="50dp"-->
-<!--                android:layout_height="50dp"-->
-<!--                android:background="#FFFFFF"-->
-<!--                android:src="@android:drawable/ic_menu_search"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                tools:ignore="SpeakableTextPresentCheck" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 

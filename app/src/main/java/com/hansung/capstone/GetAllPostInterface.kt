@@ -9,31 +9,23 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface NaverAPI {
-    @GET("v1/search/local.json")
-    fun getSearchLocation(
-//        @Header("X-Naver-Client-ID")clientId: String,
-//        @Header("X-Naver-Client-Secret")clientSecret: String,
-        @Query("query") query: String,
-        @Query("display") display: Int? = null,
-        @Query("start") start: Int? = null,
-        @Query("sort") sort: String = "random"
-    ): Call<ResultGetSearchLocation>
+interface GetAllPostInterface {
+    @GET("api/community/post/list")
+    fun getAllPost(
+        @Query("page") query: Int,
+    ): Call<ResultGetAllPost>
 
     companion object {
-        private const val BASE_URL_NAVER_API = "https://openapi.naver.com/"
-        private const val CLIENT_ID = "AX3ivoMZXWoT6GhWHHmw"
-        private const val CLIENT_SECRET = "c5l9l5NZFP"
+        private const val server_info ="223.194.133.220:8080"
+        private const val url = "http://$server_info/"
 
-        fun create(): NaverAPI {
+        fun create(): GetAllPostInterface {
             val httpLoggingInterceptor = HttpLoggingInterceptor()
             httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
             val headerInterceptor = Interceptor {
                 val request = it.request()
                     .newBuilder()
-                    .addHeader("X-Naver-Client-Id", CLIENT_ID)
-                    .addHeader("X-Naver-Client-Secret", CLIENT_SECRET)
                     .build()
                 return@Interceptor it.proceed(request)
             }
@@ -44,11 +36,11 @@ interface NaverAPI {
                 .build()
 
             return Retrofit.Builder()
-                .baseUrl(BASE_URL_NAVER_API)
+                .baseUrl(url)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(NaverAPI::class.java)
+                .create(GetAllPostInterface::class.java)
         }
     }
 }

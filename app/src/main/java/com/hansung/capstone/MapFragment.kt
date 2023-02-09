@@ -6,15 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
-import com.example.navermap.NaverAPI
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.Tm128
 import com.naver.maps.map.*
@@ -154,8 +148,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val uiSettings = naverMap.uiSettings
         uiSettings.isScaleBarEnabled = true
         uiSettings.isCompassEnabled = false
-        uiSettings.isLocationButtonEnabled = false
         uiSettings.isZoomControlEnabled = false
+        uiSettings.isLocationButtonEnabled = true
 
 
         // 맵 타입 Basic

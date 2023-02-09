@@ -10,7 +10,7 @@ import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 
 
-class RecyclerViewAdapter(val result : ResultGetSearchLocation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecyclerViewAdapter(private val result : ResultGetSearchLocation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return  result.items.count()
