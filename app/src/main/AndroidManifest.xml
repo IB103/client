@@ -35,6 +35,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name=".LoginActivity"/>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
@@ -45,7 +46,7 @@
 
                 <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
                 <data android:host="oauth"
-                    android:scheme="kakaobe2fdfcd5beaf4a4ecf3930746b2bf69" />
+                    android:scheme="@string/kakao_oauth_host" />
             </intent-filter>
         </activity>
     </application>
