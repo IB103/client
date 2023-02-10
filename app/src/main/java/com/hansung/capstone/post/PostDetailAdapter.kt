@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.Comments
-import com.hansung.capstone.Posts
+import com.hansung.capstone.board.Comments
+import com.hansung.capstone.board.Posts
 import com.hansung.capstone.R
 
 class PostDetailAdapter(private val postDetail: Posts) :

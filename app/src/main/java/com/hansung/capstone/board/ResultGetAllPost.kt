@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.board
 
 data class ResultGetAllPost (
     var code: Int = 0,

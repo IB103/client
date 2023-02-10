@@ -8,18 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.R
-import com.hansung.capstone.ResultGetAllPost
-//import com.hansung.capstone.databinding.FragmentFreeBoardBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class FreeBoardFragment : Fragment() {
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

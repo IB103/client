@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.Posts
+import com.hansung.capstone.board.Posts
 import com.hansung.capstone.R
 import com.hansung.capstone.board.FreeBoardActivity
 
@@ -52,10 +52,4 @@ class PostDetailFragment(var post: Posts) : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_post_detail, container, false)
     }
-
-//    private fun stringToDate(date: String): LocalDateTime {
-//        val formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
-//        return LocalDateTime.parse(date, formatter)
-//    }
-
 }

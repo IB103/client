@@ -1,6 +1,5 @@
 package com.hansung.capstone.board
 
-import com.hansung.capstone.ResultGetAllPost
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
