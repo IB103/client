@@ -10,10 +10,11 @@ import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 
 
-class RecyclerViewAdapter(private val result : ResultGetSearchLocation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecyclerViewAdapter(private val result: ResultGetSearchLocation) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int {
-        return  result.items.count()
+        return result.items.count()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -24,7 +25,8 @@ class RecyclerViewAdapter(private val result : ResultGetSearchLocation) : Recycl
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         var viewHolder = (holder as ViewHolder).itemView
         viewHolder.findViewById<TextView>(R.id.result_title).text = result.items[position].title
-        viewHolder.findViewById<TextView>(R.id.result_roadAddress).text = result.items[position].roadAddress
+        viewHolder.findViewById<TextView>(R.id.result_roadAddress).text =
+            result.items[position].roadAddress
         viewHolder.findViewById<TextView>(R.id.result_address).text = result.items[position].address
         holder.bind(result.items[position])
     }
@@ -35,8 +37,8 @@ class RecyclerViewAdapter(private val result : ResultGetSearchLocation) : Recycl
         val roadAddress = view.findViewById<TextView>(R.id.result_roadAddress)
         val address = view.findViewById<TextView>(R.id.result_address)
         fun bind(items: Items) {
-            items.title = items.title.replace("<b>","")
-            items.title = items.title.replace("</b>","")
+            items.title = items.title.replace("<b>", "")
+            items.title = items.title.replace("</b>", "")
             title.text = items.title
             roadAddress.text = items.roadAddress
             address.text = items.address

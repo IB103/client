@@ -12,8 +12,6 @@ import retrofit2.http.Query
 interface NaverAPI {
     @GET("v1/search/local.json")
     fun getSearchLocation(
-//        @Header("X-Naver-Client-ID")clientId: String,
-//        @Header("X-Naver-Client-Secret")clientSecret: String,
         @Query("query") query: String,
         @Query("display") display: Int? = null,
         @Query("start") start: Int? = null,

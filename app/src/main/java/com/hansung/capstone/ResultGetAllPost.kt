@@ -1,5 +1,7 @@
 package com.hansung.capstone
 
+import java.time.LocalDateTime
+
 data class ResultGetAllPost (
     var code: Int = 0,
     var success: Boolean,
@@ -11,8 +13,8 @@ data class Posts(
     var id: Int,
     var title: String = "",
     var content: String = "",
-    var createdDate: String ="",
-    var modifiedDate: String ="",
+    var createdDate: LocalDateTime,
+    var modifiedDate: String = "",
     var commentList: List<Comments>
 )
 

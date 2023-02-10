@@ -20,9 +20,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class LoginActivity: AppCompatActivity() {
-    var kakao_email:String? = null
-    var kakao_nickname:String? = null
+class LoginActivity : AppCompatActivity() {
+    var kakao_email: String? = null
+    var kakao_nickname: String? = null
     fun connectServer() {
         var server_info = "223.194.133.220:8080" //username password1 password2 email
         var retrofit = Retrofit.Builder().baseUrl("http://$server_info")
@@ -108,14 +108,13 @@ class LoginActivity: AppCompatActivity() {
                         Log.d("req", "OK")
                         var result: RepLogin? = response.body()
                         if (response.code() == 200) {//수정해야함
-                            if(result?.code==100) {
+                            if (result?.code == 100) {
                                 Log.d("로그인", "성공: " + result?.toString())
                                 Log.d("로그인", "닉네임" + result?.nickname)
 //                            startMainActivity()
                                 // binding.loginbt.setEnabled(true)
                                 finish()
-                            }
-                            else {
+                            } else {
                                 Log.d("ERR", "실패: " + result?.toString())
                                 // binding.loginbt.setEnabled(false)
                             }
@@ -156,8 +155,8 @@ class LoginActivity: AppCompatActivity() {
             if (error != null) {
                 Log.e(ContentValues.TAG, "사용자 정보 요청 실패", error)
             } else if (user != null) {
-                kakao_email=user.kakaoAccount?.email
-                kakao_nickname=user.kakaoAccount?.profile?.nickname
+                kakao_email = user.kakaoAccount?.email
+                kakao_nickname = user.kakaoAccount?.profile?.nickname
                 Log.i(
                     ContentValues.TAG, "사용자 정보 요청 성공" +
                             "\n회원번호: ${user.id}" +

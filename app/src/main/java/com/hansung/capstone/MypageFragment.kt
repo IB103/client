@@ -9,22 +9,18 @@ import android.view.ViewGroup
 import com.hansung.capstone.databinding.FragmentMypageBinding
 
 class MypageFragment : Fragment() {
-    lateinit var  binding : FragmentMypageBinding
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//    }
+    lateinit var binding: FragmentMypageBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-    binding = FragmentMypageBinding.inflate(inflater, container, false)
+        binding = FragmentMypageBinding.inflate(inflater, container, false)
+        binding.loginfor.setOnClickListener {
 
-    binding.loginfor.setOnClickListener{
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
 
-        val intent = Intent(getActivity(),LoginActivity::class.java)
-        startActivity(intent)
-
-    }
-    return binding.root
+        }
+        return binding.root
     }
 }

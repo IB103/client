@@ -36,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
             android:id="@+id/PostDetailContent"
             android:layout_width="409dp"
             android:layout_height="300dp"
@@ -50,6 +50,7 @@
             android:id="@+id/PostDetailComment"
             android:layout_width="409dp"
             android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

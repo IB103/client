@@ -12,10 +12,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // 바텀네비게이션 관련 설정
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentLayout) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentLayout) as NavHostFragment
         val navController = navHostFragment.navController
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView?.setupWithNavController(navController)
     }
-    //hi
 }

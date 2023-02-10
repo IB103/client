@@ -9,9 +9,7 @@ import android.view.ViewGroup
 import com.hansung.capstone.databinding.FragmentCommunityBinding
 
 class CommunityFragment : Fragment() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,8 +21,8 @@ class CommunityFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentCommunityBinding.bind(view)
 
-        binding.goBoard.setOnClickListener{
-            val intent = Intent(activity,FreeBoardActivity::class.java)
+        binding.goBoard.setOnClickListener {
+            val intent = Intent(activity, FreeBoardActivity::class.java)
             startActivity(intent)
         }
     }
