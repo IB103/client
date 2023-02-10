@@ -13,7 +13,7 @@ data class Posts(
     var id: Int,
     var title: String = "",
     var content: String = "",
-    var createdDate: LocalDateTime,
+    var createdDate: String = "",
     var modifiedDate: String = "",
     var commentList: List<Comments>
 )

@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.time.format.DateTimeFormatter
 
 class FreeBoardAdapter(private val resultAllPost: ResultGetAllPost) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -27,7 +26,8 @@ class FreeBoardAdapter(private val resultAllPost: ResultGetAllPost) :
         viewHolder.findViewById<TextView>(R.id.FreeBoardContent).text =
             resultAllPost.data[position].content
         viewHolder.findViewById<TextView>(R.id.FreeBoardDate).text =
-            resultAllPost.data[position].createdDate.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
+//            resultAllPost.data[position].createdDate.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
+            resultAllPost.data[position].createdDate
         holder.bind(resultAllPost.data[position])
     }
 
@@ -38,7 +38,8 @@ class FreeBoardAdapter(private val resultAllPost: ResultGetAllPost) :
         fun bind(items: Posts) {
             title.text = items.title
             content.text = items.content
-            date.text = items.createdDate.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
+//            date.text = items.createdDate.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
+            date.text = items.createdDate
             itemView.setOnClickListener {
                 FreeBoardActivity.getInstance()?.goPostDetail(items)
             }

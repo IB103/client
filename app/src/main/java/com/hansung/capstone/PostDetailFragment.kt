@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.hansung.capstone.databinding.FragmentPostDetailBinding
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class PostDetailFragment(var post: Posts) : Fragment() {
@@ -40,7 +41,9 @@ class PostDetailFragment(var post: Posts) : Fragment() {
         val date = view.findViewById<EditText>(R.id.PostDetailDate)
         val content = view.findViewById<TextView>(R.id.PostDetailContent)
         title.setText(post.title)
-        date.setText(post.createdDate.format(DateTimeFormatter.ofPattern("MM/dd HH:mm")))
+//        date.setText(post.createdDate.format(DateTimeFormatter.ofPattern("MM/dd HH:mm")))
+        date.setText(post.createdDate)
+//        date.setText(freeBoardAdapter?.stringToDate(post.createdDate).toString())
         content.text = post.content
     }
 
@@ -51,5 +54,10 @@ class PostDetailFragment(var post: Posts) : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_post_detail, container, false)
     }
+
+//    private fun stringToDate(date: String): LocalDateTime {
+//        val formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
+//        return LocalDateTime.parse(date, formatter)
+//    }
 
 }
