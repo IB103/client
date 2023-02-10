@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.board
 
 import android.os.Bundle
 import android.util.Log
@@ -6,8 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.R
+import com.hansung.capstone.ResultGetAllPost
 //import com.hansung.capstone.databinding.FragmentFreeBoardBinding
 import retrofit2.Call
 import retrofit2.Callback

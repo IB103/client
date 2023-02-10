@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hansung.capstone.board.FreeBoardActivity
 import com.hansung.capstone.databinding.FragmentCommunityBinding
 
 class CommunityFragment : Fragment() {

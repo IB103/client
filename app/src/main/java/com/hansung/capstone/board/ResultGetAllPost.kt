@@ -1,7 +1,5 @@
 package com.hansung.capstone
 
-import java.time.LocalDateTime
-
 data class ResultGetAllPost (
     var code: Int = 0,
     var success: Boolean,

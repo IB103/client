@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.post
 
 import android.content.Context
 import android.os.Bundle
@@ -9,12 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputLayout
-import com.hansung.capstone.databinding.FragmentPostDetailBinding
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import com.hansung.capstone.Posts
+import com.hansung.capstone.R
+import com.hansung.capstone.board.FreeBoardActivity
 
 class PostDetailFragment(var post: Posts) : Fragment() {
 

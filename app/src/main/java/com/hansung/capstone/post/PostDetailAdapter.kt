@@ -1,10 +1,13 @@
-package com.hansung.capstone
+package com.hansung.capstone.post
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.Comments
+import com.hansung.capstone.Posts
+import com.hansung.capstone.R
 
 class PostDetailAdapter(private val postDetail: Posts) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

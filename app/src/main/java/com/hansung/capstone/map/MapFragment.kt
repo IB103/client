@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.map
 
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.R
+import com.hansung.capstone.ResultGetSearchLocation
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.Tm128
 import com.naver.maps.map.*

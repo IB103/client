@@ -1,10 +1,13 @@
-package com.hansung.capstone
+package com.hansung.capstone.map
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.Items
+import com.hansung.capstone.R
+import com.hansung.capstone.ResultGetSearchLocation
 import com.naver.maps.geometry.Tm128
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate

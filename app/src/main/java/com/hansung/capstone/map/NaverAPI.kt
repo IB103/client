@@ -1,5 +1,6 @@
-package com.hansung.capstone
+package com.hansung.capstone.map
 
+import com.hansung.capstone.ResultGetSearchLocation
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

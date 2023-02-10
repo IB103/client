@@ -1,7 +1,10 @@
-package com.hansung.capstone
+package com.hansung.capstone.board
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.hansung.capstone.post.PostDetailFragment
+import com.hansung.capstone.Posts
+import com.hansung.capstone.R
 
 class FreeBoardActivity : AppCompatActivity() {
     init {
