@@ -1,6 +1,6 @@
 package com.hansung.capstone.map
 
-data class ResultGetSearchLocation(
+data class ResultSearchLocation(
     var lastBuildDate: String = "",
     var total: Int = 0,
     var start: Int = 0,

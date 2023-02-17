@@ -11,11 +11,11 @@ import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 
 
-class SearchLocationAdapter(private val result: ResultGetSearchLocation) :
+class SearchLocationAdapter(private val result: ResultSearchLocation) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.search_location_item_layout, parent, false)
         return ViewHolder(view)
     }
 

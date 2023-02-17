@@ -87,10 +87,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val api = NaverAPI.create()
 
             api.getSearchLocation(source.text.toString(), 10, 1)
-                .enqueue(object : Callback<ResultGetSearchLocation> {
+                .enqueue(object : Callback<ResultSearchLocation> {
                     override fun onResponse(
-                        call: Call<ResultGetSearchLocation>,
-                        response: Response<ResultGetSearchLocation>
+                        call: Call<ResultSearchLocation>,
+                        response: Response<ResultSearchLocation>
                     ) {
                         Log.d("결과", "성공 : ${response.body().toString()}")
 //                    // 값을 넣어야한다~
@@ -123,7 +123,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         }
                     }
 
-                    override fun onFailure(call: Call<ResultGetSearchLocation>, t: Throwable) {
+                    override fun onFailure(call: Call<ResultSearchLocation>, t: Throwable) {
                         Log.d("결과:", "실패 : $t")
                     }
                 })

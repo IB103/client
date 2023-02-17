@@ -16,7 +16,7 @@ interface NaverAPI {
         @Query("display") display: Int? = null,
         @Query("start") start: Int? = null,
         @Query("sort") sort: String = "random"
-    ): Call<ResultGetSearchLocation>
+    ): Call<ResultSearchLocation>
 
     companion object {
         private const val BASE_URL_NAVER_API = "https://openapi.naver.com/"
