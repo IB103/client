@@ -13,7 +13,8 @@ data class Posts(
     var content: String = "",
     var createdDate: String = "",
     var modifiedDate: String = "",
-    var commentList: List<Comments>
+    var commentList: List<Comments>,
+    var imageId: List<Int>,
 )
 
 data class Comments(

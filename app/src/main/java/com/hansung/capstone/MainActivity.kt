@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     fun goPostDetail(post: Posts) {
         supportFragmentManager.beginTransaction().apply {
+//            replace(R.id.fragmentLayout, PostDetailFragment(post))
             replace(R.id.fragmentLayout, PostDetailFragment(post))
             addToBackStack(null)
             commit()

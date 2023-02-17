@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/BoardContent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/BoardImageView"
         android:layout_width="60dp"
         android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
