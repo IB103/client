@@ -1,11 +1,12 @@
 package com.hansung.capstone
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.hansung.capstone.R
+import com.hansung.capstone.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
     override fun onCreateView(
@@ -13,5 +14,15 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val binding = FragmentHomeBinding.bind(view)
+
+        binding.goRiding.setOnClickListener {
+            val intent = Intent(activity, RidingActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

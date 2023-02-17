@@ -10,10 +10,10 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/communityFragment"
-        android:name="com.hansung.capstone.CommunityFragment"
-        android:label="fragment_commnunity"
-        tools:layout="@layout/fragment_community" />
+        android:id="@+id/boardFragment"
+        android:name="com.hansung.capstone.BoardFragment"
+        android:label="fragment_board"
+        tools:layout="@layout/fragment_board" />
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.hansung.capstone.map.MapFragment"
@@ -25,9 +25,9 @@
         android:label="fragment_recommend"
         tools:layout="@layout/fragment_recommend" />
     <fragment
-        android:id="@+id/mypageFragment"
-        android:name="com.hansung.capstone.MypageFragment"
-        android:label="fragment_mypage"
+        android:id="@+id/myPageFragment"
+        android:name="com.hansung.capstone.MyPageFragment"
+        android:label="fragment_myPage"
         tools:layout="@layout/fragment_mypage" />
 </navigation>
 

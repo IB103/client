@@ -5,33 +5,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.Items
 import com.hansung.capstone.R
-import com.hansung.capstone.ResultGetSearchLocation
 import com.naver.maps.geometry.Tm128
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 
 
-class RecyclerViewAdapter(private val result: ResultGetSearchLocation) :
+class SearchLocationAdapter(private val result: ResultGetSearchLocation) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
+        return ViewHolder(view)
+    }
 
     override fun getItemCount(): Int {
         return result.items.count()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
-        return ViewHolder(view)
-    }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        var viewHolder = (holder as ViewHolder).itemView
-        viewHolder.findViewById<TextView>(R.id.result_title).text = result.items[position].title
-        viewHolder.findViewById<TextView>(R.id.result_roadAddress).text =
-            result.items[position].roadAddress
-        viewHolder.findViewById<TextView>(R.id.result_address).text = result.items[position].address
-        holder.bind(result.items[position])
+//        val viewHolder = (holder as ViewHolder).itemView
+//        viewHolder.findViewById<TextView>(R.id.result_title).text = result.items[position].title
+//        viewHolder.findViewById<TextView>(R.id.result_roadAddress).text =
+//            result.items[position].roadAddress
+//        viewHolder.findViewById<TextView>(R.id.result_address).text = result.items[position].address
+        val viewHolder = holder as ViewHolder
+        viewHolder.bind(result.items[position])
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

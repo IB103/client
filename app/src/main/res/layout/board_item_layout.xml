@@ -7,12 +7,12 @@
     android:background="@drawable/board_list_element">
 
     <TextView
-        android:id="@+id/FreeBoardTitle"
+        android:id="@+id/BoardTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="80dp"
         android:ems="10"
         android:text="Title"
         android:textColor="#000000"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/FreeBoardContent"
+        android:id="@+id/BoardContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
@@ -30,20 +30,30 @@
         android:gravity="start|top"
         android:textColor="#3E3E3E"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/FreeBoardTitle"
-        app:layout_constraintStart_toStartOf="@+id/FreeBoardTitle"
-        app:layout_constraintTop_toBottomOf="@+id/FreeBoardTitle" />
+        app:layout_constraintEnd_toEndOf="@+id/BoardTitle"
+        app:layout_constraintStart_toStartOf="@+id/BoardTitle"
+        app:layout_constraintTop_toBottomOf="@+id/BoardTitle" />
 
     <TextView
-        android:id="@+id/FreeBoardDate"
+        android:id="@+id/BoardDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:ems="10"
         android:textColor="#737373"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/FreeBoardContent"
-        app:layout_constraintStart_toStartOf="@+id/FreeBoardContent"
-        app:layout_constraintTop_toBottomOf="@+id/FreeBoardContent" />
+        app:layout_constraintEnd_toEndOf="@+id/BoardContent"
+        app:layout_constraintStart_toStartOf="@+id/BoardContent"
+        app:layout_constraintTop_toBottomOf="@+id/BoardContent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/BoardContent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_foreground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.map
 
 data class ResultGetSearchLocation(
     var lastBuildDate: String = "",

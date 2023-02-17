@@ -16,16 +16,17 @@ class PostDetailAdapter(private val postDetail: Posts) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        var view =
+        val view =
             LayoutInflater.from(parent.context).inflate(R.layout.comment_item_layout, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        var viewHolder = (holder as ViewHolder).itemView
-        viewHolder.findViewById<TextView>(R.id.PostDetailCommentContent).text =
-            postDetail.commentList[position].content
-        holder.bind(postDetail.commentList[position])
+//        val viewHolder = (holder as ViewHolder).itemView
+//        viewHolder.findViewById<TextView>(R.id.PostDetailCommentContent).text =
+//            postDetail.commentList[position].content
+        val viewHolder = holder as ViewHolder
+        viewHolder.bind(postDetail.commentList[position])
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

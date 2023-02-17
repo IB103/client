@@ -13,10 +13,12 @@ interface GetAllPostInterface {
     @GET("api/community/post/list")
     fun getAllPost(
         @Query("page") query: Int,
-    ): Call<ResultGetAllPost>
+    )
+    : Call<ResultGetAllPost>
 
     companion object {
-        private const val server_info = "223.194.133.220:8080"
+//        private const val server_info = "223.194.133.220:8080"
+        private const val server_info = "121.138.93.178:9999"
         private const val url = "http://$server_info/"
 
         fun create(): GetAllPostInterface {

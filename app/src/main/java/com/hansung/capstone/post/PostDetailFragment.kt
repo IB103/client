@@ -10,17 +10,17 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.MainActivity
 import com.hansung.capstone.board.Posts
 import com.hansung.capstone.R
-import com.hansung.capstone.board.FreeBoardActivity
 
 class PostDetailFragment(var post: Posts) : Fragment() {
 
-    lateinit var freeBoardActivity: FreeBoardActivity
+    lateinit var mainActivity: MainActivity
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        freeBoardActivity = context as FreeBoardActivity
+        mainActivity = context as MainActivity
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ class PostDetailFragment(var post: Posts) : Fragment() {
                 PostDetailAdapter(post)
         }
 
-        val title = view.findViewById<EditText>(R.id.PostDetatilTitle)
+        val title = view.findViewById<EditText>(R.id.PostDetailTitle)
         val date = view.findViewById<EditText>(R.id.PostDetailDate)
         val content = view.findViewById<TextView>(R.id.PostDetailContent)
         title.setText(post.title)

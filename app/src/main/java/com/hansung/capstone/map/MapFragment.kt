@@ -10,7 +10,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.R
-import com.hansung.capstone.ResultGetSearchLocation
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.Tm128
 import com.naver.maps.map.*
@@ -103,14 +102,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         val resultList = view.findViewById<RecyclerView>(R.id.resultList)
                         runOnUiThread {
                             resultList.adapter =
-                                body?.let { it -> RecyclerViewAdapter(it) }
+                                body?.let { it -> SearchLocationAdapter(it) }
                         }
 
-                        val wherex = body?.items?.get(0)?.mapx
-                        val wherey = body?.items?.get(0)?.mapy
+                        val whereX = body?.items?.get(0)?.mapx
+                        val whereY = body?.items?.get(0)?.mapy
 
                         // 첫번째 검색 결과 좌표로 지도 이동
-                        var tm = Tm128(wherex!!.toDouble(), wherey!!.toDouble())
+                        var tm = Tm128(whereX!!.toDouble(), whereY!!.toDouble())
                         val cameraUpdate = CameraUpdate.scrollTo(tm.toLatLng())
                             .animate(CameraAnimation.Fly, 1000)
                         naverMap.moveCamera(cameraUpdate)

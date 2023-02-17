@@ -1,4 +1,4 @@
-package com.hansung.capstone.board
+package com.hansung.capstone
 
 import android.os.Bundle
 import android.util.Log
@@ -7,15 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.R
+import com.hansung.capstone.board.BoardAdapter
+import com.hansung.capstone.board.GetAllPostInterface
+import com.hansung.capstone.board.ResultGetAllPost
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FreeBoardFragment : Fragment() {
+class BoardFragment : Fragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_free_board, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val allPostInterface = GetAllPostInterface.create()
 
         allPostInterface.getAllPost(0)
@@ -30,7 +39,7 @@ class FreeBoardFragment : Fragment() {
                     activity?.runOnUiThread {
                         val resultAllPost = view.findViewById<RecyclerView>(R.id.resultAllPost)
                         resultAllPost.adapter =
-                            body?.let { it -> FreeBoardAdapter(it) }
+                            body?.let { it -> BoardAdapter(it) }
                     }
                 }
 
@@ -39,12 +48,4 @@ class FreeBoardFragment : Fragment() {
                 }
             })
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_free_board, container, false)
-    }
-
 }
