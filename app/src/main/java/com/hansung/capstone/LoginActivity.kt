@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.hansung.capstone.databinding.ActivityLoginBinding
 import com.hansung.capstone.retrofit.RepLogin
 import com.hansung.capstone.retrofit.ReqLogin
@@ -21,8 +23,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class LoginActivity : AppCompatActivity() {
-    var kakao_email: String? = null
-    var kakao_nickname: String? = null
+    var kakao_email:String?=null
+    var kakao_nickname:String? = null
+    var manager: FragmentManager =supportFragmentManager
+
     fun connectServer() {
         var server_info = "223.194.133.220:8080" //username password1 password2 email
         var retrofit = Retrofit.Builder().baseUrl("http://$server_info")
@@ -32,27 +36,25 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         var binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         var server_info = "223.194.133.220:8080" //username password1 password2 email
         var retrofit = Retrofit.Builder().baseUrl("http://$server_info")
             .addConverterFactory(GsonConverterFactory.create()).build()
         var service = retrofit.create(RetrofitService::class.java)
-        //connectServer()
+        connectServer()
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
                 Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
+
             } else if (tokenInfo != null) {
                 Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
+                Log.d("1","${tokenInfo}")
                 updateKakaoLoginInfo()
-
-                //val intent = Intent(this, SecondActivity::class.java)
-                //startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                finish()
+                val intent = Intent(this, MyPageFragment::class.java)
+                setResult(RESULT_OK,intent)
             }
         }
-
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 when {
@@ -93,7 +95,6 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }
-
         binding.loginbt.setOnClickListener() {
             val id = binding.idtext.getText().toString()
             val pw = binding.pwtext.getText().toString()
@@ -108,37 +109,33 @@ class LoginActivity : AppCompatActivity() {
                         Log.d("req", "OK")
                         var result: RepLogin? = response.body()
                         if (response.code() == 200) {//수정해야함
-                            if (result?.code == 100) {
+                            if(result?.code==100) {
                                 Log.d("로그인", "성공: " + result?.toString())
                                 Log.d("로그인", "닉네임" + result?.nickname)
-//                            startMainActivity()
-                                // binding.loginbt.setEnabled(true)
+                                //Toast.makeText(this, "로그인이 완료됐습니다.", Toast.LENGTH_SHORT).show()
+                                MyApplication.prefs.setString("id", id)
+                                MyApplication.prefs.setString("pw", pw)
                                 finish()
-                            } else {
+                            }
+                            else {
                                 Log.d("ERR", "실패: " + result?.toString())
-                                // binding.loginbt.setEnabled(false)
+                                MyApplication.prefs.setString("Login","fail")
                             }
                         }
                     } else {
                         // 통신이 실패한 경우(응답코드 3xx, 4xx 등)
                         Log.d("ERR", "onResponse 실패")
-                        //   binding.loginbt.setEnabled(false)
+                        MyApplication.prefs.setString("Login","fail")
+
                     }
                 }
-
                 override fun onFailure(call: Call<RepLogin>, t: Throwable) {
                     // 통신 실패 (인터넷 끊킴, 예외 발생 등 시스템적인 이유)
                     Log.d("ERR", "onFailure 에러: " + t.message.toString())
-                    // binding.loginbt.setEnabled(false)
+                    MyApplication.prefs.setString("Login","fail")
                 }
             })
-            /////////////////////////////
         }
-
-        //binding.register.setOnClickListener() {
-        // startActivity(Intent(applicationContext, RegisterActivity::class.java))
-        //}
-
         binding.kakaologinBt.setOnClickListener {
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
                 UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
@@ -146,17 +143,25 @@ class LoginActivity : AppCompatActivity() {
                 UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
             }
         }
-
+        binding.tvSignUp.setOnClickListener{
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
-
     private fun updateKakaoLoginInfo() {
-        //TODO("Not yet implemented")
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Log.e(ContentValues.TAG, "사용자 정보 요청 실패", error)
             } else if (user != null) {
-                kakao_email = user.kakaoAccount?.email
-                kakao_nickname = user.kakaoAccount?.profile?.nickname
+                kakao_email= "${user.kakaoAccount?.email}"
+                MyApplication.prefs.setString("id","${kakao_email}")
+                Log.d("kakaoemail:",MyApplication.prefs.getString("id",""))
+                kakao_nickname=user.kakaoAccount?.profile?.nickname
+                MyApplication.prefs.setString("nickname","${kakao_nickname}")
+                val intent = Intent(this, MyPageFragment::class.java)
+                setResult(RESULT_OK,intent)
+                finish()
                 Log.i(
                     ContentValues.TAG, "사용자 정보 요청 성공" +
                             "\n회원번호: ${user.id}" +
@@ -168,5 +173,4 @@ class LoginActivity : AppCompatActivity() {
         }
 
     }
-
 }
