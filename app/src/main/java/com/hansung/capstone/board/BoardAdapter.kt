@@ -1,5 +1,6 @@
 package com.hansung.capstone.board
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.Image
 import android.util.Log
@@ -13,6 +14,7 @@ import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
 import com.hansung.capstone.BoardFragment
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.R
+import com.hansung.capstone.post.PostDetailActivity
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,9 +24,9 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class BoardAdapter(private val resultAllPost: ResultGetAllPost) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     companion object {
-        private const val server_info = "121.138.93.178:9999"
+//        private const val server_info = "121.138.93.178:9999"
+        private const val server_info = "223.194.133.220:8080"
         private const val url = "http://$server_info/"
     }
 
@@ -59,6 +61,7 @@ class BoardAdapter(private val resultAllPost: ResultGetAllPost) :
             title.text = items.title
             content.text = items.content
             date.text = items.createdDate
+
             if (items.imageId.isNotEmpty()) {
                 Log.d("이미지 아이디","${items.imageId[0]}")
                 // 이미지 불러오기

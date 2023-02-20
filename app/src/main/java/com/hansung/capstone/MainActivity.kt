@@ -1,11 +1,13 @@
 package com.hansung.capstone
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hansung.capstone.board.Posts
+import com.hansung.capstone.post.PostDetailActivity
 import com.hansung.capstone.post.PostDetailFragment
 
 class MainActivity : AppCompatActivity() {
@@ -32,11 +34,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goPostDetail(post: Posts) {
-        supportFragmentManager.beginTransaction().apply {
+//        supportFragmentManager.beginTransaction().apply {
+////            replace(R.id.fragmentLayout, PostDetailFragment(post))
 //            replace(R.id.fragmentLayout, PostDetailFragment(post))
-            replace(R.id.fragmentLayout, PostDetailFragment(post))
-            addToBackStack(null)
-            commit()
-        }
+//            addToBackStack(null)
+//            commit()
+//        }
+        val intent = Intent(this, PostDetailActivity::class.java)
+        intent.putExtra("id",post.id)
+        startActivity(intent)
     }
 }
