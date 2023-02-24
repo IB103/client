@@ -18,6 +18,7 @@ data class Post(
     var authorProfileImageId: Long,
     var commentList: List<Comments>,
     var imageId: List<Int>,
+    var postVoterId: Set<Long>,
     // 좋아요 버튼 실험용
     var heartButtonCheck: Boolean,
     var starButtonCheck: Boolean,
@@ -31,7 +32,8 @@ data class Comments(
     var userId : Long,
     var userNickname: String,
     var userProfileImageId: Long,
-    var reCommentList: List<ReComments>
+    var reCommentList: List<ReComments>,
+    var commentVoterId: Set<Long>
 )
 
 data class ReComments(
@@ -41,5 +43,6 @@ data class ReComments(
     var modifiedDate: String,
     var userId : Long,
     var userNickname: String,
-    var userProfileImageId: Long
+    var userProfileImageId: Long,
+    var reCommentVoterId: Set<Long>
 )

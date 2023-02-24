@@ -18,6 +18,7 @@ data class Posts(
     var authorProfileImageId: Long,
     var commentList: List<Comments>,
     var imageId: List<Int>,
+    var postVoterId: Set<Long>,
     // 게시판에 들어갈 item type 설정
     var postType : Int,
 )
@@ -30,7 +31,8 @@ data class Comments(
     var userId : Long,
     var userNickname: String,
     var userProfileImageId: Long,
-    var reCommentList: List<ReComments>
+    var reCommentList: List<ReComments>,
+    var commentVoterId: Set<Long>
 )
 
 data class ReComments(
@@ -40,5 +42,6 @@ data class ReComments(
     var modifiedDate: String,
     var userId : Long,
     var userNickname: String,
-    var userProfileImageId: Long
+    var userProfileImageId: Long,
+    var reCommentVoterId: Set<Long>
 )

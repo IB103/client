@@ -8,9 +8,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 class PostCommentsAdapterDecoration: RecyclerView.ItemDecoration()  {
-    private val dividerHeight = 2
-//    private val dividerColor = Color.TRANSPARENT
-    private val dividerColor = Color.BLACK  
+    private val dividerHeight = 3
+    private val dividerColor = Color.LTGRAY
     private val paint = Paint()
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(c, parent, state)
@@ -31,9 +30,8 @@ class PostCommentsAdapterDecoration: RecyclerView.ItemDecoration()  {
 
         for( i in 0 until parent.childCount){
             val child = parent.getChildAt(i)
-            val param = child.layoutParams as RecyclerView.LayoutParams
 
-            val dividerTop = child.bottom + param.bottomMargin
+            val dividerTop = child.top
             val dividerBottom = dividerTop + dividerHeight
 
             c.drawRect(

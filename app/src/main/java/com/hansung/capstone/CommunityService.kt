@@ -6,9 +6,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface CommunityService {
     @GET("api/community/post/list")
@@ -29,6 +27,12 @@ interface CommunityService {
     @GET("profile-image/{id}")
     fun getProfileImage(
         @Path("id") id: Long,
+    ): Call<ResponseBody>
+
+    @GET("api/community/post/favorite")
+    fun checkFavorite(
+        @Query("userId") userId: Long,
+        @Query("postId") postId: Long
     ): Call<ResponseBody>
 
     companion object{

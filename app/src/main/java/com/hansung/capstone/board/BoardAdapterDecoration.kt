@@ -18,7 +18,11 @@ class BoardAdapterDecoration : RecyclerView.ItemDecoration() {
         val offset = 10
 
         when (position) {
-            0 -> outRect.top = offset
+            0 -> {
+                outRect.top = offset
+                outRect.bottom = offset
+
+            }
             count - 1 -> outRect.bottom = offset
             else -> {
                 outRect.top = offset

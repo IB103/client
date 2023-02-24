@@ -44,10 +44,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:text="작성 시간"
         android:textColor="#6A6A6A"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/CommentContent"
         app:layout_constraintTop_toBottomOf="@+id/CommentContent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/PostDetailReComment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CommentCreatedDate" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,9 @@ package com.hansung.capstone.post
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MyApplication
@@ -24,15 +26,15 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding =
             ItemPostDetailCommentsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostDetailHolder(binding)
+        return PostCommentsHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewHolder = holder as PostDetailHolder
+        val viewHolder = holder as PostCommentsHolder
         viewHolder.bind(resultDetailPost.data.commentList[position])
     }
 
-    inner class PostDetailHolder(private val binding: ItemPostDetailCommentsBinding) :
+    inner class PostCommentsHolder(private val binding: ItemPostDetailCommentsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(items: Comments) {
             binding.CommentContent.text = items.content
@@ -57,6 +59,11 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail) :
                 }
             })
 
+            if(items.reCommentList.isNotEmpty()) {
+                binding.PostDetailReComment.adapter = PostReCommentsAdapter(items)
+            }
+            else
+                binding.PostDetailReComment.visibility= View.GONE
         }
     }
 }

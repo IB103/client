@@ -74,12 +74,13 @@ class BoardAdapter(private val resultGetPosts: ResultGetPosts) :
             binding.BoardContent.text = items.content
             binding.BoardDate.text = createdDate.toString()
             binding.ImageCount.text = items.imageId.size.toString()
-//            binding.HeartCount.text =
+            binding.HeartCount.text = items.postVoterId.size.toString()
             for (i in items.commentList){
                 count+=i.reCommentList.size
             }
             count+=items.commentList.size
             binding.CommentCount.text = count.toString()
+
             if (items.imageId.isNotEmpty()) {
                 api.getImage(items.imageId[0].toLong()).enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(

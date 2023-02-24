@@ -1,13 +1,12 @@
 package com.hansung.capstone.post
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
@@ -25,6 +24,7 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     companion object {
+        var buttonCheck: Int = 0
         private var instance: PostDetailActivity? = null
         fun getInstance(): PostDetailActivity? {
             return instance
@@ -43,6 +43,7 @@ class PostDetailActivity : AppCompatActivity() {
 
         api.getPostDetail(postId.toLong())
             .enqueue(object : Callback<ResultGetPostDetail> {
+                @SuppressLint("SetTextI18n")
                 override fun onResponse(
                     call: Call<ResultGetPostDetail>,
                     response: Response<ResultGetPostDetail>
@@ -61,23 +62,59 @@ class PostDetailActivity : AppCompatActivity() {
                     val createdDate =
                         convertedDate?.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
                     binding.PostDetailDate.text = createdDate
-                    binding.CommentCount.text = body?.data?.commentList?.size.toString()
-//                    binding.CommentCount.text = body?.data?.commentList?.size.toString()
-//                    binding.CommentCount.text = body?.data?.commentList?.size.toString()
+                    var count = 0
+                    for (i in body?.data?.commentList!!){
+                        count+=i.reCommentList.size
+                    }
+                    count+= body.data.commentList.size
+                    Log.d("카운트","$count")
+//                    binding.CommentCount.text = body.data.commentList.size.toString()
+                    binding.CommentCount.text = count.toString()
+                    var heartCount = body.data.postVoterId.size
+                    binding.HeartCount.text = heartCount.toString()
                     binding.BackToList.setOnClickListener {
                         finish()
                     }
-                    binding.HeartB.setOnClickListener{
-                        if(!body?.data?.heartButtonCheck!!){
-                            binding.HeartB.setImageResource(R.drawable.ic_heart_check)
+
+                    // 좋아요 버튼
+                    buttonCheck = if (body.data.postVoterId.contains(12)) {
+                        binding.HeartB.setImageResource(R.drawable.ic_heart_check)
+                        1
+                    } else {
+                        binding.HeartB.setImageResource(R.drawable.ic_heart_no_check)
+                        0
+                    }
+                    binding.HeartB.setOnClickListener {
+                        api.checkFavorite(12,94)
+                            .enqueue(object : Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                Log.d("좋아요 겟", "성공 : ${response.body().toString()}")
+//                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                Log.d("결과:", "실패 : $t")
+                            }
+                        })
+                        runOnUiThread {
+                            when (buttonCheck) {
+                                0 -> {
+                                    binding.HeartB.setImageResource(R.drawable.ic_heart_check)
+                                    binding.HeartCount.text = "${++heartCount}"
+                                    buttonCheck = 1
+                                }
+                                else -> {
+                                    binding.HeartB.setImageResource(R.drawable.ic_heart_no_check)
+                                    binding.HeartCount.text = "${--heartCount}"
+                                    buttonCheck = 0
+                                }
+                            }
                         }
                     }
-                    binding.StarB.setOnClickListener{
-                        if(!body?.data?.starButtonCheck!!){
-                            binding.StarB.setImageResource(R.drawable.ic_star_check)
-                        }
-                    }
-                    api.getProfileImage(body!!.data.authorProfileImageId)
+                    api.getProfileImage(body.data.authorProfileImageId)
                         .enqueue(object : Callback<ResponseBody> {
                             override fun onResponse(
                                 call: Call<ResponseBody>,
@@ -111,11 +148,7 @@ class PostDetailActivity : AppCompatActivity() {
                         binding.PostDetailComment.adapter =
                             PostCommentsAdapter(body)
                         binding.PostDetailComment.addItemDecoration(
-//                            DividerItemDecoration(
-//                                this@PostDetailActivity,
-//                                LinearLayoutManager.VERTICAL
-//                            )
-                        PostCommentsAdapterDecoration()
+                            PostCommentsAdapterDecoration()
                         )
                     }
                 }
@@ -125,7 +158,6 @@ class PostDetailActivity : AppCompatActivity() {
                 }
             })
     }
-
 
 
     fun goImageDetail(imageList: List<Int>, position: Int) {

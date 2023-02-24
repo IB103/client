@@ -15,7 +15,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class BoardFragment : Fragment() {
-
+    private lateinit var resultAllPost: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,6 +25,38 @@ class BoardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("실험","초기화!!!!!!!!!!!!!!!")
+        resultAllPost = view.findViewById(R.id.resultAllPost)
+        resultAllPost.addItemDecoration(BoardAdapterDecoration())
+
+//        val api = CommunityService.create()
+//
+//        api.getAllPost(0)
+//            .enqueue(object : Callback<ResultGetPosts> {
+//                override fun onResponse(
+//                    call: Call<ResultGetPosts>,
+//                    response: Response<ResultGetPosts>
+//                ) {
+//                    Log.d("결과", "성공 : ${response.body().toString()}")
+//                    val body = response.body()
+//                    activity?.runOnUiThread {
+//                        val resultAllPost = view.findViewById<RecyclerView>(R.id.resultAllPost)
+//                        resultAllPost.adapter =
+//                            body?.let { it -> BoardAdapter(it) }
+//                        resultAllPost.addItemDecoration(BoardAdapterDecoration())
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
+//                    Log.d("결과:", "실패 : $t")
+//                }
+//            })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Log.d("실험","Resume@@@@@@@@@@@@@@@@@@@@2")
         val api = CommunityService.create()
 
         api.getAllPost(0)
@@ -36,10 +68,10 @@ class BoardFragment : Fragment() {
                     Log.d("결과", "성공 : ${response.body().toString()}")
                     val body = response.body()
                     activity?.runOnUiThread {
-                        val resultAllPost = view.findViewById<RecyclerView>(R.id.resultAllPost)
+//                        val resultAllPost = view?.findViewById<RecyclerView>(R.id.resultAllPost)
                         resultAllPost.adapter =
                             body?.let { it -> BoardAdapter(it) }
-                        resultAllPost.addItemDecoration(BoardAdapterDecoration())
+//                        resultAllPost.addItemDecoration(BoardAdapterDecoration())
                     }
                 }
 
