@@ -8,7 +8,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hansung.capstone.board.Posts
 import com.hansung.capstone.post.PostDetailActivity
-import com.hansung.capstone.post.PostDetailFragment
 
 class MainActivity : AppCompatActivity() {
     init {

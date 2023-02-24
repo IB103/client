@@ -15,7 +15,7 @@ class SearchLocationAdapter(private val result: ResultSearchLocation) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.search_location_item_layout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_location_search_results, parent, false)
         return ViewHolder(view)
     }
 

@@ -1,76 +1,86 @@
 package com.hansung.capstone.board
 
-import android.content.Intent
 import android.graphics.BitmapFactory
-import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
-import com.hansung.capstone.BoardFragment
+import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MainActivity
-import com.hansung.capstone.R
-import com.hansung.capstone.post.PostDetailActivity
+import com.hansung.capstone.MyApplication
+import com.hansung.capstone.databinding.ItemPostListBinding
+import com.hansung.capstone.databinding.ItemPostListNoImageBinding
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.time.format.DateTimeFormatter
 
-class BoardAdapter(private val resultAllPost: ResultGetAllPost) :
+// 게시판에 들어갈 item type 설정
+const val post_type1 = 1
+const val post_type2 = 2
+
+class BoardAdapter(private val resultGetPosts: ResultGetPosts) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    companion object {
-//        private const val server_info = "121.138.93.178:9999"
-        private const val server_info = "223.194.133.220:8080"
-        private const val url = "http://$server_info/"
+    val api = CommunityService.create()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            post_type1 -> {
+                val binding =
+                    ItemPostListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                BoardHolderType1(binding)
+            }
+            else -> {
+                val binding = ItemPostListNoImageBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                BoardHolderType2(binding)
+            }
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.board_item_layout, parent, false)
-        return ViewHolder(view)
+    override fun getItemViewType(position: Int): Int {
+        if (resultGetPosts.data[position].imageId.isEmpty())
+            resultGetPosts.data[position].postType = 2
+        else resultGetPosts.data[position].postType = 1
+        return resultGetPosts.data[position].postType
     }
 
     override fun getItemCount(): Int {
-        return resultAllPost.data.count()
+        return resultGetPosts.data.count()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        val viewHolder = (holder as ViewHolder).itemView
-//        viewHolder.findViewById<TextView>(R.id.BoardTitle).text =
-//            resultAllPost.data[position].title
-//        viewHolder.findViewById<TextView>(R.id.BoardContent).text =
-//            resultAllPost.data[position].content
-//        viewHolder.findViewById<TextView>(R.id.BoardDate).text =
-//            resultAllPost.data[position].createdDate
-        val viewHolder = (holder as ViewHolder)
-        viewHolder.bind(resultAllPost.data[position])
+        when (resultGetPosts.data[position].imageId.size) {
+            0 -> {
+                (holder as BoardHolderType2).bind(resultGetPosts.data[position])
+            }
+            else -> {
+                (holder as BoardHolderType1).bind(resultGetPosts.data[position])
+            }
+        }
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val title = view.findViewById<TextView>(R.id.BoardTitle)
-        private val content = view.findViewById<TextView>(R.id.BoardContent)
-        private val date = view.findViewById<TextView>(R.id.BoardDate)
-        private val image = view.findViewById<ImageView>(R.id.BoardImageView)
+    inner class BoardHolderType1(private val binding: ItemPostListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(items: Posts) {
-            title.text = items.title
-            content.text = items.content
-            date.text = items.createdDate
-
+            var count = 0
+            val convertedDate = MyApplication.convertDate(items.createdDate)
+            val createdDate = convertedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            binding.PostUserName.text = items.nickname
+            binding.BoardTitle.text = items.title
+            binding.BoardContent.text = items.content
+            binding.BoardDate.text = createdDate.toString()
+            binding.ImageCount.text = items.imageId.size.toString()
+//            binding.HeartCount.text =
+            for (i in items.commentList){
+                count+=i.reCommentList.size
+            }
+            count+=items.commentList.size
+            binding.CommentCount.text = count.toString()
             if (items.imageId.isNotEmpty()) {
-                Log.d("이미지 아이디","${items.imageId[0]}")
-                // 이미지 불러오기
-                val retrofit = Retrofit.Builder()
-                    .baseUrl(url)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .build()
-
-                val api = retrofit.create(GetAllPostImageInterface::class.java)
                 api.getImage(items.imageId[0].toLong()).enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -79,19 +89,68 @@ class BoardAdapter(private val resultAllPost: ResultGetAllPost) :
                         Log.d("결과", "성공 : ${response.body().toString()}")
                         val imageB = response.body()?.byteStream()
                         val bitmap = BitmapFactory.decodeStream(imageB)
-                        image.setImageBitmap(bitmap)
+                        binding.BoardImageView.setImageBitmap(bitmap)
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                         Log.d("결과:", "실패 : $t")
                     }
                 })
+                api.getProfileImage(items.authorProfileImageId)
+                    .enqueue(object : Callback<ResponseBody> {
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            Log.d("결과", "성공 : ${response.body().toString()}")
+                            val imageB = response.body()?.byteStream()
+                            val bitmap = BitmapFactory.decodeStream(imageB)
+                            binding.BoardProfileImage.setImageBitmap(bitmap)
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            Log.d("결과:", "실패 : $t")
+                        }
+                    })
             }
 
             itemView.setOnClickListener {
                 MainActivity.getInstance()?.goPostDetail(items)
             }
+        }
+    }
 
+    inner class BoardHolderType2(private val binding: ItemPostListNoImageBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(items: Posts) {
+            val convertedDate = MyApplication.convertDate(items.createdDate)
+            val createdDate = convertedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            binding.PostUserName.text = items.nickname
+            binding.BoardTitle.text = items.title
+            binding.BoardContent.text = items.content
+            binding.BoardDate.text = createdDate.toString()
+            binding.CommentCount.text = items.commentList.size.toString()
+//            binding.HeartCount.text =
+            api.getProfileImage(items.authorProfileImageId)
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        Log.d("결과", "성공 : ${response.body().toString()}")
+                        val imageB = response.body()?.byteStream()
+                        val bitmap = BitmapFactory.decodeStream(imageB)
+                        binding.BoardProfileImage.setImageBitmap(bitmap)
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Log.d("결과:", "실패 : $t")
+                    }
+                })
+
+            itemView.setOnClickListener {
+                MainActivity.getInstance()?.goPostDetail(items)
+            }
         }
     }
 }

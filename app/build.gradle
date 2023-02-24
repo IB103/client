@@ -82,4 +82,11 @@ dependencies {
     // 뷰페이저
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'me.relex:circleindicator:2.1.4'
+
+    // 포토뷰
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    // circleImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }

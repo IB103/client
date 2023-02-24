@@ -8,13 +8,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resultAllPost"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/CommunityToolbar" />
 
     <Button
         android:id="@+id/postB"
@@ -25,5 +25,40 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/CommunityToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/cImageView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_baseline_mode_comment_24"
+            app:layout_constraintBottom_toTopOf="@+id/resultAllPost"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/cTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="커뮤니티"
+            android:paddingLeft="10dp"
+            android:textColor="#9ACED3"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="55dp"
+            tools:layout_editor_absoluteY="9dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
