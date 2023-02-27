@@ -19,7 +19,7 @@ class ImageFullScreenActivity : AppCompatActivity() {
         val position = intent.getIntExtra("position", 0)
         val imageList = imageArray!!.toList()
 
-        val imageDetailAdapter = ImageDetailAdapter()
+        val imageDetailAdapter = ImageDetailAdapter(this@ImageFullScreenActivity)
         imageDetailAdapter.imageList = imageList.toList()
         binding.fullScreenViewPager.adapter = imageDetailAdapter
         binding.fullScreenViewPager.setCurrentItem(position, false)

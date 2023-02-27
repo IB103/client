@@ -1,28 +1,24 @@
 package com.hansung.capstone.board
 
-import android.graphics.BitmapFactory
-import android.util.Log
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.CommunityService
+import com.bumptech.glide.Glide
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.databinding.ItemPostListBinding
 import com.hansung.capstone.databinding.ItemPostListNoImageBinding
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.time.format.DateTimeFormatter
 
 // 게시판에 들어갈 item type 설정
 const val post_type1 = 1
-const val post_type2 = 2
+//const val post_type2 = 2
+//const val post_type3 = 3
 
-class BoardAdapter(private val resultGetPosts: ResultGetPosts) :
+class BoardAdapter(private val resultGetPosts: ResultGetPosts, private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val api = CommunityService.create()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             post_type1 -> {
@@ -75,45 +71,26 @@ class BoardAdapter(private val resultGetPosts: ResultGetPosts) :
             binding.BoardDate.text = createdDate.toString()
             binding.ImageCount.text = items.imageId.size.toString()
             binding.HeartCount.text = items.postVoterId.size.toString()
-            for (i in items.commentList){
-                count+=i.reCommentList.size
+            for (i in items.commentList) {
+                count += i.reCommentList.size
             }
-            count+=items.commentList.size
+            count += items.commentList.size
             binding.CommentCount.text = count.toString()
 
-            if (items.imageId.isNotEmpty()) {
-                api.getImage(items.imageId[0].toLong()).enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        Log.d("결과", "성공 : ${response.body().toString()}")
-                        val imageB = response.body()?.byteStream()
-                        val bitmap = BitmapFactory.decodeStream(imageB)
-                        binding.BoardImageView.setImageBitmap(bitmap)
-                    }
+            Glide.with(context)
+                .load("${MyApplication.getUrl()}image/${items.imageId[0]}") // 불러올 이미지 url
+                .override(100, 100)
+                .centerCrop()
+                .into(binding.BoardImageView) // 이미지를 넣을 뷰
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        Log.d("결과:", "실패 : $t")
-                    }
-                })
-                api.getProfileImage(items.authorProfileImageId)
-                    .enqueue(object : Callback<ResponseBody> {
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            Log.d("결과", "성공 : ${response.body().toString()}")
-                            val imageB = response.body()?.byteStream()
-                            val bitmap = BitmapFactory.decodeStream(imageB)
-                            binding.BoardProfileImage.setImageBitmap(bitmap)
-                        }
-
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            Log.d("결과:", "실패 : $t")
-                        }
-                    })
-            }
+            Glide.with(context)
+                .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
+                .override(100, 100)
+//                    .placeholder() // 이미지 로딩 시작하기 전 표시할 이미지
+//                    .error(defaultImage) // 로딩 에러 발생 시 표시할 이미지
+//                    .fallback(defaultImage) // 로드할 url 이 비어있을(null 등) 경우 표시할 이미지
+                .circleCrop() // 동그랗게 자르기
+                .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
 
             itemView.setOnClickListener {
                 MainActivity.getInstance()?.goPostDetail(items)
@@ -124,34 +101,34 @@ class BoardAdapter(private val resultGetPosts: ResultGetPosts) :
     inner class BoardHolderType2(private val binding: ItemPostListNoImageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(items: Posts) {
+            var count = 0
             val convertedDate = MyApplication.convertDate(items.createdDate)
             val createdDate = convertedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             binding.PostUserName.text = items.nickname
             binding.BoardTitle.text = items.title
             binding.BoardContent.text = items.content
             binding.BoardDate.text = createdDate.toString()
-            binding.CommentCount.text = items.commentList.size.toString()
-//            binding.HeartCount.text =
-            api.getProfileImage(items.authorProfileImageId)
-                .enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        Log.d("결과", "성공 : ${response.body().toString()}")
-                        val imageB = response.body()?.byteStream()
-                        val bitmap = BitmapFactory.decodeStream(imageB)
-                        binding.BoardProfileImage.setImageBitmap(bitmap)
-                    }
+            binding.HeartCount.text = items.postVoterId.size.toString()
+            for (i in items.commentList) {
+                count += i.reCommentList.size
+            }
+            count += items.commentList.size
+            binding.CommentCount.text = count.toString()
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        Log.d("결과:", "실패 : $t")
-                    }
-                })
+            Glide.with(context)
+                .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
+                .override(100, 100)
+                .circleCrop() // 동그랗게 자르기
+                .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
 
             itemView.setOnClickListener {
                 MainActivity.getInstance()?.goPostDetail(items)
             }
         }
     }
+
+//    inner class BoardHolderType3(private val binding: ItemPostListLoadingBinding) :
+//        RecyclerView.ViewHolder(binding.root) {
+//
+//    }
 }

@@ -17,7 +17,7 @@ data class Posts(
     var nickname: String,
     var authorProfileImageId: Long,
     var commentList: List<Comments>,
-    var imageId: List<Int>,
+    var imageId: List<Long>,
     var postVoterId: Set<Long>,
     // 게시판에 들어갈 item type 설정
     var postType : Int,

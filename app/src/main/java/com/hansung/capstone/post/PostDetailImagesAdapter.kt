@@ -1,18 +1,14 @@
 package com.hansung.capstone.post
 
-import android.graphics.BitmapFactory
-import android.util.Log
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.CommunityService
+import com.bumptech.glide.Glide
+import com.hansung.capstone.MyApplication
 import com.hansung.capstone.databinding.ItemPostDetailImagesBinding
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class PostDetailImagesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostDetailImagesAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var imageList = listOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -35,22 +31,11 @@ class PostDetailImagesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         RecyclerView.ViewHolder(binding.root) {
 
         fun setImage(image: Int, position: Int) {
-            val api = CommunityService.create()
-            api.getImage(image.toLong()).enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    Log.d("포스트 이미지", "성공 : ${response.body().toString()}")
-                    val imageB = response.body()?.byteStream()
-                    val bitmap = BitmapFactory.decodeStream(imageB)
-                    binding.postImage.setImageBitmap(bitmap)
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Log.d("결과:", "실패 : $t")
-                }
-            })
+            Glide.with(context)
+                .load("${MyApplication.getUrl()}image/${image}") // 불러올 이미지 url
+                .override(200,200)
+                .centerCrop()
+                .into(binding.postImage) // 이미지를 넣을 뷰
 
             itemView.setOnClickListener {
                 PostDetailActivity.getInstance()?.goImageDetail(imageList, position)

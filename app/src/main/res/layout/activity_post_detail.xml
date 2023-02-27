@@ -50,15 +50,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <ImageView
                     android:id="@+id/PostProfileImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
                     android:background="@android:color/transparent"
-                    android:padding="5dp"
-                    android:src="@android:drawable/sym_def_app_icon" />
+                    android:padding="5dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -104,10 +103,10 @@
 
             <FrameLayout
                 android:id="@+id/ImageLayout"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="20dp">
-
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/postImageRecyclerView"

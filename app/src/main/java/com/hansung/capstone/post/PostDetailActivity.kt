@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
@@ -48,12 +50,7 @@ class PostDetailActivity : AppCompatActivity() {
                     call: Call<ResultGetPostDetail>,
                     response: Response<ResultGetPostDetail>
                 ) {
-                    Log.d("PostDetail", "성공 : ${response.body().toString()}")
                     val body = response.body()
-                    Log.d(
-                        "값 조회",
-                        "${body?.data?.title} ${body?.data?.content} ${body?.data?.nickname} ${body?.data?.heartButtonCheck}"
-                    )
                     binding.PostTitle.text = body?.data?.title
                     binding.PostContent.text = body?.data?.content
                     binding.PostDetailUserName.text = body?.data?.nickname
@@ -63,12 +60,11 @@ class PostDetailActivity : AppCompatActivity() {
                         convertedDate?.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
                     binding.PostDetailDate.text = createdDate
                     var count = 0
-                    for (i in body?.data?.commentList!!){
-                        count+=i.reCommentList.size
+                    for (i in body?.data?.commentList!!) {
+                        count += i.reCommentList.size
                     }
-                    count+= body.data.commentList.size
-                    Log.d("카운트","$count")
-//                    binding.CommentCount.text = body.data.commentList.size.toString()
+                    count += body.data.commentList.size
+//                    Log.d("카운트", "$count")
                     binding.CommentCount.text = count.toString()
                     var heartCount = body.data.postVoterId.size
                     binding.HeartCount.text = heartCount.toString()
@@ -85,20 +81,20 @@ class PostDetailActivity : AppCompatActivity() {
                         0
                     }
                     binding.HeartB.setOnClickListener {
-                        api.checkFavorite(12,94)
+                        api.checkFavorite(12, 94)
                             .enqueue(object : Callback<ResponseBody> {
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                Log.d("좋아요 겟", "성공 : ${response.body().toString()}")
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    Log.d("checkFavorite", "성공 : ${response.body().toString()}")
 //                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
-                            }
+                                }
 
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                Log.d("결과:", "실패 : $t")
-                            }
-                        })
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                    Log.d("checkFavorite:", "실패 : $t")
+                                }
+                            })
                         runOnUiThread {
                             when (buttonCheck) {
                                 0 -> {
@@ -114,39 +110,26 @@ class PostDetailActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    api.getProfileImage(body.data.authorProfileImageId)
-                        .enqueue(object : Callback<ResponseBody> {
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                Log.d("결과", "성공 : ${response.body().toString()}")
-                                val imageB = response.body()?.byteStream()
-                                val bitmap = BitmapFactory.decodeStream(imageB)
-                                binding.PostProfileImage.setImageBitmap(bitmap)
-                            }
 
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                Log.d("결과:", "실패 : $t")
-                            }
-                        })
+                    Glide.with(this@PostDetailActivity)
+                        .load("${MyApplication.getUrl()}profile-image/${body.data.authorProfileImageId}") // 불러올 이미지 url
+                        .override(100, 100)
+                        .circleCrop() // 동그랗게 자르기
+                        .into(binding.PostProfileImage) // 이미지를 넣을 뷰
+
                     // 이미지 등록
                     runOnUiThread {
-                        when (body.data.imageId.size) {
-                            0 -> {
-                                binding.ImageLayout.visibility = GONE
-                            }
-                            else -> {
-                                val postImagesAdapter = PostDetailImagesAdapter()
-                                postImagesAdapter.imageList = body.data.imageId
-                                binding.postImageRecyclerView.adapter = postImagesAdapter
-                                postImageRecyclerView.addItemDecoration(
-                                    PostImageAdapterDecoration()
-                                )
-                            }
+                        if (body.data.imageId.isNotEmpty()) {
+                            binding.ImageLayout.visibility = VISIBLE
+                            val postImagesAdapter = PostDetailImagesAdapter(this@PostDetailActivity)
+                            postImagesAdapter.imageList = body.data.imageId
+                            binding.postImageRecyclerView.adapter = postImagesAdapter
+                            postImageRecyclerView.addItemDecoration(
+                                PostImageAdapterDecoration()
+                            )
                         }
                         binding.PostDetailComment.adapter =
-                            PostCommentsAdapter(body)
+                            PostCommentsAdapter(body,this@PostDetailActivity)
                         binding.PostDetailComment.addItemDecoration(
                             PostCommentsAdapterDecoration()
                         )
@@ -154,7 +137,7 @@ class PostDetailActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<ResultGetPostDetail>, t: Throwable) {
-                    Log.d("결과:", "실패 : $t")
+                    Log.d("getPostDetail:", "실패 : $t")
                 }
             })
     }
