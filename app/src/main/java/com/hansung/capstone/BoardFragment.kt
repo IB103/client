@@ -1,5 +1,6 @@
 package com.hansung.capstone
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,12 +12,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hansung.capstone.board.BoardAdapter
 import com.hansung.capstone.board.BoardAdapterDecoration
 import com.hansung.capstone.board.ResultGetPosts
+import com.hansung.capstone.databinding.FragmentBoardBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class BoardFragment : Fragment() {
-
+    lateinit var  binding: FragmentBoardBinding
     private lateinit var resultAllPost: RecyclerView
     private var page = 0
 
@@ -24,7 +26,9 @@ class BoardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_board, container, false)
+        binding = FragmentBoardBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,6 +80,13 @@ class BoardFragment : Fragment() {
                     Log.d("getAllPost:", "실패 : $t")
                 }
             })
+        binding.postB.setOnClickListener{
+            Log.d("postbt","clicked")
+            val intent = Intent(activity, WriteActivity::class.java)
+            startActivity(intent)
+
+        }
+
     }
 
 //    override fun onResume() {

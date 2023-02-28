@@ -2,6 +2,8 @@ package com.hansung.capstone
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -22,10 +24,12 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.hansung.capstone.databinding.ActivityWriteBinding
 import com.hansung.capstone.retrofit.RepPost
 import com.hansung.capstone.retrofit.ReqPost
 import com.hansung.capstone.retrofit.RetrofitService
+import kotlinx.android.synthetic.main.activity_write.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -40,6 +44,7 @@ import java.io.IOException
 
 @Suppress("DEPRECATION")
 class WriteActivity : AppCompatActivity() {
+    var countImage=0
     val imageList: ArrayList<MultipartBody.Part> = ArrayList()
     var filePart: MultipartBody.Part? = null
     private var photouri: Uri? =null
@@ -109,9 +114,12 @@ class WriteActivity : AppCompatActivity() {
             })
         }
 
-        binding.imageView.setOnClickListener {
+        binding.imageButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, DEFAULT_GALLERY_REQUEST_CODE)
+            if(countImage<6){
+                Log.d("countImage","$countImage")
+            startActivityForResult(intent, DEFAULT_GALLERY_REQUEST_CODE)}
+            else alertDialog()
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 } else {
@@ -129,14 +137,16 @@ class WriteActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK && requestCode == DEFAULT_GALLERY_REQUEST_CODE) {
             //photouri = data?.data
             val photoUri: Uri? = data?.data
-            var bitmap: Bitmap? = null
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(contentResolver, photoUri)
-                //bitmap = rotateImage(bitmap, 90)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-             imageView.setImageBitmap(bitmap)
+            ++countImage
+            setImage(photoUri!!)
+//            var bitmap: Bitmap? = null
+//            try {
+//                bitmap = MediaStore.Images.Media.getBitmap(contentResolver, photoUri)
+//                //bitmap = rotateImage(bitmap, 90)
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+            // imageView.setImageBitmap(bitmap)
             Log.d("data.path","${data?.data?.path}")
             Log.d("data","$photouri")
             val filename=getFileName(photoUri!!)
@@ -150,6 +160,36 @@ class WriteActivity : AppCompatActivity() {
             filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
             imageList.add(filePart!!)
         }
+    }
+
+    fun setImage(photoUri: Uri){
+        Log.d("countImage","$countImage")
+        if(countImage<7){
+            val scrapMainLayout: LinearLayout = findViewById(R.id.viewImages)
+            val scrapImage = ImageView(this)
+            val imageLayoutParams = LinearLayout.LayoutParams(
+                250,
+                250,
+            )
+            imageLayoutParams.setMargins(24,8,0,0)
+            scrapImage.layoutParams = imageLayoutParams
+            Glide.with(this)
+                .load(photoUri)
+                .into(scrapImage)
+            scrapMainLayout.addView(scrapImage)}
+        else{
+            alertDialog()
+        }
+
+    }
+    private fun alertDialog() {
+        val builder= AlertDialog.Builder(this)
+        builder.setTitle("알림")
+            .setMessage("이미지는 최대 6까지 선택할 수 있어요.")
+            .setPositiveButton("닫기", DialogInterface.OnClickListener {
+                    dialogInterface, i -> imageButton.isEnabled=false
+            })
+        builder.show()
     }
 
 
