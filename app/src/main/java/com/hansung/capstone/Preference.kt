@@ -14,9 +14,18 @@ class Preference(context: Context) {
     fun setString(key:String,str:String){
         prefs.edit().putString(key,str).apply()
     }
+    fun getInt(key:String,defValue:Int): Int {
+
+
+        return prefs.getInt(key,defValue)
+    }
+    fun setInt(key:String,int:Int){
+        prefs.edit().putInt(key,int).apply()
+    }
     fun remove(){
-        prefs.edit().remove("id").apply()
+        prefs.edit().remove("email").apply()
         prefs.edit().remove("nickname").apply()
+        prefs.edit().remove("profileImageId").apply()
     }
     /*var token:String?
         get() = prefs.getString("token",null)

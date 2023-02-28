@@ -31,4 +31,31 @@ data class ReqDoubleCheckNickName(
     val email:String,
     @SerializedName("nickname")
     val nickname:String
+
 )
+data class ReqWriting(
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("content")
+    val content:String
+)
+data class ReqModifyPW(
+    @SerializedName("email")
+    val email:String,
+    @SerializedName("password")
+    val password:String
+)
+data class ReqModifyNick(
+    @SerializedName("email")
+    val email:String,
+    @SerializedName("nickname")
+    val nickname:String
+)
+
+data class ReqPost(
+    @SerializedName("userId")
+    val userId:Int,
+    @SerializedName("title")
+    val title:String,
+    @SerializedName("content")
+    val content:String)
