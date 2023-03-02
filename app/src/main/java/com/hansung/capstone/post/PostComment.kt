@@ -40,23 +40,20 @@ class PostComment {
                     if (response.code() == 201) { //수정해야함
                         if (result?.code == 100) {
                             Log.d("INFO comment", "댓글작성 성공" + result.toString())
-                            MyApplication.prefs.setInt("resultCode",100)
                         } else {
                             Log.d("ERR", "댓글 작성 실패 " + result.toString())
-                            MyApplication.prefs.setInt("resultCode",0)
                         }
                     }
                 } else {
                     // 통신이 실패한 경우
                     Log.d("ERR comment", "onResponse 실패" + result?.toString())
-                    MyApplication.prefs.setInt("resultCode",0)
                 }
             }
 
             override fun onFailure(call: Call<RepComment>, t: Throwable) {
                 // 통신 실패 (인터넷 끊킴, 예외 발생 등 시스템적인 이유)
                 Log.d("ERR comment", "onFailure 에러: " + t.message.toString())
-                MyApplication.prefs.setInt("resultCode",0)
+                //MyApplication.prefs.setInt("resultCode",0)
             }
         })
 

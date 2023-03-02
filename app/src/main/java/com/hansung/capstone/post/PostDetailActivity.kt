@@ -48,10 +48,8 @@ class PostDetailActivity : AppCompatActivity() {
         val postId = intent.getIntExtra("id", 0)
         binding.imageButton.setOnClickListener {
             val comment = binding.InsertComment.text.toString()
-            PostComment().postComment(comment, postId)//
-            if (MyApplication.prefs.getInt("resultCode",0)==100) {
-                Log.d("postComment", "성공")
-//                    softkeyboardHide()
+            PostComment().postComment(comment, postId)
+
                 api.getPostDetail(postId.toLong())
                     .enqueue(object : Callback<ResultGetPostDetail> {
                         @SuppressLint("SetTextI18n")
@@ -79,7 +77,7 @@ class PostDetailActivity : AppCompatActivity() {
                         }
                     })
 //                binding.PostDetailComment.adapter =PostCommentsAdapter(body,this@PostDetailActivity )
-            }
+
         }
         api.getPostDetail(postId.toLong())
             .enqueue(object : Callback<ResultGetPostDetail> {
