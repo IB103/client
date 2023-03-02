@@ -58,4 +58,26 @@ data class ReqPost(
     @SerializedName("title")
     val title:String,
     @SerializedName("content")
-    val content:String)
+    val content:String
+    )
+data class ReqComment(
+    @SerializedName("postId")
+    val postId:Int,
+    @SerializedName("userId")
+    val userId:Int,
+    @SerializedName("content")
+    val content:String
+
+)
+data class ReqReComment(
+    @SerializedName("postId")
+    val postId:Int,
+    @SerializedName("commentId")
+    val commentId:Int,
+    @SerializedName("userId")
+    val userId:Int,
+    @SerializedName("content")
+    val content:String
+
+)
+

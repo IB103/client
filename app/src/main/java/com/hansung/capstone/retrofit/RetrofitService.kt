@@ -60,4 +60,10 @@ interface RetrofitService {
         @Part("requestDTO") requestDTO:ReqPost,
         @Part imageList: List<MultipartBody.Part>
     ): Call<RepPost>
+
+    @Headers("accept: application/json", "content-type: application/json")
+    @POST("/api/community/comment/create")
+    fun postComment(
+        @Body reqComment: ReqComment
+    ): Call<RepComment>
 }

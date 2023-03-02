@@ -1,20 +1,25 @@
 package com.hansung.capstone.post
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ActivityPostDetailBinding
+import com.hansung.capstone.retrofit.RepComment
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import okhttp3.ResponseBody
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,15 +39,48 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     private val binding by lazy { ActivityPostDetailBinding.inflate(layoutInflater) }
-
+    val api = CommunityService.create()
+    lateinit var body:ResultGetPostDetail
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         val postId = intent.getIntExtra("id", 0)
+        binding.imageButton.setOnClickListener {
+            val comment = binding.InsertComment.text.toString()
+            PostComment().postComment(comment, postId)//
+            if (MyApplication.prefs.getInt("resultCode",0)==100) {
+                Log.d("postComment", "성공")
+//                    softkeyboardHide()
+                api.getPostDetail(postId.toLong())
+                    .enqueue(object : Callback<ResultGetPostDetail> {
+                        @SuppressLint("SetTextI18n")
+                        override fun onResponse(
+                            call: Call<ResultGetPostDetail>,
+                            response: Response<ResultGetPostDetail>
+                        ) {
+                            val body = response.body()
+                            var count = 0
+                            for (i in body?.data?.commentList!!) {
+                                count += i.reCommentList.size
+                            }
+                            count += body.data.commentList.size
+                            binding.CommentCount.text = count.toString()
+                            Log.d("check","############################")
+                            // 이미지 등록
+                            runOnUiThread {
+                                binding.PostDetailComment.adapter =
+                                    PostCommentsAdapter(body, this@PostDetailActivity)
+                            }
+                        }
 
-        val api = CommunityService.create()
-
+                        override fun onFailure(call: Call<ResultGetPostDetail>, t: Throwable) {
+                            Log.d("getPostDetail:", "실패 : $t")
+                        }
+                    })
+//                binding.PostDetailComment.adapter =PostCommentsAdapter(body,this@PostDetailActivity )
+            }
+        }
         api.getPostDetail(postId.toLong())
             .enqueue(object : Callback<ResultGetPostDetail> {
                 @SuppressLint("SetTextI18n")
@@ -50,7 +88,9 @@ class PostDetailActivity : AppCompatActivity() {
                     call: Call<ResultGetPostDetail>,
                     response: Response<ResultGetPostDetail>
                 ) {
-                    val body = response.body()
+
+                    body = response.body()!!
+                    Log.d("type","${body?.javaClass}")
                     binding.PostTitle.text = body?.data?.title
                     binding.PostContent.text = body?.data?.content
                     binding.PostDetailUserName.text = body?.data?.nickname
@@ -129,7 +169,7 @@ class PostDetailActivity : AppCompatActivity() {
                             )
                         }
                         binding.PostDetailComment.adapter =
-                            PostCommentsAdapter(body,this@PostDetailActivity)
+                            PostCommentsAdapter(body, this@PostDetailActivity)
                         binding.PostDetailComment.addItemDecoration(
                             PostCommentsAdapterDecoration()
                         )
@@ -142,6 +182,10 @@ class PostDetailActivity : AppCompatActivity() {
             })
     }
 
+    fun softkeyboardHide() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
 
     fun goImageDetail(imageList: List<Int>, position: Int) {
         val intent = Intent(this, ImageFullScreenActivity::class.java)
@@ -149,5 +193,9 @@ class PostDetailActivity : AppCompatActivity() {
         intent.putExtra("imageList", intArr)
         intent.putExtra("position", position)
         startActivity(intent)
+    }
+
+    fun getPostDetail(postId: Long) {
+
     }
 }

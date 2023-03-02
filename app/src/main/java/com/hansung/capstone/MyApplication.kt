@@ -11,8 +11,8 @@ class MyApplication : Application() {
 
         // 서버 주소
 //        private const val serverInfo = "121.138.93.178:9999"
-        private const val serverInfo = "223.194.133.220:8080"
-//        private const val serverInfo = "14.52.209.63:8080"
+        //private const val serverInfo = "223.194.133.220:8080"
+        private const val serverInfo = "14.52.209.63:8080"
         private const val url = "http://$serverInfo/"
         fun getUrl(): String {
             return url
