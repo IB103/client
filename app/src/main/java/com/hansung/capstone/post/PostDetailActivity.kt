@@ -1,25 +1,20 @@
 package com.hansung.capstone.post
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.bumptech.glide.Glide
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ActivityPostDetailBinding
-import com.hansung.capstone.retrofit.RepComment
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import okhttp3.ResponseBody
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,7 +35,8 @@ class PostDetailActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityPostDetailBinding.inflate(layoutInflater) }
     val api = CommunityService.create()
-    lateinit var body:ResultGetPostDetail
+    lateinit var body: ResultGetPostDetail
+    var noImage=-1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -48,50 +44,59 @@ class PostDetailActivity : AppCompatActivity() {
         val postId = intent.getIntExtra("id", 0)
         binding.imageButton.setOnClickListener {
             val comment = binding.InsertComment.text.toString()
-            PostComment().postComment(comment, postId)
-
-                api.getPostDetail(postId.toLong())
-                    .enqueue(object : Callback<ResultGetPostDetail> {
-                        @SuppressLint("SetTextI18n")
-                        override fun onResponse(
-                            call: Call<ResultGetPostDetail>,
-                            response: Response<ResultGetPostDetail>
-                        ) {
-                            val body = response.body()
-                            var count = 0
-                            for (i in body?.data?.commentList!!) {
-                                count += i.reCommentList.size
-                            }
-                            count += body.data.commentList.size
-                            binding.CommentCount.text = count.toString()
-                            Log.d("check","############################")
-                            // 이미지 등록
-                            runOnUiThread {
-                                binding.PostDetailComment.adapter =
-                                    PostCommentsAdapter(body, this@PostDetailActivity)
-                            }
-                        }
-
-                        override fun onFailure(call: Call<ResultGetPostDetail>, t: Throwable) {
-                            Log.d("getPostDetail:", "실패 : $t")
-                        }
-                    })
+            binding.InsertComment.text = null
+            softkeyboardHide()
+            PostComment(this@PostDetailActivity).postComment(comment, postId, binding)
+            getPostDetails(postId.toLong())
+//            api.getPostDetail(postId.toLong())
+//                .enqueue(object : Callback<ResultGetPostDetail> {
+//                    @SuppressLint("SetTextI18n")
+//                    override fun onResponse(
+//                        call: Call<ResultGetPostDetail>,
+//                        response: Response<ResultGetPostDetail>,
+//                    ) {
+//                        val body = response.body()
+//                        var count = 0
+//                        for (i in body?.data?.commentList!!) {
+//                            count += i.reCommentList.size
+//                        }
+//                        count += body.data.commentList.size
+//                        binding.CommentCount.text = count.toString()
+//                        Log.d("check", "############################")
+//                        // 이미지 등록
+//                        runOnUiThread {
+//                            binding.PostDetailComment.adapter =
+//                                PostCommentsAdapter(body, this@PostDetailActivity)
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<ResultGetPostDetail>, t: Throwable) {
+//                        Log.d("getPostDetail:", "실패 : $t")
+//                    }
+//                })
 //                binding.PostDetailComment.adapter =PostCommentsAdapter(body,this@PostDetailActivity )
 
         }
-        api.getPostDetail(postId.toLong())
+        getPostDetails(postId.toLong())
+    }
+
+    private fun getPostDetails(postId:Long) {
+        api.getPostDetail(postId)
             .enqueue(object : Callback<ResultGetPostDetail> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(
                     call: Call<ResultGetPostDetail>,
-                    response: Response<ResultGetPostDetail>
+                    response: Response<ResultGetPostDetail>,
                 ) {
 
+
                     body = response.body()!!
-                    Log.d("type","${body?.javaClass}")
+                    Log.d("getPostDetails","##############${body}")
+                    Log.d("type", "${body?.javaClass}")
                     binding.PostTitle.text = body?.data?.title
                     binding.PostContent.text = body?.data?.content
                     binding.PostDetailUserName.text = body?.data?.nickname
+
                     val convertedDate =
                         body?.data?.createdDate?.let { MyApplication.convertDate(it) }
                     val createdDate =
@@ -123,7 +128,7 @@ class PostDetailActivity : AppCompatActivity() {
                             .enqueue(object : Callback<ResponseBody> {
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>
+                                    response: Response<ResponseBody>,
                                 ) {
                                     Log.d("checkFavorite", "성공 : ${response.body().toString()}")
 //                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
@@ -148,12 +153,14 @@ class PostDetailActivity : AppCompatActivity() {
                             }
                         }
                     }
-
-                    Glide.with(this@PostDetailActivity)
-                        .load("${MyApplication.getUrl()}profile-image/${body.data.authorProfileImageId}") // 불러올 이미지 url
-                        .override(100, 100)
-                        .circleCrop() // 동그랗게 자르기
-                        .into(binding.PostProfileImage) // 이미지를 넣을 뷰
+                    Log.d("authorProfileImageId","${body.data.authorProfileImageId}")
+                    if(body.data.authorProfileImageId!=noImage.toLong()) {
+                        Glide.with(this@PostDetailActivity)
+                            .load("${MyApplication.getUrl()}profile-image/${body.data.authorProfileImageId}") // 불러올 이미지 url
+                            .override(100, 100)
+                            .circleCrop() // 동그랗게 자르기
+                            .into(binding.PostProfileImage) // 이미지를 넣을 뷰
+                    }else binding.PostProfileImage.setImageResource(R.drawable.user)
 
                     // 이미지 등록
                     runOnUiThread {
@@ -168,6 +175,7 @@ class PostDetailActivity : AppCompatActivity() {
                         }
                         binding.PostDetailComment.adapter =
                             PostCommentsAdapter(body, this@PostDetailActivity)
+                        (binding.PostDetailComment.adapter as PostCommentsAdapter).notifyDataSetChanged()
                         binding.PostDetailComment.addItemDecoration(
                             PostCommentsAdapterDecoration()
                         )
@@ -178,11 +186,38 @@ class PostDetailActivity : AppCompatActivity() {
                     Log.d("getPostDetail:", "실패 : $t")
                 }
             })
+//        api.getPostDetail(postId)
+//            .enqueue(object : Callback<ResultGetPostDetail> {
+//                @SuppressLint("SetTextI18n")
+//                override fun onResponse(
+//                    call: Call<ResultGetPostDetail>,
+//                    response: Response<ResultGetPostDetail>,
+//                ) {
+//                    val body = response.body()
+//                    var count = 0
+//                    for (i in body?.data?.commentList!!) {
+//                        count += i.reCommentList.size
+//                    }
+//                    count += body.data.commentList.size
+//                    binding.CommentCount.text = count.toString()
+//                    Log.d("check", "############################")
+//                    // 이미지 등록
+//                    runOnUiThread {
+//                        binding.PostDetailComment.adapter =
+//                            PostCommentsAdapter(body, this@PostDetailActivity)
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<ResultGetPostDetail>, t: Throwable) {
+//                    Log.d("getPostDetail:", "실패 : $t")
+//                }
+//            })
     }
 
     fun softkeyboardHide() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        //   val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        // imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.ime())
     }
 
     fun goImageDetail(imageList: List<Int>, position: Int) {
@@ -193,7 +228,8 @@ class PostDetailActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun getPostDetail(postId: Long) {
 
-    }
 }
+
+
+

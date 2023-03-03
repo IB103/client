@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
+import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ItemPostListBinding
 import com.hansung.capstone.databinding.ItemPostListNoImageBinding
 import java.time.format.DateTimeFormatter
 
 // 게시판에 들어갈 item type 설정
 const val post_type1 = 1
+var noImage=-1
 //const val post_type2 = 2
 //const val post_type3 = 3
 
@@ -82,15 +84,17 @@ class BoardAdapter(private val resultGetPosts: ResultGetPosts, private val conte
                 .override(100, 100)
                 .centerCrop()
                 .into(binding.BoardImageView) // 이미지를 넣을 뷰
-
-            Glide.with(context)
-                .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
-                .override(100, 100)
+            if(items.authorProfileImageId!= noImage.toLong()){
+                Glide.with(context)
+                    .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
+                    .override(100, 100)
 //                    .placeholder() // 이미지 로딩 시작하기 전 표시할 이미지
 //                    .error(defaultImage) // 로딩 에러 발생 시 표시할 이미지
 //                    .fallback(defaultImage) // 로드할 url 이 비어있을(null 등) 경우 표시할 이미지
-                .circleCrop() // 동그랗게 자르기
-                .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
+                    .circleCrop() // 동그랗게 자르기
+                    .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
+            }else binding.BoardProfileImage.setImageResource(R.drawable.user)
+
 
             itemView.setOnClickListener {
                 MainActivity.getInstance()?.goPostDetail(items)
@@ -114,13 +118,13 @@ class BoardAdapter(private val resultGetPosts: ResultGetPosts, private val conte
             }
             count += items.commentList.size
             binding.CommentCount.text = count.toString()
-
-            Glide.with(context)
-                .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
-                .override(100, 100)
-                .circleCrop() // 동그랗게 자르기
-                .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
-
+            if(items.authorProfileImageId!= noImage.toLong()){
+                Glide.with(context)
+                    .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
+                    .override(100, 100)
+                    .circleCrop() // 동그랗게 자르기
+                    .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
+            }else binding.BoardProfileImage.setImageResource(R.drawable.user)
             itemView.setOnClickListener {
                 MainActivity.getInstance()?.goPostDetail(items)
             }
