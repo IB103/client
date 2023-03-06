@@ -7,14 +7,23 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/CommentProfileImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="38dp"
+        android:layout_height="34dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:src="@android:drawable/sym_def_app_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/recommentBt"
+        android:layout_width="30dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_baseline_chat_bubble_outline_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/CommentUserName"
         android:layout_width="wrap_content"
@@ -60,4 +69,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CommentCreatedDate" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

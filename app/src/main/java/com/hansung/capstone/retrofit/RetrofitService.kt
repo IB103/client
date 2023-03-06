@@ -66,4 +66,10 @@ interface RetrofitService {
     fun postComment(
         @Body reqComment: ReqComment
     ): Call<RepComment>
+
+    @Headers("accept: application/json", "content-type: application/json")
+    @POST("/api/community/recomment/create")
+    fun postReComment(
+        @Body reqReComment: ReqReComment
+    ): Call<RepComment>
 }

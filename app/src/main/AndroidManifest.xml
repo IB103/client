@@ -67,6 +67,7 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".WriteActivity"/>
         <activity android:name=".ModifyNickActivity"/>
+        <activity android:name=".MyStory"/>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

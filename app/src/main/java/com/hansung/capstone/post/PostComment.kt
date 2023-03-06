@@ -66,7 +66,6 @@ class PostComment(private val context: PostDetailActivity) {
                 //MyApplication.prefs.setInt("resultCode",0)
             }
         })
-
     }
 fun postComments(postId:Long,binding:ActivityPostDetailBinding){
     api.getPostDetail(postId)
@@ -85,12 +84,9 @@ fun postComments(postId:Long,binding:ActivityPostDetailBinding){
                     binding.CommentCount.text = count.toString()
                     Log.d("check", "############################")
                     // 이미지 등록
-
                         binding.PostDetailComment.adapter =
                             PostCommentsAdapter(body,context)
-
                 }
-
                 override fun onFailure(call: Call<ResultGetPostDetail>, t: Throwable) {
                     Log.d("getPostDetail:", "실패 : $t")
                 }

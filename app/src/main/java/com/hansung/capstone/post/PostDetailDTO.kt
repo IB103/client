@@ -46,3 +46,10 @@ data class ReComments(
     var userProfileImageId: Long,
     var reCommentVoterId: Set<Long>
 )
+data class ResultGetPostMyStory (
+    var code: Int = 0,
+    var success: Boolean,
+    var message: String,
+    var data: List<Post>,
+)
+

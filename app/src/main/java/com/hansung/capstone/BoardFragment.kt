@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hansung.capstone.board.BoardAdapter
@@ -39,6 +40,12 @@ class BoardFragment : Fragment() {
 
         val api = CommunityService.create()
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.BoardSwipe)
+        swipe.setOnScrollChangeListener { view, scrollX, scrollY, oldScrollX, oldScrollY->
+            if(!swipe.canScrollVertically(-1)){
+
+            }
+
+        }
         swipe.setOnRefreshListener {
             api.getAllPost(0)
                 .enqueue(object : Callback<ResultGetPosts> {

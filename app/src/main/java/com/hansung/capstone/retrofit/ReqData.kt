@@ -78,6 +78,5 @@ data class ReqReComment(
     val userId:Int,
     @SerializedName("content")
     val content:String
-
 )
 

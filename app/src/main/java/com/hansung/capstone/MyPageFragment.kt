@@ -96,9 +96,14 @@ class MyPageFragment : Fragment() {
             MyApplication.prefs.remove()
             visiblelogin()
         }
-        //수정하기
+        //닉네임, 비밀 번호 수정하기
         binding.userContainer.profile_container.modify_bt.setOnClickListener {
             val intent = Intent(activity, ModifyNickActivity::class.java)
+            startActivity(intent)
+        }
+        //내가 쓴 글
+        binding.userContainer.profile_container.mystory_bt.setOnClickListener {
+            val intent = Intent(activity, MyStory::class.java)
             startActivity(intent)
         }
     }

@@ -64,6 +64,7 @@ class BoardAdapter(private val resultGetPosts: ResultGetPosts, private val conte
     inner class BoardHolderType1(private val binding: ItemPostListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(items: Posts) {
+
             var count = 0
             val convertedDate = MyApplication.convertDate(items.createdDate)
             val createdDate = convertedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))

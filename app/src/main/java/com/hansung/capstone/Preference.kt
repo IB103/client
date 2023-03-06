@@ -7,8 +7,6 @@ class Preference(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("other2", 0)
 
     fun getString(key:String,defValue:String): String {
-
-
         return prefs.getString(key,defValue).toString()
     }
     fun setString(key:String,str:String){
@@ -26,6 +24,7 @@ class Preference(context: Context) {
         prefs.edit().remove("email").apply()
         prefs.edit().remove("nickname").apply()
         prefs.edit().remove("profileImageId").apply()
+        prefs.edit().remove("accesstoken").apply()
     }
     /*var token:String?
         get() = prefs.getString("token",null)

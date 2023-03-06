@@ -65,7 +65,6 @@ data class RepWriting(
     val code: Int,
     @SerializedName("msg")
     val msg: POST
-
 )
 data class RepModifyPW(
     @SerializedName("code")
@@ -186,7 +185,25 @@ data class RepData(
     @SerializedName("userProfileImageId")
     val userProfileImageId:Int,
     @SerializedName("reCommentList")
-    val reCommentList:List<String>,
+    val reCommentList:List<Recomment>,
     @SerializedName("commentVoterId")
+    val commentVoterId:List<Int>
+)
+data class Recomment(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("content")
+    val content :String,
+    @SerializedName("createDate")
+    val createDate:String,
+    @SerializedName("modifiedDate")
+    val modifiedDate: String,
+    @SerializedName("userId")
+    val userId: Int,
+    @SerializedName("userNickname")
+    val userNickname :String,
+    @SerializedName("userProfileImageId")
+    val userProfileImageId:Int,
+    @SerializedName("reCommentVoterId")
     val commentVoterId:List<Int>
 )

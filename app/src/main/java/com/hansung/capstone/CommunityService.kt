@@ -18,7 +18,12 @@ interface CommunityService {
     fun getPostDetail(
         @Query("id") query: Long,
     ): Call<ResultGetPostDetail>
-
+    @Headers("accept: application/json", "content-type: application/json")
+    @GET("api/community/post/list/nickname")
+    fun getPostMyStory(
+        @Query("nickname") nickname: String,
+        @Query("page") page: Int
+    ): Call<ResultGetPosts>
     @GET("image/{id}")
     fun getImage(
         @Path("id") id: Long,
