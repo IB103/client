@@ -14,6 +14,15 @@
         android:background="@color/white"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
+        <ImageView
+            android:id="@+id/postActivity"
+            android:layout_width="wrap_content"
+            android:visibility="invisible"
+            android:src="@drawable/ic_baseline_more_horiz_24"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"/>
+
 
         <ImageButton
             android:id="@+id/BackToList"
@@ -23,16 +32,8 @@
             app:srcCompat="@drawable/ic_baseline_arrow_back_24"
             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
-        <TextView
-            android:id="@+id/ToolbarText"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:text="게시글 보기"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+
+
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -227,23 +228,26 @@
         android:background="@drawable/element_edit_comment"
         android:orientation="horizontal">
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/InsertComment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:ems="10"
-            android:gravity="center|start"
             android:hint="댓글을 입력하세요."
-            android:inputType="textMultiLine"
+            android:importantForAutofill="no|noExcludeDescendants"
+
             android:padding="8dp" />
 
         <ImageButton
             android:id="@+id/imageButton"
+            android:contentDescription="null"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/ic_baseline_create_24" />
     </LinearLayout>
+
+
 </LinearLayout>

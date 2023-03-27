@@ -36,7 +36,6 @@
         android:id="@+id/writebutton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="게시글 올리기"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,8 +47,8 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
         android:text="제목을 입력하세요."
         android:textSize="18dp"
         android:textStyle="bold"
@@ -61,7 +60,7 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="13dp"
         android:text="내용을 입력하세요"
         android:textSize="18dp"
@@ -74,7 +73,7 @@
         android:id="@+id/editImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="8dp"
         android:text="사진을 올려주세요. (선택)"
         android:textSize="18dp"
@@ -86,7 +85,7 @@
         android:id="@+id/editTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="15dp"
         android:layout_marginEnd="24dp"
         android:background="@android:color/transparent"
         android:ems="10"
@@ -113,7 +112,7 @@
             android:id="@+id/editWriting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="15dp"
             android:layout_marginEnd="24dp"
             android:background="@android:color/transparent"
             android:ems="10"
@@ -129,33 +128,75 @@
             tools:layout_editor_absoluteY="198dp" />
     </androidx.core.widget.NestedScrollView>
 
-
-    <HorizontalScrollView
-
+    <LinearLayout
+        android:id="@+id/photo_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editImg"
-        tools:ignore="MissingConstraints,SpeakableTextPresentCheck">
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editImg">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/viewImages">
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editImg"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_add_image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_photo">
 
-        </LinearLayout>
-    </HorizontalScrollView>
+            <ImageView
+                android:id="@+id/iv_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_camera"
+                app:layout_constraintBottom_toTopOf="@id/guideline"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.55" />
+
+            <TextView
+                android:id="@+id/tv_image_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/gray"
+                android:textSize="14dp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_max_image"
+                app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+            <TextView
+                android:id="@+id/tv_max_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/6"
+                android:textColor="@color/gray"
+                android:textSize="14dp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toRightOf="@id/tv_image_count"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_image" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

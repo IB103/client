@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.hansung.capstone.CommunityService
+import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.databinding.ActivityPostDetailBinding
 import com.hansung.capstone.retrofit.RepComment
@@ -30,12 +31,8 @@ class PostReComment(private val context: PostDetailActivity) {
         .build()!!
     var service = retrofit.create(RetrofitService::class.java)!!
     var result: RepComment? = null
-    var resultCode:Int = 0
-    val success="success"
-    val fail="fail"
     val api = CommunityService.create()
-    var noImage=-1
-    fun post(str: String, postId: Int,commentId:Int,binding: ActivityPostDetailBinding) {
+    fun post(str: String, postId: Long,commentId:Int,binding: ActivityPostDetailBinding) {
         Log.d("postRecomment", "#####################")
         val userId = MyApplication.prefs.getInt("userId", 0)
         val postReqReComment = ReqReComment(postId, commentId,userId, str)
@@ -47,8 +44,9 @@ class PostReComment(private val context: PostDetailActivity) {
                     if (response.code() == 201) { //수정해야함
                         if (result?.code == 100) {
                             Log.d("INFO comment", "대댓글작성 성공" + result.toString())
-                            PostDetailActivity().recommentCheck=0
-                            postReComment(postId.toLong(),binding)
+                            //MainActivity.getInstance()?.setChangedPostCheck(true)
+                            //PostDetailActivity().activityType=0
+                            postReComment(postId,binding)
                         } else {
                             Log.d("ERR", "대댓글 작성 실패 " + result.toString())
                         }
@@ -56,7 +54,7 @@ class PostReComment(private val context: PostDetailActivity) {
                 } else {
                     // 통신이 실패한 경우
                     Log.d("ERR comment", "onResponse 실패" + result?.toString())
-                    PostDetailActivity().recommentCheck=0
+                    //PostDetailActivity().activityType=0
                 }
             }
             override fun onFailure(call: Call<RepComment>, t: Throwable) {

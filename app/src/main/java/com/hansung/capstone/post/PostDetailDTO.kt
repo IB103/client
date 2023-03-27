@@ -19,6 +19,7 @@ data class Post(
     var commentList: List<Comments>,
     var imageId: List<Int>,
     var postVoterId: Set<Long>,
+    var postScraperId:Set<Long>,
     // 좋아요 버튼 실험용
     var heartButtonCheck: Boolean,
     var starButtonCheck: Boolean,

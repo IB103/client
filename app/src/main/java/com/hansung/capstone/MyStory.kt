@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.board.BoardAdapter
-import com.hansung.capstone.board.BoardAdapterDecoration
-import com.hansung.capstone.board.MyStoryAdapter
-import com.hansung.capstone.board.ResultGetPosts
+import com.hansung.capstone.board.*
 import com.hansung.capstone.databinding.ActivityMystoryBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,10 +24,12 @@ class MyStory: AppCompatActivity() {
         supportActionBar?.title = ""
         resultAllPost =binding.resultAllPostMine
         resultAllPost.addItemDecoration(BoardAdapterDecoration())
+       var adapter:BoardAdapter
 
         val api = CommunityService.create()
         val swipe =binding.MystorySwipe
         val nickname=MyApplication.prefs.getString("nickname","")
+        adapter=BoardAdapter()
         swipe.setOnRefreshListener {
             api.getPostMyStory(nickname,0)
                 .enqueue(object : Callback<ResultGetPosts> {
@@ -40,10 +39,13 @@ class MyStory: AppCompatActivity() {
                     ) {
                         Log.d("getPostMyStory:", "성공 : ${response.body().toString()}")
                         val body = response.body()
-                        runOnUiThread {
-                            resultAllPost.adapter=
-                                body?.let {it->baseContext?.let{it1-> BoardAdapter(it,it1) }  }
-                        }
+                       var board: ArrayList<Posts> = ArrayList()
+                        board.addAll(body!!.data)
+                        adapter.moreItems((body!!.data as ArrayList<Posts>))
+//                        runOnUiThread {
+//                            resultAllPost.adapter=
+//                                body?.let {it->BoardAdapter(it)  }
+//                        }
                     }
 
                     override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {

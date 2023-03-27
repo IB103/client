@@ -43,10 +43,10 @@ class LoginActivity : AppCompatActivity() {
 
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
-                Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
+               // Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
 
             } else if (tokenInfo != null) {
-                Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
                 Log.d("1", "${tokenInfo}")
                 updateKakaoLoginInfo()
                 val intent = Intent(this, MyPageFragment::class.java)

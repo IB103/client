@@ -93,6 +93,7 @@ class MyStoryAdapter(private val resultGetPosts: ResultGetPosts, private val con
 
             }
             itemView.setOnClickListener {
+
                 MainActivity.getInstance()?.goPostDetail(items)
             }
         }

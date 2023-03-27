@@ -3,11 +3,9 @@ package com.hansung.capstone
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
@@ -16,19 +14,20 @@ import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.MenuItem
-import android.view.MotionEvent
+import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
+import androidx.core.net.toUri
+import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.databinding.ActivityWriteBinding
 import com.hansung.capstone.retrofit.RepPost
 import com.hansung.capstone.retrofit.ReqPost
 import com.hansung.capstone.retrofit.RetrofitService
+import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.activity_write.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -40,12 +39,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 @Suppress("DEPRECATION")
 class WriteActivity : AppCompatActivity() {
+    private lateinit var rvImage: RecyclerView
+    private lateinit var imageAdapter: ImageAdapter
+    private lateinit var tvImageCount: TextView
     var countImage=0
-    val imageList: ArrayList<MultipartBody.Part> = ArrayList()
+
+    var postId:Long=0
+    private val imageList: ArrayList<MultipartBody.Part> = ArrayList()
     var filePart: MultipartBody.Part? = null
     private var photouri: Uri? =null
     private val DEFAULT_GALLERY_REQUEST_CODE = 0
@@ -53,36 +56,44 @@ class WriteActivity : AppCompatActivity() {
     private var retrofit = Retrofit.Builder().baseUrl("$serverinfo")
         .addConverterFactory(GsonConverterFactory.create()).build()
     private var service = retrofit.create(RetrofitService::class.java)
+
+    private val binding by lazy { ActivityWriteBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityWriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
-        binding.writebutton.isEnabled=false
-        binding.editTitle.addTextChangedListener(/* watcher = */ object : TextWatcher {
+        rvImage = findViewById(R.id.rv_image)
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                binding.writebutton.isEnabled=false
-            }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {
-                //    Log.d("filesImage","$imageList")
-                binding.writebutton.isEnabled =
-                    !(binding.editTitle.text.toString()==""||binding.editTitle.text.toString()==null&&binding.editWriting.text.toString()==""||binding.editWriting.text.toString()==null)
-            }
-        })
-        binding.editWriting.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                binding.writebutton.isEnabled=false
-            }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {
-                binding.writebutton.isEnabled =
-                    !(binding.editTitle.text.toString()==""||binding.editTitle.text.toString()==null&&binding.editWriting.text.toString()==""||binding.editWriting.text.toString()==null)
-            }
-        })
+        binding.writebutton.isEnabled=false
+        imageAdapter = ImageAdapter(this, binding )
+        if(MainActivity.getInstance()?.getmodifyCheck()!!){
+            modifyActivity()
+            MainActivity.getInstance()?.setModifyCheck(false)
+        }
+        initAddImage()
+        if(MainActivity.getInstance()?.getmodifyCheck()==false){
+            binding.editTitle.addTextChangedListener( object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    binding.writebutton.isEnabled=false
+                }
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun afterTextChanged(p0: Editable?) {
+                    binding.writebutton.isEnabled =binding.editTitle.text.toString() != ""
+                }
+            })
+            binding.editWriting.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    binding.writebutton.isEnabled=false
+                }
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun afterTextChanged(p0: Editable?) {
+                    binding.writebutton.isEnabled =
+                        binding.editWriting.text.toString() != ""
+                }
+            })
+        }
         binding.writebutton.setOnClickListener {
             val title = binding.editTitle.text.toString()
             val content = binding.editWriting.text.toString()
@@ -98,7 +109,7 @@ class WriteActivity : AppCompatActivity() {
                         if (response.code() == 201) {//수정해야함
                             if (result?.code == 100) {
                                 Log.d("게시글작성", "성공: $title")
-                                Log.d("게시글","$result")
+                                MainActivity.getInstance()?.writeCheck(true)
                                 finish()
                             } else {
                                 Log.d("ERR", "실패: " + result?.toString())
@@ -113,32 +124,28 @@ class WriteActivity : AppCompatActivity() {
                 }
             })
         }
-
-        binding.imageButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            if(countImage<6){
-                Log.d("countImage","$countImage")
-            startActivityForResult(intent, DEFAULT_GALLERY_REQUEST_CODE)}
-            else alertDialog()
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                        arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                        0)
-                }
-            }
-
-        }
     }
+
+    private fun modifyActivity() {
+        binding.writebutton.isEnabled=true
+        Log.d("modify","e")
+        binding.editTitle.setText(MainActivity.getInstance()?.modify_title)
+        binding.editWriting.setText(MainActivity.getInstance()?.modify_content)
+        countImage= MainActivity.getInstance()?.modify_imageList!!.size
+        if(countImage>0)
+            imageAdapter.setItem(MainActivity.getInstance()?.modify_imageList as List<Int>)
+
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val imageView=findViewById<ImageView>(R.id.imageView)
+        //val imageView=findViewById<ImageView>(R.id.imageView)
         if (resultCode == Activity.RESULT_OK && requestCode == DEFAULT_GALLERY_REQUEST_CODE) {
             //photouri = data?.data
-            val photoUri: Uri? = data?.data
+            val photoUri: Uri = data?.data!!
             ++countImage
-            setImage(photoUri!!)
+            //setImage(photoUri!!)
 //            var bitmap: Bitmap? = null
 //            try {
 //                bitmap = MediaStore.Images.Media.getBitmap(contentResolver, photoUri)
@@ -146,53 +153,31 @@ class WriteActivity : AppCompatActivity() {
 //            } catch (e: IOException) {
 //                e.printStackTrace()
 //            }
+            val a="${MyApplication.getUrl()}images/1"//test
             // imageView.setImageBitmap(bitmap)
+            val photo: Uri =a.toUri()//test
+
+            imageAdapter.addItem(photoUri)
             Log.d("data.path","${data?.data?.path}")
             Log.d("data","$photouri")
-            val filename=getFileName(photoUri!!)
+            val filename=getFileName(photoUri)
             Log.d("filename","$filename")
             // 선택한 이미지를 imageList에 추가하는 코드
             val inputStream = contentResolver.openInputStream(photoUri)
+            //val inputStream2 = contentResolver.openInputStream(photo)//test
             val file = File(cacheDir, photoUri.lastPathSegment)
+            // val file2 = File(cacheDir, photo.lastPathSegment)//test
             val outputStream = FileOutputStream(file)
+            // val outputStream2= FileOutputStream(file2)//test
             inputStream?.copyTo(outputStream)
-            val requestBody = RequestBody.create(MediaType.parse(contentResolver.getType(photoUri)!!), file)
+            //inputStream2?.copyTo(outputStream)//test
+            val requestBody = RequestBody.create(MediaType.parse(contentResolver.getType(photoUri)), file)
+            // val requestBody2 = RequestBody.create(MediaType.parse(contentResolver.getType(photo)), file2)
             filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
+
             imageList.add(filePart!!)
         }
     }
-
-    fun setImage(photoUri: Uri){
-        Log.d("countImage","$countImage")
-        if(countImage<7){
-            val scrapMainLayout: LinearLayout = findViewById(R.id.viewImages)
-            val scrapImage = ImageView(this)
-            val imageLayoutParams = LinearLayout.LayoutParams(
-                250,
-                250,
-            )
-            imageLayoutParams.setMargins(24,8,0,0)
-            scrapImage.layoutParams = imageLayoutParams
-            Glide.with(this)
-                .load(photoUri)
-                .into(scrapImage)
-            scrapMainLayout.addView(scrapImage)}
-        else{
-            alertDialog()
-        }
-
-    }
-    private fun alertDialog() {
-        val builder= AlertDialog.Builder(this)
-        builder.setTitle("알림")
-            .setMessage("이미지는 최대 6까지 선택할 수 있어요.")
-            .setPositiveButton("닫기", DialogInterface.OnClickListener {
-                    dialogInterface, i -> imageButton.isEnabled=false
-            })
-        builder.show()
-    }
-
-
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val focusView = currentFocus
         if (focusView != null && ev != null) {
@@ -219,6 +204,36 @@ class WriteActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+    private fun initAddImage() {
+        tvImageCount = findViewById(R.id.tv_image_count)
+        val addImageView = findViewById<ConstraintLayout>(R.id.cl_add_image)
+        addImageView.setOnClickListener {
+            addImage()
+        }
+
+
+        rvImage.adapter = imageAdapter
+    }
+    fun removeImage(inx:Int) {
+        imageList.removeAt(inx)
+        --countImage
+    }
+    @SuppressLint("SuspiciousIndentation")
+    private fun addImage() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        if(countImage<6){
+            Log.d("countImage","$countImage")
+            startActivityForResult(intent, DEFAULT_GALLERY_REQUEST_CODE)}
+        else alertDialog()
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                    0)
+            }
+        }
+    }
     @SuppressLint("Range")
     fun getFileName(uri: Uri): String? {
         var result: String? = null
@@ -238,5 +253,12 @@ class WriteActivity : AppCompatActivity() {
             result = uri.lastPathSegment
         }
         return result
+    }
+    private fun alertDialog() {
+        val builder= AlertDialog.Builder(this)
+        builder.setTitle("알림")
+            .setMessage("이미지는 최대 6까지 선택할 수 있습니다.")
+            .setNegativeButton("닫기",null)
+        builder.show()
     }
 }

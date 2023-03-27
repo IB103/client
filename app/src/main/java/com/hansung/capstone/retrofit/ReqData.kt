@@ -2,6 +2,23 @@ package com.hansung.capstone.retrofit
 
 import com.google.gson.annotations.SerializedName
 
+data class ReqModifyComment(
+    @SerializedName("commentId")
+    val commentId: Long,
+
+    @SerializedName("userId")
+    val  userId: Long,
+    @SerializedName("content")
+    val  content: String
+)
+data class ReqModifyReComment(
+    @SerializedName("reCommentId")
+    val reCommentId: Long,
+    @SerializedName("userId")
+    val  userId: Long,
+    @SerializedName("content")
+    val  content: String
+)
 data class ReqLogin(
     @SerializedName("email")
     val email: String,
@@ -62,7 +79,7 @@ data class ReqPost(
     )
 data class ReqComment(
     @SerializedName("postId")
-    val postId:Int,
+    val postId:Long,
     @SerializedName("userId")
     val userId:Int,
     @SerializedName("content")
@@ -71,7 +88,7 @@ data class ReqComment(
 )
 data class ReqReComment(
     @SerializedName("postId")
-    val postId:Int,
+    val postId:Long,
     @SerializedName("commentId")
     val commentId:Int,
     @SerializedName("userId")

@@ -1,7 +1,8 @@
 package com.hansung.capstone
 
-import com.hansung.capstone.board.ResultGetPosts
+import com.hansung.capstone.board.*
 import com.hansung.capstone.post.ResultGetPostDetail
+import com.hansung.capstone.retrofit.RepComment
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -13,6 +14,28 @@ interface CommunityService {
     fun getAllPost(
         @Query("page") query: Int,
     ): Call<ResultGetPosts>
+    @DELETE("api/community/post/delete")
+    fun deletePost(
+        @Header("Authorization")accessToken:String,
+        //@Query("accesstoken") accesstoken: Long,
+        @Query("userId") userId: Long,
+        @Query("postId") postId: Long
+
+        ): Call<ResDelete>
+    @DELETE("api/community/comment/delete")
+    fun deleteComment(
+        @Header("Authorization")accessToken:String,
+        @Query("userId") userId: Long,
+        @Query("commentId") commentId: Long
+
+    ): Call<ResDelete>
+    @DELETE("api/community/recomment/delete")
+    fun deleteReComment(
+        @Header("Authorization")accessToken:String,
+       // @Query("accesstoken") accesstoken: Long,
+        @Query("userId") userId: Long,
+        @Query("reCommentId") reCommentId: Long
+        ): Call<ResDeleteReComment>
 
     @GET("api/community/post/detail")
     fun getPostDetail(
@@ -39,6 +62,17 @@ interface CommunityService {
         @Query("userId") userId: Long,
         @Query("postId") postId: Long
     ): Call<ResponseBody>
+    @GET("api/community/post/scrap")
+    fun checkScrap(
+        @Query("userId") userId: Long,
+        @Query("postId") postId: Long
+    ): Call<ResultRespond>
+    @GET("api/community/post/list/scrap")
+    fun checkMyScrap(
+        @Query("userId") userId: Long,
+        @Query("page") page:Int
+    ): Call<ResultRespond>
+
 
     companion object{
         fun create() : CommunityService{

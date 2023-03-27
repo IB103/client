@@ -1,5 +1,7 @@
 package com.hansung.capstone.retrofit
 
+import com.hansung.capstone.board.Posts
+import com.hansung.capstone.board.ResultGetPosts
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -67,6 +69,16 @@ interface RetrofitService {
         @Body reqComment: ReqComment
     ): Call<RepComment>
 
+    @PUT("api/community/comment/modify")
+    fun modifyComment(
+        @Header("Authorization")accessToken:String,
+        @Body reqModifyComment: ReqModifyComment
+    ): Call<Posts>
+    @PUT("api/community/recomment/modify")
+    fun modifyRecomment(
+        @Header("Authorization")accessToken:String,
+        @Body reqModifyReComment: ReqModifyReComment
+    ): Call<Posts>
     @Headers("accept: application/json", "content-type: application/json")
     @POST("/api/community/recomment/create")
     fun postReComment(

@@ -64,8 +64,10 @@
                 android:value="" />
         </activity>
         <activity android:name=".LoginActivity" />
+
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".WriteActivity"/>
+        <activity android:name=".WriteActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ModifyNickActivity"/>
         <activity android:name=".MyStory"/>
         <activity
