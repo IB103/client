@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface CommunityService {
-    @GET("api/community/post/list")
+    @GET("api/community/post/list/all")
     fun getAllPost(
         @Query("page") query: Int,
     ): Call<ResultGetPosts>

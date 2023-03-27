@@ -74,6 +74,8 @@ data class ReqPost(
     val userId:Int,
     @SerializedName("title")
     val title:String,
+    @SerializedName("category")
+    val category:String,
     @SerializedName("content")
     val content:String
     )

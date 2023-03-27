@@ -169,6 +169,7 @@ class BoardAdapter() :
             }
             count += items.commentList.size
             binding.CommentCount.text = count.toString()
+            Log.d("imageid#####","${items.imageId[0]}")
             Glide.with(context!!)
                 .load("${MyApplication.getUrl()}image/${items.imageId[0]}") // 불러올 이미지 url
                 .override(100, 100)

@@ -98,7 +98,7 @@ class WriteActivity : AppCompatActivity() {
             val title = binding.editTitle.text.toString()
             val content = binding.editWriting.text.toString()
             val userId=MyApplication.prefs.getInt("userId",0)
-            val postReqPost = ReqPost(userId, title, content)
+            val postReqPost = ReqPost(userId, title,"FREE", content)
             Log.d("filesImage","${imageList}")
             service.postCreate(postReqPost, imageList).enqueue(object : Callback<RepPost> {
                 //  @SuppressLint("Range")
@@ -153,10 +153,9 @@ class WriteActivity : AppCompatActivity() {
 //            } catch (e: IOException) {
 //                e.printStackTrace()
 //            }
-            val a="${MyApplication.getUrl()}images/1"//test
+            //val a="${MyApplication.getUrl()}images/1"//test
             // imageView.setImageBitmap(bitmap)
-            val photo: Uri =a.toUri()//test
-
+            //val photo: Uri =a.toUri()//test
             imageAdapter.addItem(photoUri)
             Log.d("data.path","${data?.data?.path}")
             Log.d("data","$photouri")
@@ -174,8 +173,8 @@ class WriteActivity : AppCompatActivity() {
             val requestBody = RequestBody.create(MediaType.parse(contentResolver.getType(photoUri)), file)
             // val requestBody2 = RequestBody.create(MediaType.parse(contentResolver.getType(photo)), file2)
             filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
-
             imageList.add(filePart!!)
+
         }
     }
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

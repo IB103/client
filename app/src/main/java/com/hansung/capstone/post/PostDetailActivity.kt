@@ -58,6 +58,7 @@ class PostDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         postId = intent.getIntExtra("id", 0).toLong()
+
         //MainActivity.getInstance()?.setPostIdCheck(postId)
         binding.imageButton.setOnClickListener {
             if (MyApplication.prefs.getString("accesstoken", "") != ""&&binding.InsertComment.text!=null) {
