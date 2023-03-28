@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -44,10 +43,10 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBBhRfuMUmbjoSJyN3MspgSpmdDjb3qQKY" />
+            android:value="${GOOGLE_MAPS_API_KEY}" />
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="wcx7sl0cii" />
+            android:value="${NAVER_MAPS_API_ID}" />
 
         <activity
             android:name=".MainActivity"
@@ -70,6 +69,7 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ModifyNickActivity"/>
         <activity android:name=".MyStory"/>
+
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

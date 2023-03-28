@@ -11,14 +11,16 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter()
-        maven{
+        maven {
             url 'https://naver.jfrog.io/artifactory/maven/'
         }
-        maven{
+        maven {
             url 'https://devrepo.kakao.com/nexus/content/groups/public/'
         }
         maven { url "https://jitpack.io" }
+
     }
 }
+
 rootProject.name = "Capstone"
 include ':app'

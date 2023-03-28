@@ -1,8 +1,9 @@
 package com.hansung.capstone
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView?.setupWithNavController(navController)
+
     }
     fun deleteCheck(boolean: Boolean){
         deleteCheck=boolean
@@ -99,4 +101,12 @@ class MainActivity : AppCompatActivity() {
     fun CommentCheckReset(int:Int){
         commentCheck=int
     }
+    fun goWebPage(uri: String){
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+        startActivity(intent)
+    }
 }
+
+
+
+

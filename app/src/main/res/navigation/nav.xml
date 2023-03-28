@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_map" />
     <fragment
         android:id="@+id/recommendFragment"
-        android:name="com.hansung.capstone.RecommendFragment"
+        android:name="com.hansung.capstone.recommend.RecommendFragment"
         android:label="fragment_recommend"
         tools:layout="@layout/fragment_recommend" />
     <fragment
