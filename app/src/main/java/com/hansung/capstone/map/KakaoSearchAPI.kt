@@ -8,14 +8,6 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface KakaoSearchAPI {
-    @GET("v2/local/search/keyword.json")
-    fun getSearchKeyword(
-        @Header("Authorization") key: String,
-        @Query("query") query: String
-        // 매개변수 추가 가능
-        // @Query("category_group_code") category: String
-    ): Call<ResultSearchKeyword>
-
     companion object {
         private const val BASE_URL_KAKAO_API = "https://dapi.kakao.com/"
 
@@ -27,4 +19,20 @@ interface KakaoSearchAPI {
                 .create(KakaoSearchAPI::class.java)
         }
     }
+
+    @GET("v2/local/search/keyword.json")
+    fun getSearchKeyword(
+        @Header("Authorization") key: String,
+        @Query("query") query: String
+        // 매개변수 추가 가능
+        // @Query("category_group_code") category: String
+    ): Call<ResultSearchKeyword>
+
+    @GET("v2/search/image")
+    fun getSearchImage(
+        @Header("Authorization") key: String,
+        @Query("query") query: String,
+        @Query("size") size: Int
+    ): Call<LocationImageDTO>
+
 }
