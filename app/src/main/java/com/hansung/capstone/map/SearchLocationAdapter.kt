@@ -32,14 +32,14 @@ class SearchLocationAdapter(
         return LocationSearchHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        Log.d("페이지 수", "${result.documents.count()}")
-        return result.documents.count()
-    }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewHolder = holder as LocationSearchHolder
         viewHolder.bind(result.documents[position])
+    }
+
+    override fun getItemCount(): Int {
+        Log.d("페이지 수", "${result.documents.count()}")
+        return result.documents.count()
     }
 
     inner class LocationSearchHolder(private val binding: ItemLocationSearchResultsBinding) :

@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -116,6 +117,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                 Toast.makeText(activity, "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
             true
+        }
+
+        // 길 찾기 버튼
+        binding.findDirectionsButton.setOnClickListener {
+            val intent = Intent(activity,DirectionsActivity::class.java)
+            startActivity(intent)
         }
     }
 
