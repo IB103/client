@@ -51,7 +51,7 @@ class SearchLocationAdapter(
             binding.resultAddress.text = items.address_name
             val api = KakaoSearchAPI.create()
             api.getSearchImage(
-                BuildConfig.KAKAO_SEARCH_API_KEY,
+                BuildConfig.KAKAO_REST_API_KEY,
                 items.place_name,1
             ).enqueue(object : Callback<LocationImageDTO> {
                 override fun onResponse(
@@ -61,11 +61,13 @@ class SearchLocationAdapter(
                     val url = response.body()
                     if (url != null) {
                         Log.d("검색 결과", "Body: ${response.body()}")
-                        Glide.with(itemView)
-                            .load(url.documents[0].image_url) // 불러올 이미지 url
-                            .error("https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg")
-                            .centerCrop()
-                            .into(binding.resultImage)
+                        if(url.documents.isNotEmpty()) { // 비었는지 확인
+                            Glide.with(itemView)
+                                .load(url.documents[0].image_url) // 불러올 이미지 url
+                                .error("https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg")
+                                .centerCrop()
+                                .into(binding.resultImage)
+                        }
                     }
                 }
                 override fun onFailure(call: Call<LocationImageDTO>, t: Throwable) {

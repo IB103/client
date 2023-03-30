@@ -40,14 +40,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${GOOGLE_MAPS_API_KEY}" />
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="${NAVER_MAPS_API_ID}" />
-
+            android:value="${naver_maps_api_id}" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

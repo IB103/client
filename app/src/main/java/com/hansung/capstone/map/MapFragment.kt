@@ -132,7 +132,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
 
         val api = KakaoSearchAPI.create()
         api.getSearchKeyword(
-            BuildConfig.KAKAO_SEARCH_API_KEY,
+            BuildConfig.KAKAO_REST_API_KEY,
             binding.locationSearch.text.toString()
         )
             .enqueue(object : Callback<ResultSearchKeyword> {
@@ -324,7 +324,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                         staticMarker2.map = naverMap
                         api2.getSearchDirection(
                             location.longitude, location.latitude, lng.toDouble(), lat.toDouble(),
-                            "polyline6", "full", BuildConfig.MAPBOX_DOWNLOADS_TOKEN
+                            "polyline6", "full", BuildConfig.MAPBOX_TOKEN
                         )
                             .enqueue(object : Callback<ResultSearchDirections> {
                                 override fun onResponse(
@@ -332,26 +332,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                                     response: Response<ResultSearchDirections>
                                 ) {
                                     val body = response.body()
-                                    Log.d("경로 결과", "Body: ${response.body()}")
-                                    val deco: List<com.google.android.gms.maps.model.LatLng> =
-                                        decode(body!!.routes[0].geometry)
-                                    Log.d("경로 결과", deco.toString())
-                                    val routeLatLng: MutableList<LatLng> =
-                                        emptyList<LatLng>().toMutableList()
-                                    for (z in deco) {
-                                        routeLatLng += LatLng(z.latitude, z.longitude)
+                                    if(body!=null) {
+                                        Log.d("경로 결과", "Body: ${response.body()}")
+                                        val deco: List<com.google.android.gms.maps.model.LatLng> =
+                                            decode(body.routes[0].geometry)
+                                        Log.d("경로 결과", deco.toString())
+                                        val routeLatLng: MutableList<LatLng> =
+                                            emptyList<LatLng>().toMutableList()
+                                        routeLatLng += LatLng(location.latitude,location.longitude)
+                                        for (z in deco) {
+                                            routeLatLng += LatLng(z.latitude, z.longitude)
+                                        }
+                                        routeLatLng += LatLng(lat.toDouble(),lng.toDouble())
+                                        for (i in markers) {
+                                            i.map = null
+                                        }
+                                        staticMarker.position =
+                                            LatLng(lat.toDouble(), lng.toDouble())
+                                        staticMarker.icon = MarkerIcons.BLUE
+                                        staticMarker.map = naverMap
+                                        path.coords = routeLatLng
+                                        path.outlineWidth = 0
+                                        path.color = Color.BLUE
+                                        path.map = naverMap
                                     }
-                                    for (i in markers) {
-                                        i.map = null
-                                    }
-                                    staticMarker.position =
-                                        LatLng(lat.toDouble(), lng.toDouble())
-                                    staticMarker.icon = MarkerIcons.BLUE
-                                    staticMarker.map = naverMap
-                                    path.coords = routeLatLng
-                                    path.outlineWidth = 0
-                                    path.color = Color.BLUE
-                                    path.map = naverMap
                                 }
 
                                 override fun onFailure(
