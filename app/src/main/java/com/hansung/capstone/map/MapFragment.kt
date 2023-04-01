@@ -15,9 +15,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -34,6 +32,7 @@ import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
 import com.hansung.capstone.databinding.FragmentMapBinding
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.overlay.Marker
@@ -47,6 +46,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
+//class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallback, OnMapClickListener {
 class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallback {
     private lateinit var naverMap: NaverMap // 네이버 맵 객체
     private lateinit var locationSource: FusedLocationSource // 네이버 맵 객체에서 사용할 위치 소스
@@ -54,6 +54,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
     private lateinit var fusedLocationClient: FusedLocationProviderClient // 사용자 위치를 따오기 위해
     private lateinit var lat: String
     private lateinit var lng: String
+//    private var mapState = 0
 
     private var requestPermissionLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permission ->
@@ -81,12 +82,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentMapBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 투명 상태바
+//        activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+//        activity?.window?.statusBarColor = Color.TRANSPARENT
+//        binding.searchBoxLayout.setPadding(
+//            0,
+//            requireContext().statusBarHeight(),
+//            0,
+//        0
+//        )
 
         // 위치소스 권한 설정
         locationSource =
@@ -120,11 +132,111 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
         }
 
         // 길 찾기 버튼
+        val myLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                    // 결과 처리
+                    val directionsQuery = result.data?.getStringExtra("directions_query")
+                    Log.d("쿼리값 조회", directionsQuery!!)
+                    val waypoints: List<LatLng> = returnWaypoints(directionsQuery)
+
+                    val api = MapboxDirectionAPI.create()
+                    api.getWaypointsDirection(
+                        directionsQuery, "polyline6", "full", BuildConfig.MAPBOX_TOKEN
+                    )
+                        .enqueue(object : Callback<ResultSearchDirections> {
+                            override fun onResponse(
+                                call: Call<ResultSearchDirections>,
+                                response: Response<ResultSearchDirections>
+                            ) {
+                                val body = response.body()
+                                if (body != null) {
+                                    Log.d("경로 결과", "Body: ${response.body()}")
+                                    val deco: List<com.google.android.gms.maps.model.LatLng> =
+                                        decode(body.routes[0].geometry)
+                                    Log.d("경로 결과", deco.toString())
+                                    val routeLatLng: MutableList<LatLng> =
+                                        emptyList<LatLng>().toMutableList()
+//                                routeLatLng += LatLng(location.latitude, location.longitude)
+                                    for (z in deco) {
+                                        routeLatLng += LatLng(z.latitude, z.longitude)
+                                    }
+//                                routeLatLng += LatLng(lat.toDouble(), lng.toDouble())
+                                    for (i in markers) {
+                                        i.map = null
+                                    }
+                                    for (item in waypoints) {
+                                        val marker = Marker()
+                                        markers.add(marker)
+                                        marker.position = item
+                                        marker.icon = MarkerIcons.BLUE
+                                        marker.map = naverMap
+                                    }
+//                                staticMarker.position =
+//                                    LatLng(lat.toDouble(), lng.toDouble())
+//                                staticMarker.icon = MarkerIcons.BLUE
+//                                staticMarker.map = naverMap
+                                    zoomToSeeWholeTrack(routeLatLng)
+                                    path.coords = routeLatLng
+                                    path.outlineWidth = 0
+                                    path.color = Color.BLUE
+                                    path.map = naverMap
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<ResultSearchDirections>,
+                                t: Throwable
+                            ) {
+                                Log.d("결과:", "실패 : $t")
+                            }
+                        })
+                }
+            }
         binding.findDirectionsButton.setOnClickListener {
-            val intent = Intent(activity,DirectionsActivity::class.java)
-            startActivity(intent)
+            val intent = Intent(activity, DirectionsActivity::class.java)
+//            startActivity(intent)
+            myLauncher.launch(intent)
         }
+
     }
+
+//    override fun onMapClick(p0: PointF, p1: LatLng) {
+//        Log.d("1", mapState.toString())
+//        // 메인의 바텀 내비게이션
+//        val bottomNavigationView =
+//            activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+//        // 검색창 레이아웃
+//        val searchBoxLayout = binding.searchBoxLayout
+//        val naverUiLayout = binding.naverUiLayout
+//
+//        if (mapState == 0) {
+//            Log.d("2", mapState.toString())
+//            // 애니메이션 설정
+//            bottomNavigationView?.animate()
+//                ?.translationY(bottomNavigationView.height.toFloat())?.duration = 300
+//            searchBoxLayout.animate()?.translationY(-searchBoxLayout.height.toFloat())?.duration = 300
+//            naverUiLayout.animate()?.translationY(bottomNavigationView?.height?.toFloat()!!)?.duration = 300
+//
+//            // 사라지게
+////            bottomNavigationView?.visibility = View.GONE
+////            searchBoxLayout.visibility = View.GONE
+//            mapState = 1
+//        } else if (mapState == 1) {
+//            Log.d("3", mapState.toString())
+//            // visibility 속성 변경
+//            bottomNavigationView?.visibility = View.VISIBLE
+//            searchBoxLayout.visibility = View.VISIBLE
+//
+//
+//            // 올라가는 애니메이션 설정
+//            bottomNavigationView?.animate()?.translationY(0F)?.duration = 300
+//            searchBoxLayout.animate()?.translationY(0F)?.duration = 300
+//            naverUiLayout.animate()?.translationY(0F)?.duration = 300
+//            mapState = 0
+//        }
+//    }
+
 
     private fun locationSearch() {
 
@@ -274,6 +386,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
 //                onSnapshotReady(it)
 //            }
 //        }
+
+
+        // 사용자 인터페이스 설정
+//        binding.scaleView.map = naverMap
+//        binding.locationButtonView.map = naverMap
+//        val bottomNavigationView =
+//            activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+//        naverMap.onMapClickListener = this
+//        uiSettings.isLocationButtonEnabled = false
+//        uiSettings.isScaleBarEnabled = false
+//        uiSettings.logoGravity=Gravity.BOTTOM
+//
+//        Log.d("농핑","${bottomNavigationView?.height}")
+////        uiSettings.setLogoMargin(0,50,0,bottomNavigationView?.height!!+8)
+//        uiSettings.setLogoMargin(40,0,0,350)
     }
 
     @SuppressLint("MissingPermission")
@@ -339,18 +466,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                                     response: Response<ResultSearchDirections>
                                 ) {
                                     val body = response.body()
-                                    if(body!=null) {
+                                    if (body != null) {
                                         Log.d("경로 결과", "Body: ${response.body()}")
                                         val deco: List<com.google.android.gms.maps.model.LatLng> =
                                             decode(body.routes[0].geometry)
                                         Log.d("경로 결과", deco.toString())
                                         val routeLatLng: MutableList<LatLng> =
                                             emptyList<LatLng>().toMutableList()
-                                        routeLatLng += LatLng(location.latitude,location.longitude)
+                                        routeLatLng += LatLng(location.latitude, location.longitude)
                                         for (z in deco) {
                                             routeLatLng += LatLng(z.latitude, z.longitude)
                                         }
-                                        routeLatLng += LatLng(lat.toDouble(),lng.toDouble())
+                                        routeLatLng += LatLng(lat.toDouble(), lng.toDouble())
                                         for (i in markers) {
                                             i.map = null
                                         }
@@ -383,6 +510,54 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
             requestPermissionLauncher.launch(permissionList)
         }
     }
+
+    private fun returnWaypoints(queryString: String): List<LatLng> {
+        val coordinateList: List<String> = queryString.split(";")
+        val latLngList: MutableList<LatLng> = mutableListOf()
+        for (i in coordinateList) {
+            val latLng = i.split(",")
+            latLngList += LatLng(latLng[1].toDouble(), latLng[0].toDouble())
+        }
+        return latLngList
+    }
+
+    private fun zoomToSeeWholeTrack(routeLatLng: List<LatLng>) {
+        val bounds = LatLngBounds.Builder()
+
+        for (path in routeLatLng) {
+            bounds.include(path)
+        }
+
+        naverMap.moveCamera(
+            CameraUpdate.fitBounds(bounds.build(), 300).animate(CameraAnimation.Fly)
+        )
+    }
+
+//    fun Activity.setStatusBarTransparent() {
+//        window.apply {
+//            setFlags(
+//                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//            )
+//        }
+//        if(Build.VERSION.SDK_INT >= 30) {	// API 30 에 적용
+//            WindowCompat.setDecorFitsSystemWindows(window, false)
+//        }
+//    }
+//
+//    fun Context.statusBarHeight(): Int {
+//        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+//
+//        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId)
+//        else 0
+//    }
+//
+//    fun Context.navigationHeight(): Int {
+//        val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+//
+//        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId)
+//        else 0
+//    }
 }
 
 

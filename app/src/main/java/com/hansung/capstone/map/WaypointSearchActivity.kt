@@ -8,12 +8,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.hansung.capstone.BuildConfig
-import com.hansung.capstone.databinding.ActivityDirectionsBinding
 import com.hansung.capstone.databinding.ActivityWaypointSearchBinding
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraAnimation
-import com.naver.maps.map.CameraUpdate
-import com.naver.maps.map.overlay.Marker
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,7 +29,8 @@ class WaypointSearchActivity : AppCompatActivity() {
                 locationSearch()
             } else {
                 binding.waypointSearchBox.requestFocus()
-                val manager: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                val manager: InputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.showSoftInput(binding.waypointSearchBox, InputMethodManager.SHOW_IMPLICIT)
                 Toast.makeText(this, "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
@@ -58,16 +54,18 @@ class WaypointSearchActivity : AppCompatActivity() {
                     val body = response.body()
                     if (body != null) {
                         if (body.documents.isNotEmpty()) {
-                            val waypointSearchResultRecyclerview = binding.waypointSearchResultRecyclerview
+                            val waypointSearchResultRecyclerview =
+                                binding.waypointSearchResultRecyclerview
 
                             // 검색 결과 리사이클러뷰에 적용
                             runOnUiThread {
                                 waypointSearchResultRecyclerview.adapter =
-                                    WaypointsSearchAdapter(body)
+                                    WaypointsSearchAdapter(this@WaypointSearchActivity, body)
                             }
                         }
                     }
                 }
+
                 override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
                     Log.d("결과:", "실패 : $t")
                 }

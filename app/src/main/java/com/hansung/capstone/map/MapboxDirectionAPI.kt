@@ -19,6 +19,15 @@ interface MapboxDirectionAPI {
         @Query("access_token") access_token: String,
     ): Call<ResultSearchDirections>
 
+    @GET("directions/v5/mapbox/cycling/{coordinates}")
+    fun getWaypointsDirection(
+        @Path("coordinates") coordinates: String,
+        @Query("geometries") geometries: String,
+        @Query("overview") overview: String,
+        @Query("access_token") access_token: String,
+    ): Call<ResultSearchDirections>
+
+
     companion object {
         private const val BASE_URL_MAPBOX_API = "https://api.mapbox.com/"
 

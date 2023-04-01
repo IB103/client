@@ -9,8 +9,12 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mapView"
         android:name="com.naver.maps.map.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 <!--    <com.naver.maps.map.widget.LocationButtonView-->
 <!--        android:id="@+id/zoom"-->
@@ -49,38 +53,74 @@
     <!--            android:orientation="horizontal"></androidx.constraintlayout.widget.ConstraintLayout>-->
     <!--    </FrameLayout>-->
 
-    <EditText
-        android:id="@+id/locationSearch"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_box_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginEnd="50dp"
-        android:autofillHints=""
-        android:background="@drawable/element_edit_comment"
-        android:ems="10"
-        android:hint="@string/query_request"
-        android:imeActionLabel="검색"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:paddingStart="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
-        android:id="@+id/bottom_sheet"
-        layout="@layout/bottom_sheet"
-        android:visibility="gone"/>
-
-    <ImageButton
-        android:id="@+id/find_directions_button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        android:src="@drawable/ic_sharp_directions_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/locationSearch"
-        app:layout_constraintTop_toTopOf="@+id/mapView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/locationSearch"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginEnd="50dp"
+            android:autofillHints=""
+            android:background="@drawable/element_edit_comment"
+            android:ems="10"
+            android:hint="@string/query_request"
+            android:imeActionLabel="검색"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingStart="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/bottom_sheet"
+            layout="@layout/bottom_sheet"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/find_directions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:src="@drawable/ic_sharp_directions_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/locationSearch"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:layout_marginBottom="60dp"-->
+<!--        android:id="@+id/naver_ui_layout">-->
+
+<!--                <com.naver.maps.map.widget.LocationButtonView-->
+<!--                    android:id="@+id/location_button_view"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="12dp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"/>-->
+<!--                <com.naver.maps.map.widget.ScaleBarView-->
+<!--                    android:id="@+id/scale_view"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="12dp"-->
+<!--                    android:layout_marginBottom="4dp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="@+id/location_button_view"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/location_button_view"/>-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <!--    <Button-->
 <!--        android:id="@+id/snapshotB"-->

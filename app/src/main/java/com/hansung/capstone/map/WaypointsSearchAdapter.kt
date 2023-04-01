@@ -1,14 +1,24 @@
 package com.hansung.capstone.map
 
+import android.app.Activity
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.databinding.ItemWaypointSearchResultRecyclerviewBinding
 
-class WaypointsSearchAdapter(private val resultSearchKeyword: ResultSearchKeyword): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WaypointsSearchAdapter(
+    val waypointSearchActivity: WaypointSearchActivity,
+    private val resultSearchKeyword: ResultSearchKeyword
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding =
-            ItemWaypointSearchResultRecyclerviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemWaypointSearchResultRecyclerviewBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         return WaypointsSearchHolder(binding)
     }
 
@@ -23,9 +33,25 @@ class WaypointsSearchAdapter(private val resultSearchKeyword: ResultSearchKeywor
 
     inner class WaypointsSearchHolder(private val binding: ItemWaypointSearchResultRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: Place){
-            binding.placeName.text=items.place_name
-            binding.addressName.text=items.address_name
+        fun bind(items: Place) {
+            binding.placeName.text = items.place_name
+            binding.addressName.text = items.address_name
+            itemView.setOnClickListener {
+                val position = waypointSearchActivity.intent.getIntExtra("position", -1)
+                Log.d("포지션", position.toString())
+                // "전달할 값"이라는 문자열을 포함하는 Intent 생성
+                val resultIntent = Intent()
+                resultIntent.putExtra("position", position)
+                resultIntent.putExtra("place_name", items.place_name)
+                resultIntent.putExtra("place_lat", items.y)
+                resultIntent.putExtra("place_lng", items.x)
+
+                // setResult()를 사용하여 결과 데이터 설정
+                waypointSearchActivity.setResult(Activity.RESULT_OK, resultIntent)
+
+                // 액티비티 종료
+                waypointSearchActivity.finish()
+            }
         }
     }
 }
