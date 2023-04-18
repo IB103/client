@@ -31,7 +31,8 @@ class DeleteComment()  {
                     if(response.isSuccessful){
                         if(body?.code==100) {
                             Log.d("INFO deletecomment", "댓글삭제 성공" + body.toString())
-                            MyApplication.prefs.setInt("deleteCount",++DeleteCount)
+                            DeleteCount++
+                            MyApplication.prefs.setInt("deleteCount",DeleteCount)
                            // MainActivity.getInstance()?.setChangedPostCheck(true)
                             Log.d("deleteCount","${MyApplication.prefs.getInt("deleteCount",0)}")
                             PostDetailActivity.getInstance()?.postcomment()

@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
@@ -23,12 +24,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.board.ResultGetPosts
 import com.hansung.capstone.databinding.ActivityWriteBinding
-import com.hansung.capstone.retrofit.RepPost
-import com.hansung.capstone.retrofit.ReqPost
-import com.hansung.capstone.retrofit.RetrofitService
+import com.hansung.capstone.retrofit.*
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.activity_write.*
+import kotlinx.android.synthetic.main.fragment_board.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -46,11 +47,14 @@ class WriteActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var tvImageCount: TextView
     var countImage=0
-
+    var imageUriList=ArrayList<Uri>()
     var postId:Long=0
+    private var imageIdList=ArrayList<Long?>()
+    private var imageId:Long=0
     private val imageList: ArrayList<MultipartBody.Part> = ArrayList()
     var filePart: MultipartBody.Part? = null
     private var photouri: Uri? =null
+    var category:String=""
     private val DEFAULT_GALLERY_REQUEST_CODE = 0
     private var serverinfo = MyApplication.getUrl() //username password1 password2 email
     private var retrofit = Retrofit.Builder().baseUrl("$serverinfo")
@@ -70,9 +74,23 @@ class WriteActivity : AppCompatActivity() {
         imageAdapter = ImageAdapter(this, binding )
         if(MainActivity.getInstance()?.getmodifyCheck()!!){
             modifyActivity()
-            MainActivity.getInstance()?.setModifyCheck(false)
+            //MainActivity.getInstance()?.setModifyCheck(false)
         }
         initAddImage()
+//        binding.freeCategory.setOnClickListener {
+//            binding.freeCategory.setTextColor(Color.parseColor("#01DFD7"))
+//            binding.courseCategory.setTextColor(Color.parseColor("#A4A4A4"))
+//            binding.freeCategory.background=ContextCompat.getDrawable(this,R.drawable.press_border)
+//            binding.courseCategory.background=ContextCompat.getDrawable(this,R.drawable.normal_border)
+//            category="FREE"
+//        }
+//        binding.courseCategory.setOnClickListener {
+//            binding.courseCategory.setTextColor(Color.parseColor("#01DFD7"))
+//            binding.freeCategory.setTextColor(Color.parseColor("#A4A4A4"))
+//            binding.courseCategory.background=ContextCompat.getDrawable(this,R.drawable.press_border)
+//            binding.freeCategory.background=ContextCompat.getDrawable(this,R.drawable.normal_border)
+//            category="COURSE"
+//        }
         if(MainActivity.getInstance()?.getmodifyCheck()==false){
             binding.editTitle.addTextChangedListener( object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -98,9 +116,12 @@ class WriteActivity : AppCompatActivity() {
             val title = binding.editTitle.text.toString()
             val content = binding.editWriting.text.toString()
             val userId=MyApplication.prefs.getInt("userId",0)
-            val postReqPost = ReqPost(userId, title,"FREE", content)
+            if(MainActivity.getInstance()?.getmodifyCheck()!!)
+                modify(title,userId.toLong(),content)
+            else{
+            val postReqPost = ReqPost(userId, title, category = "FREE", content)//FREE category,수정해야함
             Log.d("filesImage","${imageList}")
-            service.postCreate(postReqPost, imageList).enqueue(object : Callback<RepPost> {
+            service.postCreate(requestDTO = postReqPost, imageList).enqueue(object : Callback<RepPost> {
                 //  @SuppressLint("Range")
                 override fun onResponse(call: Call<RepPost>, response: Response<RepPost>) {
                     if (response.isSuccessful) {
@@ -124,18 +145,73 @@ class WriteActivity : AppCompatActivity() {
                 }
             })
         }
+        }
+    }
+
+    private fun modify(title:String,user_id:Long,content:String) {
+        var accesstoken:String=MyApplication.prefs.getString("accesstoken","")
+        var post_Id=MainActivity.getInstance()?.getPostIdCheck()
+        val putModifyPost=ReqModifyPost(post_Id!!,title,user_id,content,imageIdList)
+        service.modifyPost(requestDTO = putModifyPost,imageList).enqueue(object : Callback<ResultGetPosts> {
+            //  @SuppressLint("Range")
+            override fun onResponse(call: Call<ResultGetPosts>, response: Response<ResultGetPosts>) {
+                    val result: ResultGetPosts? = response.body()
+                    if (response.isSuccessful) {//수정해야함
+                        if (result?.code == 100) {
+                            Log.d("게시글수정", "성공: $title")
+                            MainActivity.getInstance()?.setModifyCheck(false)
+                            MainActivity.getInstance()?.writeCheck(true)
+                            finish()
+                        } else {
+                            Log.d("ERR 게시글 수정", "실패: " + result?.toString())
+                        }
+
+                } else {
+                    Log.d("ERR 게시글 수정", "onResponse 실패")
+                }
+            }
+            override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
+                Log.d("onFailure 게시글 수정", "실패 ")
+            }
+        })
     }
 
     private fun modifyActivity() {
         binding.writebutton.isEnabled=true
         Log.d("modify","e")
+//        if(MainActivity.getInstance()?.getCategory()=="FREE"){
+//            binding.freeCategory.setTextColor(Color.parseColor("#01DFD7"))
+//            binding.courseCategory.setTextColor(Color.parseColor("#A4A4A4"))
+//            binding.freeCategory.background=ContextCompat.getDrawable(this,R.drawable.press_border)
+//            binding.courseCategory.background=ContextCompat.getDrawable(this,R.drawable.normal_border)
+//            category="FREE"
+//        }else if(MainActivity.getInstance()?.getCategory()=="COURSE"){
+//            binding.courseCategory.setTextColor(Color.parseColor("#01DFD7"))
+//            binding.freeCategory.setTextColor(Color.parseColor("#A4A4A4"))
+//            binding.courseCategory.background=ContextCompat.getDrawable(this,R.drawable.press_border)
+//            binding.freeCategory.background=ContextCompat.getDrawable(this,R.drawable.normal_border)
+//            category="COURSE"
+//        }
         binding.editTitle.setText(MainActivity.getInstance()?.modify_title)
         binding.editWriting.setText(MainActivity.getInstance()?.modify_content)
         countImage= MainActivity.getInstance()?.modify_imageList!!.size
-        if(countImage>0)
-            imageAdapter.setItem(MainActivity.getInstance()?.modify_imageList as List<Int>)
+        if(countImage>0) {
+            addImageId(countImage)
+            //imageAdapter.setItem(MainActivity.getInstance()?.modify_imageList as List<Int>)
+            //imageIdList.addAll(MainActivity.getInstance()?.modify_imageList.to)
+        }
 
+    }
 
+    private fun addImageId(count:Int) {
+        for(i in 0 until count){
+            imageId= MainActivity.getInstance()?.modify_imageList!![i]!!.toLong()
+            imageIdList.add(imageId)
+            var string:String="${MyApplication.getUrl()}image/${MainActivity.getInstance()?.modify_imageList!![i]}"
+            var uri:Uri=string.toUri()
+            imageUriList.add(uri)
+        }
+        imageAdapter.addItems(imageUriList)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -163,15 +239,10 @@ class WriteActivity : AppCompatActivity() {
             Log.d("filename","$filename")
             // 선택한 이미지를 imageList에 추가하는 코드
             val inputStream = contentResolver.openInputStream(photoUri)
-            //val inputStream2 = contentResolver.openInputStream(photo)//test
             val file = File(cacheDir, photoUri.lastPathSegment)
-            // val file2 = File(cacheDir, photo.lastPathSegment)//test
             val outputStream = FileOutputStream(file)
-            // val outputStream2= FileOutputStream(file2)//test
             inputStream?.copyTo(outputStream)
-            //inputStream2?.copyTo(outputStream)//test
             val requestBody = RequestBody.create(MediaType.parse(contentResolver.getType(photoUri)), file)
-            // val requestBody2 = RequestBody.create(MediaType.parse(contentResolver.getType(photo)), file2)
             filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
             imageList.add(filePart!!)
 
@@ -213,8 +284,18 @@ class WriteActivity : AppCompatActivity() {
 
         rvImage.adapter = imageAdapter
     }
-    fun removeImage(inx:Int) {
-        imageList.removeAt(inx)
+    fun removeImage(inx:Int,uri:Uri) {
+        if(imageUriList.contains(uri)){
+            var num=imageUriList.indexOf(uri)
+            imageIdList.removeAt(num)
+            imageUriList.removeAt(num)
+            }
+        else
+            imageList.removeAt(inx-imageIdList.size)
+        --countImage
+    }
+    fun removeImageId(inx: Int){
+        imageIdList.removeAt(inx)
         --countImage
     }
     @SuppressLint("SuspiciousIndentation")

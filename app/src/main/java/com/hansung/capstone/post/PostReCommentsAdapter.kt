@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.CommunityService
+import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ItemPostDetailRecommentsBinding
@@ -89,6 +90,7 @@ class PostReCommentsAdapter(private val comment: Comments,private val context: P
             if(dataArr[which]==dataArr[0]){
                 if(comment.id.toInt()==-1)
                     MyApplication.prefs.setInt("deleteCount",++DeleteCount)
+                MainActivity.getInstance()?.setChangedPostCheck(true)
                 DeleteRecomment().delete(accesstoken, userId, recommentId)
             }
             else if(dataArr[which]==dataArr[1]){
@@ -96,7 +98,6 @@ class PostReCommentsAdapter(private val comment: Comments,private val context: P
             }
         }
         builder.setItems(dataArr,listener)
-
         builder.setNegativeButton("취소",null)
         builder.show()
     }

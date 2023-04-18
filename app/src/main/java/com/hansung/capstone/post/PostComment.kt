@@ -35,7 +35,7 @@ class PostComment(private val context: PostDetailActivity) {
     var service = retrofit.create(RetrofitService::class.java)!!
     var result:RepComment? = null
     val api = CommunityService.create()
-    var noImage=-1
+    var count=MyApplication.prefs.getInt("commentCount",0)
     fun postComment(str: String, postId: Long,binding:ActivityPostDetailBinding) {
         val userId = MyApplication.prefs.getInt("userId", 0)
         val postReqComment = ReqComment(postId, userId, str)
@@ -47,6 +47,7 @@ class PostComment(private val context: PostDetailActivity) {
                     if (response.code() == 201) { //수정해야함
                         if (result?.code == 100) {
                             Log.d("INFO comment", "댓글작성 성공" + result.toString())
+                            MyApplication.prefs.setInt("commentCount",++count)
                             //MainActivity.getInstance()?.setChangedPostCheck(true)
                             postComments(postId,binding)
                         } else {
@@ -78,7 +79,12 @@ class PostComment(private val context: PostDetailActivity) {
                     for (i in body?.data?.commentList!!) {
                         count += i.reCommentList.size
                     }
-                    count += body.data.commentList.size
+                    for (i in 0 until body?.data?.commentList!!.size) {
+                        var j:Int=-1
+                        if(body.data.commentList[i].userId!=j.toLong())
+                            ++count
+                    }
+                    //count += body.data.commentList.size
                     binding.CommentCount.text = count.toString()
                     // 이미지 등록
                     binding.PostDetailComment.adapter =

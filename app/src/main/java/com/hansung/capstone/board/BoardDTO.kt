@@ -1,10 +1,25 @@
 package com.hansung.capstone.board
 
+import okhttp3.MultipartBody
+
 
 data class ResultRespond(
     var code: Int,
     var success: Boolean,
     var message: String,
+)
+data class RePModifyProfileImage(
+    var code: Int,
+    var success: Boolean,
+    var message: String,
+    var data: List<ModifiedData>
+)data class ModifiedData(
+    var code: Int,
+    var email: String,
+    var username: String,
+    var birthday: String,
+    var nickname: String,
+   var profileImageId:Long
 )
 data class ResultGetPosts(
     var code: Int,

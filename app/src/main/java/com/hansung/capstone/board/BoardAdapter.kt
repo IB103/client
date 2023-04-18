@@ -5,9 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hansung.capstone.MainActivity
@@ -40,8 +38,7 @@ class BoardAdapter() :
             post_type1 -> {
                 val binding =
                     ItemPostListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                Log.d("boardholer","")
-                BoardHolderType1(binding)
+                    BoardHolderType1(binding)
             }
            else-> {
                 val binding = ItemPostListNoImageBinding.inflate(
@@ -49,7 +46,6 @@ class BoardAdapter() :
                     parent,
                     false
                 )
-                Log.d("boardholer","")
                 BoardHolderType2(binding)
             }
 //            else->{
@@ -66,6 +62,7 @@ class BoardAdapter() :
     }
     override fun getItemViewType(position: Int):Int {
     //   if (resultGetPosts[position]!=null) {
+
             if (resultGetPosts[position]!!.imageId.isEmpty())
                 resultGetPosts[position]!!.postType = 2
             else resultGetPosts[position]!!.postType = 1
@@ -83,10 +80,10 @@ class BoardAdapter() :
        // if(resultGetPosts[position].id!=-100){
             when (resultGetPosts[position]!!.imageId.size) {
                 0 -> {
-                    (holder as BoardHolderType2).bind(resultGetPosts[position]!!)
+                    (holder as BoardHolderType2).bind(resultGetPosts[position]!!,position)
                 }
                 else -> {
-                    (holder as BoardHolderType1).bind(resultGetPosts[position]!!)
+                    (holder as BoardHolderType1).bind(resultGetPosts[position]!!,position)
                 }
 
             }
@@ -123,13 +120,24 @@ class BoardAdapter() :
         notifyDataSetChanged()
     }
     fun setInitItems(newresultGetPosts: ArrayList<Posts>){//초기 화면 세팅
+        this.resultGetPosts.clear()
         this.resultGetPosts.addAll(newresultGetPosts)
         notifyDataSetChanged()
     }
-    fun reLoad(){//onresume 실행시
-        notifyDataSetChanged()
-    }
-
+//    fun reLoad(newresultGetPosts: MutableList<Posts?>){//onresume 실행시
+//       // val position=MainActivity.getInstance()?.getposition()
+//        this.resultGetPosts.clear()
+//        this.resultGetPosts.addAll(newresultGetPosts)
+//        Log.d("size","${this.resultGetPosts.size}")
+//        //notifyItemInserted(position!!)
+//        notifyDataSetChanged()
+//    }
+fun reload(){
+    var position=MainActivity.getInstance()?.getPosition()!!
+    //notifyItemChanged(position)
+    //  notifyItemInserted(position)
+    notifyDataSetChanged()
+}
     fun moreItems(newresultGetPosts: ArrayList<Posts>){//다음 페이지 요청
        // this.resultGetPosts.removeAt(this.resultGetPosts.size - 1)
        // notifyItemRemoved(resultGetPosts.size)
@@ -144,7 +152,8 @@ class BoardAdapter() :
     }
     inner class BoardHolderType1(private val binding: ItemPostListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: Posts) {
+        fun bind(items: Posts,position: Int) {
+            items.commentList
             var count = 0
             val convertedDate = MyApplication.convertDate(items.createdDate)
             val createdDate = convertedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
@@ -157,19 +166,31 @@ class BoardAdapter() :
             for (i in items.commentList) {
                 count += i.reCommentList.size
             }
-            if(MyApplication.prefs.getLong("postId",0)==items.id.toLong()){
-                Log.d("postId&commentcheck","################")
+            Log.d("count0","${count}")
+            for (i in 0 until items.commentList.size ) {
+                var j:Int=-1
+                if(items.commentList[i].userId!=j.toLong())
+                    ++count
+            }
+            Log.d("count1","${count}")
+            //Log.d("postIdchecFk","${ MainActivity.getInstance()?.getPostIdCheck()}")
+            if(MainActivity.getInstance()?.getPostIdCheck()==items.id.toLong()&&MainActivity.getInstance()?.getChangedPostCheck() == true){
+               // Log.d("postId&commentcheck","################")
+                Log.d("commentCount","${MyApplication.prefs.getInt("commentCount",0)}")
                 count+= MyApplication.prefs.getInt("commentCount",0)
+                Log.d("count2","${count}")
+                Log.d("DeleteCount","${DeleteCount}")
                 if(DeleteCount!=0){
                     count-= DeleteCount
-                    MyApplication.prefs.removeDeletedCount()
+                    Log.d("count3","${count}")
                 }
-                MyApplication.prefs.removePostId()
-                MyApplication.prefs.removeCommentCount()
+                //MyApplication.prefs.removePostId()
+
+                MainActivity.getInstance()?.setChangedPostCheck(false)
             }
-            count += items.commentList.size
+
+            //count += items.commentList.size
             binding.CommentCount.text = count.toString()
-            Log.d("imageid#####","${items.imageId[0]}")
             Glide.with(context!!)
                 .load("${MyApplication.getUrl()}image/${items.imageId[0]}") // 불러올 이미지 url
                 .override(100, 100)
@@ -186,14 +207,14 @@ class BoardAdapter() :
                     .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
             }else binding.BoardProfileImage.setImageResource(R.drawable.user)
             itemView.setOnClickListener {
+                MainActivity.getInstance()?.setPosition(position)
                 MainActivity.getInstance()?.goPostDetail(items)
             }
         }
     }
-
-    inner class BoardHolderType2(private val binding: ItemPostListNoImageBinding) :
+    inner class BoardHolderType2(private val binding: ItemPostListNoImageBinding,) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: Posts) {
+        fun bind(items: Posts,position: Int) {
            var count=0
             val convertedDate = MyApplication.convertDate(items.createdDate)
             val createdDate = convertedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
@@ -205,19 +226,26 @@ class BoardAdapter() :
             for (i in items.commentList) {
                 count += i.reCommentList.size
             }
-            if(MyApplication.prefs.getLong("postId",0)==items.id.toLong()){
+            Log.d("postIdchecFk","${ MainActivity.getInstance()?.getPostIdCheck()}")
+            if(MainActivity.getInstance()?.getPostIdCheck()==items.id.toLong()&&MainActivity.getInstance()?.getChangedPostCheck() == true){
                 Log.d("commentCount#####","${MyApplication.prefs.getInt("commentCount",0)}")
                 count+= MyApplication.prefs.getInt("commentCount",0)//추가한 댓글 더하기
                 Log.d("count1","${count}")
                 if(DeleteCount!=0){//삭제한 댓글 카운트
                     Log.d("deletecount##","${DeleteCount}")
                     count-= DeleteCount
-                    MyApplication.prefs.removeDeletedCount()
+                   // MyApplication.prefs.removeDeletedCount()
                 }
-                MyApplication.prefs.removePostId()
-                MyApplication.prefs.removeCommentCount()
+                //MyApplication.prefs.removePostId()
+               // MyApplication.prefs.removeCommentCount()
+                MainActivity.getInstance()?.setChangedPostCheck(false)
             }
-            count += items.commentList.size
+            for (i in 0 until items.commentList.size ) {
+                var j:Int=-1
+                if(items.commentList[i].userId!=j.toLong())
+                    ++count
+            }
+           // count += items.commentList.size
             binding.CommentCount.text = count.toString()
             if(items.authorProfileImageId!= noImage.toLong()){
                 Glide.with(context!!)
@@ -227,8 +255,8 @@ class BoardAdapter() :
                     .into(binding.BoardProfileImage) // 이미지를 넣을 뷰
             }else binding.BoardProfileImage.setImageResource(R.drawable.user)
             itemView.setOnClickListener {
-
-             MainActivity.getInstance()?.goPostDetail(items)
+                MainActivity.getInstance()?.setPosition(position)
+                MainActivity.getInstance()?.goPostDetail(items)
             }
         }
     }

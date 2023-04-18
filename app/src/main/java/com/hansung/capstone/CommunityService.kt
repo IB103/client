@@ -3,6 +3,7 @@ package com.hansung.capstone
 import com.hansung.capstone.board.*
 import com.hansung.capstone.post.ResultGetPostDetail
 import com.hansung.capstone.retrofit.RepComment
+import com.hansung.capstone.retrofit.ReqModifyPost
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -10,8 +11,21 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface CommunityService {
+    @PUT("api/community/post/modify")
+    fun modifyPost(
+        @Header("Authorization")accessToken:String,
+        @Body reqModifyPost: ReqModifyPost
+    ):Call<ResultGetPosts>
     @GET("api/community/post/list/all")
     fun getAllPost(
+        @Query("page") query: Int,
+    ): Call<ResultGetPosts>
+    @GET("api/community/post/list/free")
+    fun getAllFreePost(
+        @Query("page") query: Int,
+    ): Call<ResultGetPosts>
+    @GET("api/community/post/list/course")
+    fun getAllCoursePost(
         @Query("page") query: Int,
     ): Call<ResultGetPosts>
     @DELETE("api/community/post/delete")

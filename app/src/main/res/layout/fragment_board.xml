@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:textAlignment="center"
     tools:context=".BoardFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -12,8 +13,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/CommunityToolbar">
+        app:layout_constraintTop_toBottomOf="@+id/categorylayout"
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/resultAllPost"
@@ -69,6 +72,53 @@
             tools:layout_editor_absoluteX="55dp"
             tools:layout_editor_absoluteY="9dp" />
     </androidx.appcompat.widget.Toolbar>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/categorylayout"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CommunityToolbar">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/totalCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/press_border"
+            android:text="전체"
+            android:textAlignment="center"
+            android:textColor="@color/skyBlue2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/freeCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/normal_border"
+            android:padding="7dp"
+            android:text="자유 게시판"
+            android:textColor="@color/gray2"
+            app:layout_constraintStart_toEndOf="@id/totalCategory"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/courseCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/normal_border"
+            android:padding="7dp"
+            android:text="코스 추천 게시판"
+            android:textAlignment="center"
+            android:textColor="@color/gray2"
+            app:layout_constraintStart_toEndOf="@+id/freeCategory"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

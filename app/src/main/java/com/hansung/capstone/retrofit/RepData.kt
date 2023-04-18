@@ -2,6 +2,20 @@ package com.hansung.capstone.retrofit
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.http.POST
+data class Weather(
+    @SerializedName("main") val main: Main,
+    @SerializedName("weather") val weather: List<WeatherDetail>,
+    @SerializedName("name") val cityName: String
+)
+data class Main(
+    @SerializedName("temp") val temperature: Double,
+    @SerializedName("pressure") val pressure: Double,
+    @SerializedName("humidity") val humidity: Double
+)
+
+data class WeatherDetail(
+    @SerializedName("description") val description: String
+)
 
 data class RepLogin(
     @SerializedName("code")

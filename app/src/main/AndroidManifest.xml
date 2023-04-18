@@ -76,6 +76,7 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity" />
+        <activity android:name=".course.CourseActivity" />
         <activity
             android:name=".WriteActivity"
             android:windowSoftInputMode="adjustPan" />

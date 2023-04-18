@@ -1,6 +1,21 @@
 package com.hansung.capstone.retrofit
 
 import com.google.gson.annotations.SerializedName
+import okhttp3.MultipartBody
+
+data class ReqModifyPost(
+    var postId:Long,
+    var title:String,
+    var userId:Long,
+    var content:String,
+    var imageId: ArrayList<Long?>
+
+)
+data class ReqModifyProfileImage(
+    var userId:Long,
+    var profileImageId:Long
+
+    )
 
 data class ReqModifyComment(
     @SerializedName("commentId")

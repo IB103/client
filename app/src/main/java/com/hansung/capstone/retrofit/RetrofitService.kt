@@ -1,17 +1,46 @@
 package com.hansung.capstone.retrofit
 
+import com.google.gson.JsonObject
+import com.hansung.capstone.CommunityService
+import com.hansung.capstone.MyApplication
+import com.hansung.capstone.RequestParams
 import com.hansung.capstone.board.Posts
+import com.hansung.capstone.board.RePModifyProfileImage
 import com.hansung.capstone.board.ResultGetPosts
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 
 interface RetrofitService {
+    @Multipart
+    @PUT("/api/users/set-profile-image")
+    fun modifyProfileImage(
+        @Part("requestDTO") requestDTO: ReqModifyProfileImage,
+        @Part imageList: MultipartBody.Part
+    ):Call<RePModifyProfileImage>
+//    @GET("weather?")
+//    fun get(
+//        @Query("APPID") APPID: String,
+//        @Query("data") data: RequestParams
+//    ): Call<JsonObject>
+    @GET("weather?")
+    fun getWeather(
+        @Query("latitude") latitude: String,
+        @Query("longitude") longitude: String,
+        @Query("API_KEY") API_KEY: String
 
-    abstract val getReqDoubleCheckID: Any
-
+    ): Call<Weather>
+    @Multipart
+    @PUT("/api/community/post/modify")
+    fun modifyPost(
+        //@Header("Authorization")accessToken:String,
+        @Part("requestDTO") requestDTO: ReqModifyPost,
+        @Part imageList: List<MultipartBody.Part>
+    ):Call<ResultGetPosts>
     // Login
     @Headers("accept: application/json", "content-type: application/json")
     @POST("/api/users/signin")
@@ -84,4 +113,13 @@ interface RetrofitService {
     fun postReComment(
         @Body reqReComment: ReqReComment
     ): Call<RepComment>
+    companion object{
+        fun create() : RetrofitService {
+            return Retrofit.Builder()
+                .baseUrl(MyApplication.getUrl())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(RetrofitService::class.java)
+        }
+    }
 }

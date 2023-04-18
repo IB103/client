@@ -91,6 +91,7 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
         builder.setTitle("댓글 활동")
         var listener= DialogInterface.OnClickListener { dialog, which ->
             if(dataArr[which]==dataArr[0]){
+                MainActivity.getInstance()?.setChangedPostCheck(true)
                 DeleteComment().delete(accesstoken,userId,commentId)
             }
             else if(dataArr[which]==dataArr[1])

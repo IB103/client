@@ -59,8 +59,10 @@ class PostDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         postId = intent.getIntExtra("id", 0).toLong()
 
-        //MainActivity.getInstance()?.setPostIdCheck(postId)
+        MainActivity.getInstance()?.setPostIdCheck(postId)//postid 저장
+        Log.d("postIdchecFk@","${ MainActivity.getInstance()?.getPostIdCheck()}")
         binding.imageButton.setOnClickListener {
+            MainActivity.getInstance()?.setChangedPostCheck(true)//댓글 변화 감지
             if (MyApplication.prefs.getString("accesstoken", "") != ""&&binding.InsertComment.text!=null) {
                 val comment = binding.InsertComment.text.toString()
                 binding.InsertComment.text = null
@@ -69,7 +71,7 @@ class PostDetailActivity : AppCompatActivity() {
                     0->PostComment(this@PostDetailActivity).postComment(comment, postId, binding)
                     1->PostReComment(this@PostDetailActivity).post(comment,postId, commentId,binding)
                     2-> ModifyComment().modify(commentId.toLong(),comment)
-                    3-> ModifyRecomment().modify(recommentId.toLong(),comment)
+                    3-> ModifyRecomment().modify(recommentId,comment)
 
                 }
 
@@ -103,10 +105,16 @@ class PostDetailActivity : AppCompatActivity() {
                         convertedDate?.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
                     binding.PostDetailDate.text = createdDate
                     var count = 0
+
                     for (i in body?.data?.commentList!!) {
                         count += i.reCommentList.size
                     }
-                    count += body.data.commentList.size
+                    for (i in 0 until body?.data?.commentList!!.size) {
+                        var j:Int=-1
+                        if(body.data.commentList[i].userId!=j.toLong())
+                            ++count
+                    }
+                   // count += body.data.commentList.size
                     var post_Id_=body.data.id
                     //var userId=MyApplication.prefs.getInt("userId",0)
                     if(body.data.authorId==user_Id){
@@ -130,7 +138,7 @@ class PostDetailActivity : AppCompatActivity() {
                         0
                     }
                     // 좋아요 버튼
-                    buttonCheck = if (body.data.postVoterId.contains(12)) {
+                    buttonCheck = if (body.data.postVoterId.contains(user_Id.toLong())) {
                         binding.HeartB.setImageResource(R.drawable.ic_heart_check)
                         1
                     } else {
@@ -138,7 +146,7 @@ class PostDetailActivity : AppCompatActivity() {
                         0
                     }
                     binding.HeartB.setOnClickListener {
-                        api.checkFavorite(12, 94)
+                        api.checkFavorite(user_Id.toLong(), postId)
                             .enqueue(object : Callback<ResponseBody> {
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
@@ -168,7 +176,7 @@ class PostDetailActivity : AppCompatActivity() {
                         }
                     }
                     binding.StarB.setOnClickListener {
-                        api.checkScrap(user_Id.toLong(), postId.toLong())
+                        api.checkScrap(user_Id.toLong(), postId)
                             .enqueue(object : Callback<ResultRespond> {
                                 override fun onResponse(
                                     call: Call<ResultRespond>,
