@@ -170,7 +170,6 @@ class HomeFragment : Fragment() {
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener)
     }
 
-
      fun doweather() {
         var client = retrofit.create(RetrofitService::class.java)
           client.getWeather(latitude = latitude, longitude = longitude, API_KEY =  API_KEY).enqueue(object : Callback<Weather> {

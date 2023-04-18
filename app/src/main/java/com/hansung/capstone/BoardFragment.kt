@@ -238,6 +238,7 @@ class BoardFragment : Fragment() {
     private fun getallCoursePost(pagenum:Int){//다음 페이지 요청
         api.getAllPost(pagenum)
             .enqueue(object : Callback<ResultGetPosts> {
+                @SuppressLint("SuspiciousIndentation")
                 override fun onResponse(
                     call: Call<ResultGetPosts>,
                     response: Response<ResultGetPosts>,
