@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class WaypointSearchActivity : AppCompatActivity() {
+class WaypointsSearchActivity : AppCompatActivity() {
     val binding by lazy { ActivityWaypointSearchBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +60,7 @@ class WaypointSearchActivity : AppCompatActivity() {
                             // 검색 결과 리사이클러뷰에 적용
                             runOnUiThread {
                                 waypointSearchResultRecyclerview.adapter =
-                                    WaypointsSearchAdapter(this@WaypointSearchActivity, body)
+                                    WaypointsSearchAdapter(this@WaypointsSearchActivity, body)
                             }
                         }
                     }

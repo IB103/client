@@ -7,7 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -27,6 +29,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hansung.capstone.BuildConfig
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
@@ -39,6 +42,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
+import kotlinx.android.synthetic.main.fragment_map.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,15 +50,17 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-//class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallback, OnMapClickListener {
-class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallback {
+class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallback,
+    NaverMap.OnMapClickListener {
+    //class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallback {
     private lateinit var naverMap: NaverMap // 네이버 맵 객체
     private lateinit var locationSource: FusedLocationSource // 네이버 맵 객체에서 사용할 위치 소스
     private lateinit var binding: FragmentMapBinding // 맵 프래그먼트 바인딩
     private lateinit var fusedLocationClient: FusedLocationProviderClient // 사용자 위치를 따오기 위해
     private lateinit var lat: String
     private lateinit var lng: String
-//    private var mapState = 0
+
+    private var mapState = 0
 
     private var requestPermissionLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permission ->
@@ -181,6 +187,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                                     path.outlineWidth = 0
                                     path.color = Color.BLUE
                                     path.map = naverMap
+                                    naverMap.lightness = 0.3f
                                 }
                             }
 
@@ -199,43 +206,67 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
             myLauncher.launch(intent)
         }
 
+//        binding.button.setOnClickListener {
+//            val coords =
+//            val decodecoords = decode(coords)
+//            val routeLatLng: MutableList<LatLng> =
+//                emptyList<LatLng>().toMutableList()
+//            for (z in decodecoords) {
+//                routeLatLng += LatLng(z.latitude, z.longitude)
+//            }
+//            path.coords = routeLatLng
+//            path.outlineWidth = 0
+//            path.color = Color.BLUE
+//            path.map = naverMap
+//            val  directionBox = binding.directionBox// view.findViewById<FrameLayout>(R.id.direction_box)
+//            directionBox.y = -view.height.toFloat()
+//            if (directionBox.visibility == View.GONE) {
+//                directionBox.visibility = View.VISIBLE
+//                // 프레임 레이아웃이 나타나는 애니메이션을 추가합니다.
+//                directionBox.animate().translationY(0f).setDuration(500).start()
+//            }
+//            directionBox.visibility = View.VISIBLE
+//            directionBox!!.animate()?.translationY(0F)?.duration = 300
+//        }
     }
 
-//    override fun onMapClick(p0: PointF, p1: LatLng) {
-//        Log.d("1", mapState.toString())
-//        // 메인의 바텀 내비게이션
-//        val bottomNavigationView =
-//            activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-//        // 검색창 레이아웃
-//        val searchBoxLayout = binding.searchBoxLayout
+
+    override fun onMapClick(p0: PointF, p1: LatLng) {
+        Log.d("1", mapState.toString())
+        // 메인의 바텀 내비게이션
+        val bottomNavigationView =
+            activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        // 검색창 레이아웃
+        val searchBoxLayout = binding.searchBoxLayout
 //        val naverUiLayout = binding.naverUiLayout
-//
-//        if (mapState == 0) {
-//            Log.d("2", mapState.toString())
-//            // 애니메이션 설정
-//            bottomNavigationView?.animate()
-//                ?.translationY(bottomNavigationView.height.toFloat())?.duration = 300
-//            searchBoxLayout.animate()?.translationY(-searchBoxLayout.height.toFloat())?.duration = 300
+
+        if (mapState == 0) {
+            Log.d("2", mapState.toString())
+            // 애니메이션 설정
+            bottomNavigationView?.animate()
+                ?.translationY(bottomNavigationView.height.toFloat())?.duration = 300
+            searchBoxLayout.animate()?.translationY(-searchBoxLayout.height.toFloat())?.duration =
+                300
 //            naverUiLayout.animate()?.translationY(bottomNavigationView?.height?.toFloat()!!)?.duration = 300
-//
-//            // 사라지게
-////            bottomNavigationView?.visibility = View.GONE
-////            searchBoxLayout.visibility = View.GONE
-//            mapState = 1
-//        } else if (mapState == 1) {
-//            Log.d("3", mapState.toString())
-//            // visibility 속성 변경
-//            bottomNavigationView?.visibility = View.VISIBLE
-//            searchBoxLayout.visibility = View.VISIBLE
-//
-//
-//            // 올라가는 애니메이션 설정
-//            bottomNavigationView?.animate()?.translationY(0F)?.duration = 300
-//            searchBoxLayout.animate()?.translationY(0F)?.duration = 300
+
+            // 사라지게
+//            bottomNavigationView?.visibility = View.GONE
+//            searchBoxLayout.visibility = View.GONE
+            mapState = 1
+        } else if (mapState == 1) {
+            Log.d("3", mapState.toString())
+            // visibility 속성 변경
+            bottomNavigationView?.visibility = View.VISIBLE
+            searchBoxLayout.visibility = View.VISIBLE
+
+
+            // 올라가는 애니메이션 설정
+            bottomNavigationView?.animate()?.translationY(0F)?.duration = 300
+            searchBoxLayout.animate()?.translationY(0F)?.duration = 300
 //            naverUiLayout.animate()?.translationY(0F)?.duration = 300
-//            mapState = 0
-//        }
-//    }
+            mapState = 0
+        }
+    }
 
 
     private fun locationSearch() {
@@ -353,7 +384,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
 
         // 메인의 객체와 연결
         this.naverMap = naverMap
-
+        naverMap.lightness = 0f
         naverMap.locationSource = locationSource
 
         val uiSettings = naverMap.uiSettings
@@ -380,12 +411,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
 //        naverMap.symbolScale = 1f
 //        naverMap.isIndoorEnabled = true
 
-//        binding.snapshotB.setOnClickListener {
+        binding.snapshotB.setOnClickListener {
 //            val bitmapImage: Bitmap = viewToBitmap(mapView)
-//            naverMap.takeSnapshot {
-//                onSnapshotReady(it)
-//            }
-//        }
+            naverMap.takeSnapshot {
+                onSnapshotReady(it)
+            }
+        }
 
 
         // 사용자 인터페이스 설정
@@ -393,7 +424,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
 //        binding.locationButtonView.map = naverMap
 //        val bottomNavigationView =
 //            activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-//        naverMap.onMapClickListener = this
+        naverMap.onMapClickListener = this
 //        uiSettings.isLocationButtonEnabled = false
 //        uiSettings.isScaleBarEnabled = false
 //        uiSettings.logoGravity=Gravity.BOTTOM
@@ -533,7 +564,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
         )
     }
 
-//    fun Activity.setStatusBarTransparent() {
+    override fun onResume() {
+        super.onResume()
+//        naverMap.
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    //    fun Activity.setStatusBarTransparent() {
 //        window.apply {
 //            setFlags(
 //                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,

@@ -3,8 +3,15 @@ package com.hansung.capstone.post
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.hansung.capstone.MyApplication
 import com.hansung.capstone.databinding.ActivityImageFullScreenBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ImageFullScreenActivity : AppCompatActivity() {
 
@@ -19,7 +26,7 @@ class ImageFullScreenActivity : AppCompatActivity() {
         val position = intent.getIntExtra("position", 0)
         val imageList = imageArray!!.toList()
 
-        val imageDetailAdapter = ImageDetailAdapter(this@ImageFullScreenActivity)
+        val imageDetailAdapter = ImageDetailAdapter(this@ImageFullScreenActivity,binding)
         imageDetailAdapter.imageList = imageList.toList()
         binding.fullScreenViewPager.adapter = imageDetailAdapter
         binding.fullScreenViewPager.setCurrentItem(position, false)

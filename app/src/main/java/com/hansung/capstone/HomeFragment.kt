@@ -102,6 +102,8 @@ class HomeFragment : Fragment() {
             val intent = Intent(activity, CourseActivity::class.java)
             startActivity(intent)
         }
+        //        binding.imageView4.setOnClickListener {
+//            val intent = Intent(activity, RidingActivity::class.java)
         if(MyApplication.prefs.getString("nickname", "")!=""){
         binding.tvNick.setText( "${MyApplication.prefs.getString("nickname", "")}")
         binding.tvEmail.text =

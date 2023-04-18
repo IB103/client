@@ -8,6 +8,10 @@ import java.time.format.DateTimeFormatter
 
 class MyApplication : Application() {
 
+//    val ridingViewModel by lazy {
+//        ViewModelProvider.AndroidViewModelFactory.getInstance(this).create(RidingViewModel::class.java)
+//    }
+
     init{
         instance = this
     }

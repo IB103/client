@@ -29,6 +29,8 @@ class WaypointsAdapter(
         when (position) {
             0 -> {
                 viewHolder.waypointText.hint = "출발지 입력"
+                viewHolder.addWaypoint.visibility = View.INVISIBLE
+                viewHolder.removeWaypoint.visibility = View.INVISIBLE
 //                viewHolder.addWaypoint
             }
             itemCount - 1 -> {
@@ -43,16 +45,21 @@ class WaypointsAdapter(
             }
         }
         viewHolder.itemView.setOnClickListener {
-            val intent = Intent(directionsActivity, WaypointSearchActivity::class.java)
-            intent.putExtra("position", position)
+            Log.d("포지션1",position.toString())
+            val intent = Intent(directionsActivity, WaypointsSearchActivity::class.java)
+//            intent.putExtra("position", position)
+            intent.putExtra("position", viewHolder.adapterPosition)
+            Log.d("포지션2",position.toString())
 //            directionsActivity.startActivityForResult(intent, 1)
 //            directionsActivity.launch(intent)
             directionsActivity.myLauncher.launch(intent)
         }
         viewHolder.addWaypoint.setOnClickListener {
+            Log.d("포지션+",position.toString())
             addItem(itemCount - 1)
         }
         viewHolder.removeWaypoint.setOnClickListener {
+            Log.d("포지션-",position.toString())
             removeItem(position)
         }
     }
@@ -70,6 +77,8 @@ class WaypointsAdapter(
             if (items.place_name != null) {
                 waypointText.text = items.place_name
             }
+            else
+                waypointText.text = null
         }
     }
 
@@ -83,6 +92,9 @@ class WaypointsAdapter(
     private fun addItem(position: Int) {
         waypoints.add(position, Waypoint())
         Log.d("size", waypoints.count().toString())
+//        for (i in position + 1 until waypoints.count()) {
+//            notifyItemChanged(i)
+//        }
         notifyItemInserted(position)
     }
 
@@ -90,7 +102,10 @@ class WaypointsAdapter(
         waypoints.removeAt(position)
         Log.d("size", waypoints.count().toString())
         notifyItemRemoved(position)
-        notifyItemChanged(itemCount - 1)
+//        for (i in position until waypoints.count()) {
+//            notifyItemChanged(i)
+//        }
+//        notifyItemChanged(itemCount - 1)
     }
 
     fun makeWaypointsDirectionQuery(waypoints: MutableList<Waypoint>): String {

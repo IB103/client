@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.databinding.ItemWaypointSearchResultRecyclerviewBinding
 
 class WaypointsSearchAdapter(
-    val waypointSearchActivity: WaypointSearchActivity,
+    val waypointsSearchActivity: WaypointsSearchActivity,
     private val resultSearchKeyword: ResultSearchKeyword
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -37,7 +37,7 @@ class WaypointsSearchAdapter(
             binding.placeName.text = items.place_name
             binding.addressName.text = items.address_name
             itemView.setOnClickListener {
-                val position = waypointSearchActivity.intent.getIntExtra("position", -1)
+                val position = waypointsSearchActivity.intent.getIntExtra("position", -1)
                 Log.d("포지션", position.toString())
                 // "전달할 값"이라는 문자열을 포함하는 Intent 생성
                 val resultIntent = Intent()
@@ -47,10 +47,10 @@ class WaypointsSearchAdapter(
                 resultIntent.putExtra("place_lng", items.x)
 
                 // setResult()를 사용하여 결과 데이터 설정
-                waypointSearchActivity.setResult(Activity.RESULT_OK, resultIntent)
+                waypointsSearchActivity.setResult(Activity.RESULT_OK, resultIntent)
 
                 // 액티비티 종료
-                waypointSearchActivity.finish()
+                waypointsSearchActivity.finish()
             }
         }
     }

@@ -35,7 +35,7 @@ class PostDetailActivity : AppCompatActivity() {
 
     companion object {
         var scrapCheck:Int=0
-        var buttonCheck: Int = 0
+        var heartCheck: Int = 0
         var title_m=""
         var content_m=""
         var imageList_m= listOf<Int?>()
@@ -130,6 +130,8 @@ class PostDetailActivity : AppCompatActivity() {
                     binding.BackToList.setOnClickListener {
                         finish()
                     }
+
+
                     scrapCheck = if (body.data.postScraperId.contains(user_Id.toLong())) {
                         binding.StarB.setImageResource(R.drawable.ic_star_check)
                         1
@@ -137,8 +139,16 @@ class PostDetailActivity : AppCompatActivity() {
                         binding.StarB.setImageResource(R.drawable.ic_star_no_check)
                         0
                     }
+//                    heartCheck = if (body.data.postScraperId.contains(user_Id.toLong())) {
+//                        binding.heartB.setImageResource(R.drawable.ic_heart_check)
+//                        1
+//                    } else {
+//                        binding.heartB.setImageResource(R.drawable.ic_heart_no_check)
+//                        0
+//                    }
                     // 좋아요 버튼
-                    buttonCheck = if (body.data.postVoterId.contains(user_Id.toLong())) {
+//                    buttonCheck = if (body.data.postVoterId.contains(user_Id.toLong())) {
+                    heartCheck = if (body.data.postVoterId.contains(user_Id.toLong())) {
                         binding.HeartB.setImageResource(R.drawable.ic_heart_check)
                         1
                     } else {
@@ -161,16 +171,16 @@ class PostDetailActivity : AppCompatActivity() {
                                 }
                             })
                         runOnUiThread {
-                            when (buttonCheck) {
+                            when (heartCheck) {
                                 0 -> {
                                     binding.HeartB.setImageResource(R.drawable.ic_heart_check)
                                     binding.HeartCount.text = "${++heartCount}"
-                                    buttonCheck = 1
+                                    heartCheck = 1
                                 }
                                 else -> {
                                     binding.HeartB.setImageResource(R.drawable.ic_heart_no_check)
                                     binding.HeartCount.text = "${--heartCount}"
-                                    buttonCheck = 0
+                                    heartCheck = 0
                                 }
                             }
                         }

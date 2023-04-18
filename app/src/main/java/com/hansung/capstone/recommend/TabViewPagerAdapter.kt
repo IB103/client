@@ -3,7 +3,7 @@ package com.hansung.capstone.recommend
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class TabViewPagerAdapter(recommendFragment: RecommendFragment):FragmentStateAdapter(recommendFragment) {
+class TabViewPagerAdapter(recommendFragment: RecommendBottomFragment):FragmentStateAdapter(recommendFragment) {
     var fragments: ArrayList<Fragment> = ArrayList()
 
     override fun getItemCount(): Int {
@@ -25,5 +25,7 @@ class TabViewPagerAdapter(recommendFragment: RecommendFragment):FragmentStateAda
         notifyItemRemoved(fragments.size)
         //TODO: notifyItemRemoved!!
     }
+
+
 
 }

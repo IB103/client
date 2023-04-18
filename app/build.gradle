@@ -103,4 +103,5 @@ dependencies {
     // tabLayout
     implementation 'com.google.android.material:material:1.8.0'
 
+    implementation 'androidx.lifecycle:lifecycle-service:2.4.0'
 }

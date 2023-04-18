@@ -5,8 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".MyApplication"
@@ -20,8 +22,14 @@
         android:theme="@style/Theme.Capstone"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <service
+            android:name=".RidingService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="location"/>
+
         <activity
-            android:name=".map.WaypointSearchActivity"
+            android:name=".map.WaypointsSearchActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
