@@ -6,12 +6,17 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
+        android:minSdkVersion="33" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -37,8 +42,7 @@
             android:name=".RidingService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="location"
-            />
+            android:foregroundServiceType="location" />
 
         <activity
             android:name=".map.WaypointsSearchActivity"
@@ -83,8 +87,8 @@
 
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -104,7 +108,7 @@
             android:name=".WriteActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modify.ModifyNickActivity" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
         <activity android:name=".MyStory" />
         <activity android:name=".MyScrap" />
         <activity
