@@ -10,10 +10,6 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.hansung.capstone.databinding.ActivityLoginBinding
 import com.hansung.capstone.retrofit.RepLogin
 import com.hansung.capstone.retrofit.ReqLogin
@@ -24,30 +20,32 @@ import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 
 class LoginActivity : AppCompatActivity() {
-    var kakao_email: String? = null
-    var kakao_nickname: String? = null
-    var manager: FragmentManager = supportFragmentManager
-    val gson: Gson = GsonBuilder().setLenient().create()
-    var server_info = MyApplication.getUrl() //username password1 password2 email
-    var retrofit = Retrofit.Builder().baseUrl("$server_info")
-        .addConverterFactory(GsonConverterFactory.create(gson)).build()
-    var service = retrofit.create(RetrofitService::class.java)
+    var token=Token()
+    private var kakaoEmail: String? = null
+    private var kakaoNickname: String? = null
+    var service = RetrofitService.create()
+    private var loginNeeded:Boolean=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var binding = ActivityLoginBinding.inflate(layoutInflater)
+        val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loginNeeded = intent.getBooleanExtra("loginNeeded", false)
+        if(loginNeeded){
+            Toast.makeText(this, "로그인이 필요한 활동입니다", Toast.LENGTH_SHORT).show()
+
+
+        }
 
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
-               // Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
 
             } else if (tokenInfo != null) {
                 //Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
-                Log.d("1", "${tokenInfo}")
+                Log.d("1", "$tokenInfo")
                 updateKakaoLoginInfo()
                 val intent = Intent(this, MyPageFragment::class.java)
                 setResult(RESULT_OK, intent)
@@ -93,38 +91,49 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }
+        binding.findId.setOnClickListener {
+            val intent = Intent(this, FindIdActivity::class.java)
+            startActivity(intent)
+           // finish()
+        }
+        binding.findPw.setOnClickListener {
+            val intent = Intent(this, FindPwActivity::class.java)
+            startActivity(intent)
+            // finish()
+        }
         binding.loginbt.setOnClickListener {
             val email = binding.idtext.text.toString()
             val pw = binding.pwtext.text.toString()
             Log.d("Email", email)
             Log.d("Pw", pw)
             //////////////////////////////
-            var postReqLogin = ReqLogin(email, pw)
+            val postReqLogin = ReqLogin(email, pw)
             service.login(postReqLogin).enqueue(object : Callback<RepLogin> {
                 @SuppressLint("Range")
                 override fun onResponse(call: Call<RepLogin>, response: Response<RepLogin>) {
                     if (response.isSuccessful) {
                         Log.d("req", "OK")
-                        var result: RepLogin? = response.body()
-                        if (response.code() == 200) {//수정해야함
+                        val result: RepLogin? = response.body()
+                        if (response.code() == 200) {
                             if (result?.code == 100) {
-                                Log.d("로그인", "성공:" + result)
+                                Log.d("로그인", "성공:$result")
                                 Log.d("로그인", "닉네임" + result.data.nickname)
-                                // Toast.makeText(this, "로그인이 완료됐습니다.", Toast.LENGTH_SHORT).show()
                                 MyApplication.prefs.setString("email", email)
                                 MyApplication.prefs.setString("nickname", result.data.nickname)
-                                MyApplication.prefs.setString("accesstoken", result.data.tokenInfo.accessToken)
-                                MyApplication.prefs.setInt("profileImageId", result.data.profileImageId)
-                                MyApplication.prefs.setInt("userId",result.data.userId)
-                                test()
+                                MyApplication.prefs.setString("accessToken", result.data.tokenInfo.accessToken)
+                                MyApplication.prefs.setString("refreshToken", result.data.tokenInfo.refreshToken)
+
+                                MyApplication.prefs.setLong("profileImageId", result.data.profileImageId)
+                                MyApplication.prefs.setLong("userId",result.data.userId)
+                                token.set()
                                 setResult(RESULT_OK)
+                                MainActivity.getInstance()!!.setLoginState(true)
                                 finish()
                             } else {
                                 Log.d("ERR", "실패: " + result?.toString())
                             }
                         }
                     } else {
-                        // 통신이 실패한 경우(응답코드 3xx, 4xx 등)
                         Log.d("ERR", "onResponse 실패")
                         MyApplication.prefs.setString("Login", "fail")
 
@@ -132,7 +141,6 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<RepLogin>, t: Throwable) {
-                    // 통신 실패 (인터넷 끊킴, 예외 발생 등 시스템적인 이유)
                     Log.d("ERR", "onFailure 에러: " + t.message.toString())
                     MyApplication.prefs.setString("Login", "fail")
                 }
@@ -156,21 +164,21 @@ class LoginActivity : AppCompatActivity() {
             if (error != null) {
                 Log.e(ContentValues.TAG, "사용자 정보 요청 실패", error)
             } else if (user != null) {
-                kakao_email = "${user.kakaoAccount?.email}"
-                MyApplication.prefs.setString("id", "${kakao_email}")
-                Log.d("kakaoemail:", MyApplication.prefs.getString("id", ""))
-                kakao_nickname = user.kakaoAccount?.profile?.nickname
-                MyApplication.prefs.setString("nickname", "${kakao_nickname}")
+                kakaoEmail = "${user.kakaoAccount?.email}"
+                MyApplication.prefs.setString("id", "$kakaoEmail")
+                Log.d("kakaoEmail:", MyApplication.prefs.getString("id", ""))
+                kakaoNickname = user.kakaoAccount?.profile?.nickname
+                MyApplication.prefs.setString("nickname", "$kakaoNickname")
                 MyApplication.prefs.setString("state", "kakao")
                 val intent = Intent(this, MyPageFragment::class.java)
                 setResult(RESULT_OK, intent)
                 finish()
                 Log.i(
                     ContentValues.TAG, "사용자 정보 요청 성공" +
-                            "\n회원번호: ${user.id}" +
+                            "\n번호: ${user.id}" +
                             "\n이메일: ${user.kakaoAccount?.email}" +
                             "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                            "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                            "\n프로필: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
                 )
             }
         }
@@ -187,32 +195,12 @@ class LoginActivity : AppCompatActivity() {
 
             if (!rect.contains(x, y)) {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm?.hideSoftInputFromWindow(focusView.windowToken, 0)
+                imm.hideSoftInputFromWindow(focusView.windowToken, 0)
                 focusView.clearFocus()
             }
         }
         return super.dispatchTouchEvent(ev)
     }
 
-    fun test() {
-        service.test(accessToken = "Bearer ${MyApplication.prefs.getString("accesstoken","")}").enqueue(object : Callback<String> {
-            @SuppressLint("Range")
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    Log.d("test", "OK")
-                    var result:String = response.body().toString()
-                    if (response.code() == 200) {//수정해야함
-                        Log.d("test", "성공:" + result)
-                    }
-                } else {
-                    // 통신이 실패한 경우(응답코드 3xx, 4xx 등)
-                    Log.d("ERR", "onResponse test 실패")
-                }
-            }
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("ERR", "onFailure 에러: " + t.message.toString())
-            }
-        })
-    }
 
 }

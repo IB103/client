@@ -65,12 +65,12 @@
         android:background="@drawable/textbox"
         android:ems="10"
         android:hint="USER NAME"
-        android:inputType="textPassword"
+        android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/Birthday"
         app:layout_constraintTop_toBottomOf="@+id/Birthday" />
 
-    <EditText
+    <TextView
         android:id="@+id/Birthday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -78,10 +78,15 @@
         android:background="@drawable/textbox"
         android:ems="10"
         android:hint="BIRTHDAY"
-        android:inputType="textPassword"
+
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/NickName"
-        app:layout_constraintTop_toBottomOf="@+id/NickName" />
+        app:layout_constraintTop_toBottomOf="@+id/NickName" >
+
+    </TextView>
+
+
+
 
     <EditText
         android:id="@+id/NickName"
@@ -90,7 +95,7 @@
         android:layout_marginTop="32dp"
         android:background="@drawable/textbox"
         android:hint="NICKNAME"
-        android:inputType="textPassword"
+        android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/pwCheck"
         app:layout_constraintTop_toBottomOf="@+id/pwCheck"

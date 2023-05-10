@@ -15,6 +15,11 @@ class MyStory: AppCompatActivity() {
     private var page = 0
     private lateinit var resultAllPost: RecyclerView
     lateinit var binding: ActivityMystoryBinding
+    var body:ResultGetPosts?=null
+    val api = CommunityService.create()
+    var adapter= BoardAdapter()
+    val nickname=MyApplication.prefs.getString("nickname","")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMystoryBinding.inflate(layoutInflater)
@@ -24,13 +29,12 @@ class MyStory: AppCompatActivity() {
         supportActionBar?.title = ""
         resultAllPost =binding.resultAllPostMine
         resultAllPost.addItemDecoration(BoardAdapterDecoration())
-       var adapter:BoardAdapter
+        resultAllPost.adapter=adapter
 
-        val api = CommunityService.create()
         val swipe =binding.MystorySwipe
-        val nickname=MyApplication.prefs.getString("nickname","")
-        adapter=BoardAdapter()
+
         swipe.setOnRefreshListener {
+            page=0
             api.getPostMyStory(nickname,0)
                 .enqueue(object : Callback<ResultGetPosts> {
                     override fun onResponse(
@@ -38,14 +42,10 @@ class MyStory: AppCompatActivity() {
                         response: Response<ResultGetPosts>
                     ) {
                         Log.d("getPostMyStory:", "성공 : ${response.body().toString()}")
-                        val body = response.body()
-                       var board: ArrayList<Posts> = ArrayList()
+                         body = response.body()
+                       val board: ArrayList<Posts> = ArrayList()
                         board.addAll(body!!.data)
-                        adapter.moreItems((body!!.data as ArrayList<Posts>))
-//                        runOnUiThread {
-//                            resultAllPost.adapter=
-//                                body?.let {it->BoardAdapter(it)  }
-//                        }
+                        adapter.renewItems((body!!.data as ArrayList<Posts>))
                     }
 
                     override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
@@ -55,7 +55,16 @@ class MyStory: AppCompatActivity() {
             swipe.isRefreshing = false
 
         }
-        Log.d("nickname","${MyApplication.prefs.getString("nickname","")}")
+        resultAllPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 스크롤 끝까지 도달 새로운 데이터 로드
+                if (!recyclerView.canScrollVertically(1)){//&&page<body!!.totalPage) {
+                   getAllPost(page++)
+                }
+            }
+        })
+        Log.d("nickname", MyApplication.prefs.getString("nickname",""))
         api.getPostMyStory(nickname = nickname,page=page++)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
@@ -64,33 +73,32 @@ class MyStory: AppCompatActivity() {
                 ) {
                     Log.d("getPostMyStory:", "성공 : ${response.body().toString()}")
                     val body = response.body()
-                    runOnUiThread {
-                        resultAllPost.adapter=
-                            body?.let {it->baseContext?.let{it1-> MyStoryAdapter(it,it1) }  }
-                    }
+                    adapter.setInitItems(body!!.data as ArrayList<Posts>)
+
                 }
                 override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
                     Log.d("getPostMyStory:", "실패 : $t")
                 }
             })
-//        api.getAllPost(page++)
-//            .enqueue(object : Callback<ResultGetPosts> {
-//                override fun onResponse(
-//                    call: Call<ResultGetPosts>,
-//                    response: Response<ResultGetPosts>
-//                ) {
-//                    Log.d("getAllPost:", "성공 : ${response.body().toString()}")
-//                    val body = response.body()
-//                    runOnUiThread {
-//                        resultAllPost.adapter=
-//                            body?.let {it->baseContext?.let{it1-> BoardAdapter(it,it1) }  }
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
-//                    Log.d("getAllPost:", "실패 : $t")
-//                }
-//            })
+
+
+    }
+    private fun getAllPost(page:Int){
+        api.getPostMyStory(nickname,page)
+            .enqueue(object : Callback<ResultGetPosts> {
+                override fun onResponse(
+                    call: Call<ResultGetPosts>,
+                    response: Response<ResultGetPosts>
+                ) {
+                    Log.d("getAllPost:", "성공 : ${response.body().toString()}")
+                    body = response.body()
+                   adapter.moreItems(body!!.data as ArrayList<Posts>)
+                }
+
+                override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
+                    Log.d("getAllPost:", "실패 : $t")
+                }
+            })
 
 
     }

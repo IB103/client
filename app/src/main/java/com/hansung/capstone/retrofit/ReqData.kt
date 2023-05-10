@@ -86,7 +86,7 @@ data class ReqModifyNick(
 
 data class ReqPost(
     @SerializedName("userId")
-    val userId:Int,
+    val userId:Long,
     @SerializedName("title")
     val title:String,
     @SerializedName("category")
@@ -98,7 +98,7 @@ data class ReqComment(
     @SerializedName("postId")
     val postId:Long,
     @SerializedName("userId")
-    val userId:Int,
+    val userId:Long,
     @SerializedName("content")
     val content:String
 
@@ -107,9 +107,9 @@ data class ReqReComment(
     @SerializedName("postId")
     val postId:Long,
     @SerializedName("commentId")
-    val commentId:Int,
+    val commentId:Long,
     @SerializedName("userId")
-    val userId:Int,
+    val userId:Long,
     @SerializedName("content")
     val content:String
 )

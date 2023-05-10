@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.RequestParams
+import com.hansung.capstone.board.ModifyPost
 import com.hansung.capstone.board.Posts
 import com.hansung.capstone.board.RePModifyProfileImage
 import com.hansung.capstone.board.ResultGetPosts
@@ -16,23 +17,38 @@ import retrofit2.http.*
 
 
 interface RetrofitService {
+    @POST("/api/email/send")
+    fun send(
+        @Query("email") email: String
+    ):Call<RepSend>
+    @POST("/api/email/confirm")
+    fun confirm(
+        @Query("email") email: String,
+        @Query("code") code: String
+    ):Call<RepConfirm>
+    @GET("/api/users/findID")
+    fun findID(
+        @Query("username") username: String,
+        @Query("birthday") birthday: String
+    ): Call<RepFindId>
+    @POST("/api/auth/reissue")
+    fun reissue(
+        @Header("Authorization") accessToken:String,
+        @Header("Refresh-Token") refreshToken:String
+    ):Call<RespondToken>//수정해야함
+
     @Multipart
-    @PUT("/api/users/set-profile-image")
+    @PUT("api/users/set-profile-image")
     fun modifyProfileImage(
         @Part("requestDTO") requestDTO: ReqModifyProfileImage,
         @Part imageList: MultipartBody.Part
     ):Call<RePModifyProfileImage>
-//    @GET("weather?")
-//    fun get(
-//        @Query("APPID") APPID: String,
-//        @Query("data") data: RequestParams
-//    ): Call<JsonObject>
+
     @GET("weather?")
     fun getWeather(
-        @Query("latitude") latitude: String,
-        @Query("longitude") longitude: String,
-        @Query("API_KEY") API_KEY: String
-
+        @Query("lat") latitude: String,
+        @Query("lon") longitude: String,
+        @Query("appid") API_KEY: String
     ): Call<Weather>
     @Multipart
     @PUT("/api/community/post/modify")
@@ -40,7 +56,7 @@ interface RetrofitService {
         //@Header("Authorization")accessToken:String,
         @Part("requestDTO") requestDTO: ReqModifyPost,
         @Part imageList: List<MultipartBody.Part>
-    ):Call<ResultGetPosts>
+    ):Call<ModifyPost>
     // Login
     @Headers("accept: application/json", "content-type: application/json")
     @POST("/api/users/signin")
@@ -82,7 +98,7 @@ interface RetrofitService {
 
     @GET("profile-image/{id}")
     fun getProfileImage(
-        @Path("id") id: Int,
+        @Path("id") id: Long,
     ): Call<ResponseBody>
 
     @Multipart

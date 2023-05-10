@@ -15,9 +15,8 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/app_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Capstone"
         android:usesCleartextTraffic="true"
@@ -69,30 +68,37 @@
             android:value="${naver_maps_api_id}" />
 
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity android:name=".LoginActivity" />
+        <activity android:name=".FindIdActivity" />
         <activity android:name=".SignUpActivity" />
+        <activity android:name=".FindPwActivity" />
+        <activity android:name=".modify.ModifyActivity" />
         <activity android:name=".course.CourseActivity" />
         <activity
             android:name=".WriteActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".ModifyNickActivity" />
+        <activity android:name=".modify.ModifyNickActivity" />
+        <activity android:name=".MainActivity"/>
         <activity android:name=".MyStory" />
+        <activity android:name=".MyScrap" />
         <activity
+
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="MissingClass">
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

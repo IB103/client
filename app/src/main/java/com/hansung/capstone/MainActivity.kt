@@ -3,25 +3,12 @@ package com.hansung.capstone
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.maps.MapFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hansung.capstone.board.Posts
 import com.hansung.capstone.post.PostDetailActivity
 import com.hansung.capstone.recommend.RecommendFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_home.*
 
 class MainActivity : AppCompatActivity() {
     init {
@@ -29,12 +16,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        var category:String="TOTAL"
+        var showPost:Posts?=null
+        var commentCount=0
+        var deleteCount=0
+        var login:Boolean=false
         var position:Int=-1
-        var postIdCheck:Long=0
-        var changeAtPostCheck=false
-        var deleteCheck=false
-        var writeCheck=false
+        var stateCheck=-1
         var modifyCheck=false
         private var instance: MainActivity? = null
         fun getInstance(): MainActivity? {
@@ -42,19 +29,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    var modify_title:String=""
-    var modify_content:String=""
-    var modify_imageList=listOf<Int?>()
-    var commentCheck:Int=0
+    var modifyTitle:String=""
+    var modifyContent:String=""
+    var modifyImagelist=listOf<Int?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 바텀네비게이션 관련 설정
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentLayout) as NavHostFragment
-         val navController = navHostFragment.navController
+
          val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView?.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -122,62 +105,58 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+    fun setCommentCount(int:Int){
+        if(int==-1)
+            commentCount=0
+        else commentCount+=int
 
-    fun setCategory(str:String){
-        category=str
     }
-        fun getCategory():String{
-        return category
+    fun getCommentCount():Int{
+        return commentCount
     }
-    fun setPosition(int:Int){
-        position=int
+    fun setDeletedCommentCount(int:Int){
+        if(int==-1)
+            deleteCount=0
+        else deleteCount+=int
     }
-        fun getPosition():Int{
-        return position
+    fun getDeletedCommentCount():Int{
+        return deleteCount
+    }
+    fun setLoginState(bool:Boolean){
+        login=bool
+    } fun getLoginState():Boolean{
+        return login
+
+    }
+    fun stateCheck(int:Int){
+        stateCheck=int
+    }
+    fun getStateCheck():Int{
+        return stateCheck
     }
 
-
-    fun deleteCheck(boolean: Boolean){
-        deleteCheck=boolean
-    }
-    fun getdeleteCheck():Boolean{
-        return deleteCheck
-    }
-    fun writeCheck(boolean: Boolean){
-        writeCheck=boolean
-    }
-    fun getwriteCheck():Boolean{
-        return writeCheck
-    }
     fun setModifyCheck(boolean: Boolean){
         modifyCheck=boolean
     }
-    fun getmodifyCheck():Boolean{
+    @Suppress("UNREACHABLE_CODE")
+    fun getModifyCheck():Boolean{
         return modifyCheck
-        modifyCheck=false
     }
-    fun setChangedPostCheck(bool:Boolean){
-        changeAtPostCheck=bool
-    }
-    fun getChangedPostCheck():Boolean{
-        return changeAtPostCheck
-    }
+
     fun setModifyInform(title:String, content:String, image: List<Int?>){
-        modify_title=title
-        modify_content=content
-        modify_imageList=image
+        modifyTitle=title
+        modifyContent=content
+        modifyImagelist=image
     }
-    fun setPostIdCheck(long:Long){
-        postIdCheck=long
-    }
-    fun getPostIdCheck():Long{
-        return postIdCheck
+
+    fun getChangedPost():Posts{
+        return showPost!!
     }
     fun goPostDetail(post:Posts) {
 
         val intent = Intent(this, PostDetailActivity::class.java)
-
-        intent.putExtra("id",post.id)
+        showPost=post
+        intent.putExtra("postid",post.id)
         startActivity(intent)
     }
     //    fun goWriteDetail(post:Posts) {
@@ -185,16 +164,7 @@ class MainActivity : AppCompatActivity() {
 //        intent.putExtra("id",post.id)
 //        startActivity(intent)
 //    }
-    fun CommentCheck():Int{
-        return commentCheck
-    }
 
-    fun PostIdCheckSet(long:Long){
-        postIdCheck=long
-    }
-    fun CommentCheckReset(int:Int){
-        commentCheck=int
-    }
     fun goWebPage(uri: String){
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
         startActivity(intent)

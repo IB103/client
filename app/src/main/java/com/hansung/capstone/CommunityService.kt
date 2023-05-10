@@ -2,8 +2,6 @@ package com.hansung.capstone
 
 import com.hansung.capstone.board.*
 import com.hansung.capstone.post.ResultGetPostDetail
-import com.hansung.capstone.retrofit.RepComment
-import com.hansung.capstone.retrofit.ReqModifyPost
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -11,11 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface CommunityService {
-    @PUT("api/community/post/modify")
-    fun modifyPost(
-        @Header("Authorization")accessToken:String,
-        @Body reqModifyPost: ReqModifyPost
-    ):Call<ResultGetPosts>
     @GET("api/community/post/list/all")
     fun getAllPost(
         @Query("page") query: Int,
@@ -31,7 +24,6 @@ interface CommunityService {
     @DELETE("api/community/post/delete")
     fun deletePost(
         @Header("Authorization")accessToken:String,
-        //@Query("accesstoken") accesstoken: Long,
         @Query("userId") userId: Long,
         @Query("postId") postId: Long
 
@@ -46,7 +38,6 @@ interface CommunityService {
     @DELETE("api/community/recomment/delete")
     fun deleteReComment(
         @Header("Authorization")accessToken:String,
-       // @Query("accesstoken") accesstoken: Long,
         @Query("userId") userId: Long,
         @Query("reCommentId") reCommentId: Long
         ): Call<ResDeleteReComment>
@@ -61,15 +52,12 @@ interface CommunityService {
         @Query("nickname") nickname: String,
         @Query("page") page: Int
     ): Call<ResultGetPosts>
-    @GET("image/{id}")
-    fun getImage(
-        @Path("id") id: Long,
-    ): Call<ResponseBody>
 
-    @GET("profile-image/{id}")
-    fun getProfileImage(
-        @Path("id") id: Long,
-    ): Call<ResponseBody>
+    @GET("api/community/post/list/scrap")
+    fun getPostMyScrap(
+        @Query("userId") userId: Long,
+        @Query("page") page: Int
+    ): Call<ResultGetPosts>
 
     @GET("api/community/post/favorite")
     fun checkFavorite(
@@ -81,11 +69,7 @@ interface CommunityService {
         @Query("userId") userId: Long,
         @Query("postId") postId: Long
     ): Call<ResultRespond>
-    @GET("api/community/post/list/scrap")
-    fun checkMyScrap(
-        @Query("userId") userId: Long,
-        @Query("page") page:Int
-    ): Call<ResultRespond>
+
 
 
     companion object{

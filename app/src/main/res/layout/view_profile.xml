@@ -85,13 +85,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="107dp"
-        android:text="내가 쓴 글"
-
-        android:textColor="@color/black"
         android:padding="10dp"
-        android:layout_marginLeft="2dp"
+
+        android:text="내가 쓴 글"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+    <TextView
+        android:id="@+id/myscraplist_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="내가 스크랩한 글"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mystory_bt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

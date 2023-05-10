@@ -2,6 +2,36 @@ package com.hansung.capstone.retrofit
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.http.POST
+data class RepConfirm(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("timestamp")
+    val data:String
+)
+data class RepSend(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("timestamp")
+    val timestamp:String
+)
+data class RepFindId(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data:List<String>
+)
 data class Weather(
     @SerializedName("main") val main: Main,
     @SerializedName("weather") val weather: List<WeatherDetail>,
@@ -40,17 +70,27 @@ data class UserResponse(
     @SerializedName("nickname")
     val nickname: String,
     @SerializedName("userId")
-    val userId:Int,
+    val userId:Long,
     @SerializedName("profileImageId")
-    val profileImageId: Int,
+    val profileImageId: Long,
     @SerializedName("tokenInfo")
     val tokenInfo:TokenInfo
+)
+data class RespondToken(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data:TokenInfo
 )
 data class TokenInfo(
     @SerializedName("accessToken")
     val accessToken: String,
     @SerializedName("refreshToken")
-    val refreshListener: String
+    val refreshToken: String
 )
 data class RepRegister(
     @SerializedName("id")

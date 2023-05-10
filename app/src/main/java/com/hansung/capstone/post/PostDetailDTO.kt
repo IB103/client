@@ -13,7 +13,7 @@ data class Post(
     var content: String,
     var createdDate: String,
     var modifiedDate: String,
-    var authorId: Int = 0,
+    var authorId: Long,//Int = 0,
     var nickname: String,
     var authorProfileImageId: Long,
     var commentList: List<Comments>,
@@ -47,10 +47,5 @@ data class ReComments(
     var userProfileImageId: Long,
     var reCommentVoterId: Set<Long>
 )
-data class ResultGetPostMyStory (
-    var code: Int = 0,
-    var success: Boolean,
-    var message: String,
-    var data: List<Post>,
-)
+
 

@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="light_gray2">#F7F8F9</color>
     <color name="light_gray">#CCCCCC</color>
     <color name="gray">#868E96</color>
     <color name="divider_gray">#CFD5DB</color>
@@ -15,5 +16,9 @@
     <color name="skyBlue">#5FB3BD</color>
     <color name="skyBlue2">#01DFD7</color>
     <color name="gray2">#A4A4A4</color>
+    <color name="green1">#2A9126</color>
+    <color name="green2">#05EA5A</color>
+    <color name="green3">#7BEA64</color>
+    <color name="green4">#C7E976</color>
 
 </resources>

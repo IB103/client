@@ -12,14 +12,27 @@ data class RePModifyProfileImage(
     var code: Int,
     var success: Boolean,
     var message: String,
-    var data: List<ModifiedData>
-)data class ModifiedData(
-    var code: Int,
+    var data: ModifiedProfile
+)
+data class ModifiedProfile(
+    var id: Long,
     var email: String,
     var username: String,
     var birthday: String,
     var nickname: String,
-   var profileImageId:Long
+    var profileImageId:Long
+)
+data class ModifyPost(
+    var code: Int,
+    var success: Boolean,
+    var message: String,
+    var totalPage: Int,
+    var data: Posts
+)
+data class ResultGet(
+    var code: Int,
+    var success: Boolean,
+    var message: String
 )
 data class ResultGetPosts(
     var code: Int,
@@ -30,7 +43,7 @@ data class ResultGetPosts(
 )
 
 data class Posts(
-    var id: Int,
+    var id: Long,
     var title: String,
     var content: String,
     var createdDate: String,
@@ -44,6 +57,7 @@ data class Posts(
     var postScraperId: Set<Long>,
     // 게시판에 들어갈 item type 설정
     var postType : Int,
+    var changed:Boolean
 )
 data class Comments(
     var id : Long,

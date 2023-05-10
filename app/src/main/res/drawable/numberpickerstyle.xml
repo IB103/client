@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style android:name="NumberPickerStyle"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:name="android:textSize">22dp</item>
+    <item android:name="android:textColorPrimary">@color/colorAccent</item>
+    <item android:name="android:colorControlNormal" tools:targetApi="lollipop">@color/colorAccent</item>
+</style>

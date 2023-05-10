@@ -20,8 +20,8 @@ class MyApplication : Application() {
         lateinit var prefs: Preference
 
         // 서버 주소
-        //private const val serverInfo = "52.63.152.224:8080"
-        private const val serverInfo = "223.194.130.55:8080"
+        private const val serverInfo = "52.63.152.224:8080"
+        //private const val serverInfo = "223.194.130.55:8080"
         //private const val serverInfo = "172.:8080"
         //private const val serverInfo = "23.63.152.224:8080"
      //  private const val serverInfo = "223.194.129.216:8080"

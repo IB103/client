@@ -28,21 +28,18 @@ class Preference(context: Context) {
     fun setLong(key:String,long:Long){
         prefs.edit().putLong(key,long).apply()
     }
-    fun setList(key:String,long:String){
 
-        //prefs.edit().putLong(key,long).apply()
-    }
     fun remove(){
         prefs.edit().remove("email").apply()
         prefs.edit().remove("nickname").apply()
         prefs.edit().remove("userId").apply()
         prefs.edit().remove("postId").apply()
         prefs.edit().remove("profileImageId").apply()
-        prefs.edit().remove("accesstoken").apply()
+        prefs.edit().remove("accessToken").apply()
+        prefs.edit().remove("refreshToken").apply()
+        prefs.edit().remove("tokenTime").apply()
     }
-    fun removePostId(){
-        prefs.edit().remove("postId").apply()
-    }
+
     fun removeDeletedCount(){
         prefs.edit().remove("deleteCount").apply()
     }

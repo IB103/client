@@ -1,54 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <EditText
-        android:id="@+id/idtext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="252dp"
-        android:background="@drawable/textbox"
-        android:ems="10"
-        android:hint=" ID"
-        android:inputType="textFilter"
-        android:minHeight="48dp"
+    android:foregroundTint="@color/light_gray2">
 
-        android:textSize="20sp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textlayout2"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textlayout"
+        app:passwordToggleEnabled="true">
 
-    <EditText
-        android:id="@+id/pwtext"
-        android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/pwtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textlayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/textbox"
-        android:ems="10"
-        android:hint=" PASSWORD"
-        android:inputType="textPassword"
-        android:minHeight="48dp"
-        android:textSize="20sp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idtext" />
+        app:layout_constraintTop_toBottomOf="@+id/textView20">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/idtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="이메일
+" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/loginbt"
-        android:layout_width="239dp"
+        android:layout_width="0dp"
         android:layout_height="56dp"
-        android:layout_marginTop="20dp"
-        android:text="login"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="40dp"
+        android:fontFamily="sans-serif"
+        android:text="로그인"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pwtext" />
+        app:layout_constraintTop_toBottomOf="@+id/textlayout2" />
 
     <ImageButton
         android:id="@+id/kakaologin_bt"
-        android:layout_width="238dp"
+        android:layout_width="wrap_content"
         android:layout_height="54dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/textbox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
@@ -61,26 +79,66 @@
         android:id="@+id/Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="LOGIN"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="44dp"
+        android:text="자전GO"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="34sp"
+        android:textColor="@color/green1"
+        android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/idtext"
+        app:layout_constraintBottom_toTopOf="@+id/textlayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_sign_up"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:text="| 회원가입"
+        android:textColor="@color/count_gray"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/kakaologin_bt"
+        app:layout_constraintStart_toEndOf="@+id/findPw"
+        app:layout_constraintTop_toBottomOf="@+id/kakaologin_bt" />
 
-        android:padding="20dp"
-        android:text="@string/sign_up"
-        android:textSize="14dp"
+    <TextView
+        android:id="@+id/findId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="아이디 찾기 "
+        android:textColor="@color/count_gray"
+        app:layout_constraintEnd_toStartOf="@+id/findPw"
+        app:layout_constraintStart_toStartOf="@+id/kakaologin_bt"
+        app:layout_constraintTop_toBottomOf="@+id/kakaologin_bt" />
+
+    <TextView
+        android:id="@+id/findPw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="| 비밀번호 찾기 "
+        android:textColor="@color/count_gray"
+        app:layout_constraintEnd_toStartOf="@+id/tv_sign_up"
+        app:layout_constraintStart_toEndOf="@+id/findId"
+        app:layout_constraintTop_toBottomOf="@+id/kakaologin_bt" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="자전GO에 로그인"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/kakaologin_bt"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Login" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

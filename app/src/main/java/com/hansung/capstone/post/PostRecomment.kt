@@ -2,52 +2,41 @@ package com.hansung.capstone.post
 
 import android.annotation.SuppressLint
 import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.databinding.ActivityPostDetailBinding
 import com.hansung.capstone.retrofit.RepComment
-import com.hansung.capstone.retrofit.ReqComment
 import com.hansung.capstone.retrofit.ReqReComment
 import com.hansung.capstone.retrofit.RetrofitService
-import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 
 class PostReComment(private val context: PostDetailActivity) {
-    val gson: Gson = GsonBuilder()
-        .setLenient()
-        .create()
-    private var serverInfo = MyApplication.getUrl() //username password1 password2 email
-    var clientBuilder = OkHttpClient.Builder()
-    var retrofit = Retrofit.Builder().baseUrl("$serverInfo")
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(clientBuilder.build())
-        .build()!!
-    var service = retrofit.create(RetrofitService::class.java)!!
+
+    val service = RetrofitService.create()
     var result: RepComment? = null
     val api = CommunityService.create()
-    var count= MyApplication.prefs.getInt("commentCount",0)
-    fun post(str: String, postId: Long,commentId:Int,binding: ActivityPostDetailBinding) {
-        Log.d("postRecomment", "#####################")
-        val userId = MyApplication.prefs.getInt("userId", 0)
+   // var count= MyApplication.prefs.getInt("commentCount",0)
+    fun post(str: String, postId: Long,commentId:Long,binding: ActivityPostDetailBinding) {
+
+        val userId = MyApplication.prefs.getLong("userId", 0)
         val postReqReComment = ReqReComment(postId, commentId,userId, str)
         service.postReComment(postReqReComment).enqueue(object : Callback<RepComment> {
             @SuppressLint("Range", "ResourceAsColor")
             override fun onResponse(call: Call<RepComment>, response: Response<RepComment>) {
                 if (response.isSuccessful) {
                     val result = response.body()
-                    if (response.code() == 201) { //수정해야함
+                    if (response.code() == 201) {
                         if (result?.code == 100) {
-                            Log.d("INFO comment", "대댓글작성 성공" + result.toString())
-                            MyApplication.prefs.setInt("commentCount",++count)
+                            Log.d("INFO comment", "success $result")
+                            MainActivity.getInstance()?.setCommentCount(1)
+                            //MyApplication.prefs.setInt("commentCount",++count)
                             //MainActivity.getInstance()?.setChangedPostCheck(true)
                             //PostDetailActivity().activityType=0
+                            context.commentSuccess(1)
                             postReComment(postId,binding)
                         } else {
                             Log.d("ERR", "대댓글 작성 실패 " + result.toString())
@@ -60,9 +49,7 @@ class PostReComment(private val context: PostDetailActivity) {
                 }
             }
             override fun onFailure(call: Call<RepComment>, t: Throwable) {
-                // 통신 실패 (인터넷 끊킴, 예외 발생 등 시스템적인 이유)
-                Log.d("ERR recomment", "onFailure 에러: " + t.message.toString())
-                //MyApplication.prefs.setInt("resultCode",0)
+                Log.d("ERR reComment", "onFailure 에러: " + t.message.toString())
             }
         })
     }
@@ -79,9 +66,9 @@ class PostReComment(private val context: PostDetailActivity) {
                     for (i in body?.data?.commentList!!) {
                         count += i.reCommentList.size
                     }
-                    for (i in 0 until body?.data?.commentList!!.size) {
-                        var j:Int=-1
-                        if(body.data.commentList[i].userId!=j.toLong())
+                    for (i in 0 until body.data.commentList.size) {
+                        val j:Long=-1
+                        if(body.data.commentList[i].userId!=j)
                             ++count
                     }
                     //count += body.data.commentList.size

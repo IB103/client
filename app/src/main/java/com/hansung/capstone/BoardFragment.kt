@@ -1,7 +1,6 @@
 package com.hansung.capstone
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -33,8 +32,8 @@ class BoardFragment : Fragment() {
     private val linearLayoutManager= LinearLayoutManager(activity)
     private lateinit var adapter: BoardAdapter
     var category:String="total"
-    var totalpage:Int=0
-    var view_:View?=null
+    var totalPage:Int=0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -44,7 +43,7 @@ class BoardFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view_=view
+        //view_=view
         adapter= BoardAdapter()
         resultAllPost = view.findViewById(R.id.resultAllPost)
         resultAllPost.addItemDecoration(BoardAdapterDecoration())
@@ -53,7 +52,7 @@ class BoardFragment : Fragment() {
             MyApplication.prefs.removeCommentCount()
             MyApplication.prefs.removeDeletedCount()
            when(category){
-               "total"->initData()
+               "total"->init()
                "free"->initFreeData()
                 "course"->initCourseData()
            }
@@ -64,44 +63,54 @@ class BoardFragment : Fragment() {
            DecorateButton(this@BoardFragment).decoTotalBt()
             category="total"
             page=0
-           initData()
+            resultAllPost.scrollToPosition(0)
+           init()
+
         }
         binding.courseCategory.setOnClickListener {
             DecorateButton(this@BoardFragment).decoCourseBt()
             category="course"
             page=0
+            resultAllPost.scrollToPosition(0)
             initCourseData()
+
         }
         binding.freeCategory.setOnClickListener {
             DecorateButton(this@BoardFragment).decoFreeBt()
             category="free"
             page=0
+            resultAllPost.scrollToPosition(0)
             initFreeData()
+
         }
         resultAllPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                // 스크롤이 끝까지 도달하면 새로운 데이터 로드
                 if (!recyclerView.canScrollVertically(1)&&page<body!!.totalPage) {
                         when(category){
-                            "total"->getallPost(++page)
-                            "free"->getallFreePost(++page)
-                            "course"->getallCoursePost(++page)
+                            "total"->getAllPost(++page)
+                            "free"->getAllFreePost(++page)
+                            "course"->getAllCoursePost(++page)
                         }
                 }
             }
         })
-        initData()//첫 페이지 목록
+        init()//첫 페이지 목록
         resultAllPost.adapter=adapter
         resultAllPost.layoutManager=linearLayoutManager
         binding.postB.setOnClickListener{
-            Log.d("postbt","clicked")
-            val intent = Intent(activity, WriteActivity::class.java)
-            startActivity(intent)
+            if(MyApplication.prefs.getString("accessToken", "") != ""){
+                val intent = Intent(activity, WriteActivity::class.java)
+                startActivity(intent)
+            }else{
+                val intent = Intent(activity, LoginActivity::class.java)
+                intent.putExtra("loginNeeded",true)
+                startActivity(intent)
+            }
+
         }
     }
-    private fun renewPage() {
-        page=0
+    private fun init() {
         api.getAllPost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
@@ -110,34 +119,10 @@ class BoardFragment : Fragment() {
                 ) {
                     Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                     body = response.body()
-                    totalpage=body!!.totalPage
-                    //board.addAll(body!!.data)
-                    adapter.renewItems((body!!.data as ArrayList<Posts>))
-                    // board.removeAll()
-//                        activity?.runOnUiThread {
-//                            resultAllPost.adapter =
-//                                body?.let { it -> BoardAdapter(it)  }
-//                        }
-                }
-                override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
-                    Log.d("getAllPost:", "실패 : $t")
-                }
-            })
-    }
-
-    fun initData() {
-        api.getAllPost(0)
-            .enqueue(object : Callback<ResultGetPosts> {
-                override fun onResponse(
-                    call: Call<ResultGetPosts>,
-                    response: Response<ResultGetPosts>,
-                ) {
-                    Log.d("getAllPost:", "성공 : ${response.body().toString()}")
-                    body = response.body()
-                    totalpage=body!!.totalPage
-                    if(body?.data?.isNotEmpty()!!){
+                    totalPage=body!!.totalPage
+                    //if(body?.data?.isNotEmpty()!!){
                         adapter.setInitItems((body!!.data as ArrayList<Posts>))
-                    }
+                    //}
                 }
                 override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
                     Log.d("getAllPost:", "실패 : $t")
@@ -145,8 +130,8 @@ class BoardFragment : Fragment() {
             })
     }
     @Suppress("DEPRECATION")
-    private fun getallPost(pagenum:Int){//다음 페이지 요청
-        api.getAllPost(pagenum)
+    private fun getAllPost(page:Int){//다음 페이지 요청
+        api.getAllPost(page)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
                     call: Call<ResultGetPosts>,
@@ -154,12 +139,12 @@ class BoardFragment : Fragment() {
                 ) {
                     Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                     body = response.body()
-                    if(body?.data!!.isNotEmpty()){
+                   // if(body?.data!!.isNotEmpty()){
                         adapter.run{
                             moreItems((body!!.data as ArrayList<Posts>))
 
                         }
-                    }
+                   // }
                 }
                 override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
                     Log.d("getAllPost:", "실패 : $t")
@@ -168,7 +153,7 @@ class BoardFragment : Fragment() {
         //  },1000)
 
     }
-    fun initFreeData() {
+    private fun initFreeData() {
         api.getAllFreePost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
@@ -177,7 +162,6 @@ class BoardFragment : Fragment() {
                 ) {
                     Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                     body = response.body()
-                    //totalpage=body!!.totalPage
                     adapter.setInitItems((body!!.data as ArrayList<Posts>))
 
                 }
@@ -187,11 +171,11 @@ class BoardFragment : Fragment() {
             })
     }
     @Suppress("DEPRECATION")
-    private fun getallFreePost(pagenum:Int){//다음 페이지 요청
+    private fun getAllFreePost(page:Int){//다음 페이지 요청
         //   adapter.setLoadingView(true)
         // val handler = Handler()
         // handler.postDelayed({
-        api.getAllFreePost(pagenum)
+        api.getAllFreePost(page)
             .enqueue(object : Callback<ResultGetPosts> {
                 @SuppressLint("SuspiciousIndentation")
                 override fun onResponse(
@@ -214,7 +198,7 @@ class BoardFragment : Fragment() {
         //  },1000)
 
     }
-    fun initCourseData() {
+    private fun initCourseData() {
         api.getAllCoursePost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 @SuppressLint("SuspiciousIndentation")
@@ -224,8 +208,6 @@ class BoardFragment : Fragment() {
                 ) {
                     Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                     body = response.body()
-                   // totalpage=body!!.totalPage
-
                         adapter.setInitItems((body!!.data as ArrayList<Posts>))
 
                 }
@@ -235,8 +217,8 @@ class BoardFragment : Fragment() {
             })
     }
     @Suppress("DEPRECATION")
-    private fun getallCoursePost(pagenum:Int){//다음 페이지 요청
-        api.getAllPost(pagenum)
+    private fun getAllCoursePost(page:Int){//다음 페이지 요청
+        api.getAllPost(page)
             .enqueue(object : Callback<ResultGetPosts> {
                 @SuppressLint("SuspiciousIndentation")
                 override fun onResponse(
@@ -257,43 +239,36 @@ class BoardFragment : Fragment() {
                 }
             })
     }
+
     override fun onResume() {
         super.onResume()
         MainActivity.getInstance()?.setModifyCheck(false)
-        if(MainActivity.getInstance()?.getdeleteCheck()==true){
-            Toast.makeText(activity, "게시글이 삭제됐습니다", Toast.LENGTH_SHORT).show()
-            page=0
-            Log.d("category","${category}")
+        val init = {
             when(category){
-                "total"->initData()//TotalCategory(view_!!).init()
-                "free"->initFreeData()//FreeCategory(view_!!).init()
-                "course"->initCourseData()//ourseCategory(view_!!).init()
+                "total" -> init()
+                "free" -> initFreeData()
+                "course" -> initCourseData()
             }
-            MainActivity.getInstance()?.deleteCheck(false)
-        }
-        if(MainActivity.getInstance()?.getwriteCheck()==true){
-            Toast.makeText(activity, "게시글이 등록됐습니다", Toast.LENGTH_SHORT).show()
-            page=0
-            Log.d("category","${category}")
-            when(category){
-                "total"->initData()//TotalCategory(view_!!).init()
-                "free"->initFreeData()//FreeCategory(view_!!).init()
-                "course"->initCourseData()//CourseCategory(view_!!).init()
-            }
-            MainActivity.getInstance()?.writeCheck(false)
-        }
-        //수정해야함
-        if(MainActivity.getInstance()?.getChangedPostCheck() == true){
-            Log.d("commentChekc","OK")
-            Log.d("postIdcheck","${MainActivity.getInstance()?.getPostIdCheck()}")
-//            when(category){
-//                "total"->adapter.reload()//TotalCategory(view_!!).reload()
-//                "free"->adapter.reload//FreeCategory(view_!!).reload()
-//                "course"->CourseCategory(view_!!).reload()
-//            }
-                  adapter.reload()
+        }()
+       when(MainActivity.getInstance()?.getStateCheck()){
+           0->{ Toast.makeText(activity, "게시글이 삭제됐습니다", Toast.LENGTH_SHORT).show()
+               page=0
+               init
+           }
+           1->{ Toast.makeText(activity, "게시글이 등록됐습니다", Toast.LENGTH_SHORT).show()
+               page=0
+               init
 
-        }
+           }
+           2->{Toast.makeText(activity, "게시글이 수정됐습니다", Toast.LENGTH_SHORT).show()
+               page=0
+           }
+       }
+         if(MainActivity.getInstance()?.getCommentCount()!=0||MainActivity.getInstance()?.getDeletedCommentCount()!=0){
+             adapter.changed(MainActivity.getInstance()!!.getChangedPost())
+         }
+        MainActivity.getInstance()?.stateCheck(-1)
+
     }
 
 }

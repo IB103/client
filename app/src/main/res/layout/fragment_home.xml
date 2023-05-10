@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#74A89D"
+    android:background="#FBFBFB"
     tools:context=".HomeFragment">
 
     <RelativeLayout
@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="85dp"
         android:layout_marginBottom="154dp"
-        android:padding="8dp"
         android:background="@drawable/element_post_list"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

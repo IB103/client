@@ -1,20 +1,18 @@
 package com.hansung.capstone.post
 
 import android.app.AlertDialog
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.DialogInterface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
+import com.hansung.capstone.Token
 import com.hansung.capstone.databinding.ItemPostDetailCommentsBinding
 import com.hansung.capstone.delete.DeleteComment
 import java.time.format.DateTimeFormatter
@@ -24,8 +22,8 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var noImage=-1
     var commentId:Long=0
-    var userId=MyApplication.prefs.getInt("userId",0)
-    var accesstoken=MyApplication.prefs.getString("accesstoken","")
+    var userId=MyApplication.prefs.getLong("userId",0)
+    var accessToken=MyApplication.prefs.getString("accessToken","")
     override fun getItemCount(): Int {
         return resultDetailPost.data.commentList.count()
     }
@@ -58,8 +56,6 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
                 binding.delelteComment.isVisible =
                     items.userNickname==MyApplication.prefs.getString("nickname","")
                 binding.delelteComment.setOnClickListener {
-                    Log.d("###commentId","${items.id}")
-                   // MyApplication.prefs.setLong("postId",resultDetailPost.data.id.toLong())
                     context.commentId= items.id.toInt()
                     commentId=items.id
                     showDialog()
@@ -69,13 +65,13 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
                 val createdDate = MyApplication.convertDate(items.createdDate)
                     .format(DateTimeFormatter.ofPattern("MM/dd HH:mm"))
                 binding.CommentCreatedDate.text = createdDate
+                Log.d("imageID","${MyApplication.getUrl()}image/${items.userProfileImageId}")
                 if (items.userProfileImageId != noImage.toLong()) {
                     Glide.with(context)
-                        .load("${MyApplication.getUrl()}image/${items.userProfileImageId}") // 불러올 이미지 url
+                        .load("${MyApplication.getUrl()}profile-image/${items.userProfileImageId}") // 불러올 이미지 url
                         .override(200, 200)
                         .centerCrop()
-                        .into(binding.CommentProfileImage) // 이미지를 넣을 뷰
-
+                        .into(binding.CommentProfileImage)
                 } else binding.CommentProfileImage.setImageResource(R.drawable.user)
             }
             if(items.reCommentList.isNotEmpty()) {
@@ -86,13 +82,18 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
         }
     }
     private fun showDialog(){
-        var dataArr=arrayOf("삭제하기","수정하기")
+        val dataArr=arrayOf("삭제하기","수정하기")
         val builder: AlertDialog.Builder= AlertDialog.Builder(context)
         builder.setTitle("댓글 활동")
-        var listener= DialogInterface.OnClickListener { dialog, which ->
+        val listener= DialogInterface.OnClickListener { _, which ->
             if(dataArr[which]==dataArr[0]){
-                MainActivity.getInstance()?.setChangedPostCheck(true)
-                DeleteComment().delete(accesstoken,userId,commentId)
+                if (Token().checkToken()) {
+                    Token().issueNewToken{
+                        DeleteComment().delete(accessToken,userId,commentId)
+                    }
+                } else {
+                    DeleteComment().delete(accessToken,userId,commentId)
+                }
             }
             else if(dataArr[which]==dataArr[1])
                 context.keyBordShow(2)
