@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hansung.capstone.course.CourseActivity
+import com.hansung.capstone.course.MakeCourseActivity
 import com.hansung.capstone.databinding.FragmentHomeBinding
 import com.hansung.capstone.retrofit.RetrofitService
 import com.hansung.capstone.retrofit.Weather
@@ -79,7 +80,7 @@ class HomeFragment : Fragment() {
         }
         getWeatherInCurrentLocation()
         binding.goRiding.setOnClickListener {
-            val intent = Intent(activity, CourseActivity::class.java)
+            val intent = Intent(activity, RidingActivity::class.java)
             startActivity(intent)
         }
         //        binding.imageView4.setOnClickListener {
@@ -101,6 +102,11 @@ class HomeFragment : Fragment() {
                 .commit()
             MainActivity.getInstance()?.transfer()
 
+        }
+
+        binding.makeCourseButton.setOnClickListener {
+            val intent = Intent(activity, MakeCourseActivity::class.java)
+            startActivity(intent)
         }
     }
 

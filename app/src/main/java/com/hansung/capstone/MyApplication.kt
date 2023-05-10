@@ -22,15 +22,6 @@ class MyApplication : Application() {
         // 서버 주소
         private const val serverInfo = "52.63.152.224:8080"
         //private const val serverInfo = "223.194.130.55:8080"
-        //private const val serverInfo = "172.:8080"
-        //private const val serverInfo = "23.63.152.224:8080"
-     //  private const val serverInfo = "223.194.129.216:8080"
-       //private const val serverInfo = "14.52.209.166:8080"
-       // private const val serverInfo = "192.168.219.108:8080"
-       // private const val serverInfo = "121.138.93.178:9999"
-//        private const val serverInfo = "223.194.129.170:8080"
-//        private const val serverInfo = "52.63.152.224:8080"
-//        private const val serverInfo = "14.52.209.63:8080"
 
         private const val url = "http://$serverInfo/"
         fun getUrl(): String {

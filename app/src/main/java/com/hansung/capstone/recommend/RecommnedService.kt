@@ -9,20 +9,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface RecommnedService {
-    @GET("api/community/course/list")
+interface RecommendService {
+    @GET("api/user-course/list")
     fun getUserRecommend(
         @Query("region") region: String,
         @Query("page") page: Int,
     ): Call<UserRecommendDTO>
 
     companion object{
-        fun create() : RecommnedService {
+        fun create() : RecommendService {
             return Retrofit.Builder()
                 .baseUrl(MyApplication.getUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(RecommnedService::class.java)
+                .create(RecommendService::class.java)
         }
     }
 }

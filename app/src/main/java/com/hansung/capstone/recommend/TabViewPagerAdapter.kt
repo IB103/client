@@ -20,7 +20,7 @@ class TabViewPagerAdapter(recommendFragment: RecommendBottomFragment):FragmentSt
         //TODO: notifyItemInserted!!
     }
 
-    fun removeFragement() {
+    fun removeFragment() {
         fragments.removeLast()
         notifyItemRemoved(fragments.size)
         //TODO: notifyItemRemoved!!

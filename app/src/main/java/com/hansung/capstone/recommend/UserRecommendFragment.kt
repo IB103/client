@@ -27,7 +27,7 @@ class UserRecommendFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val api = RecommnedService.create()
+        val api = RecommendService.create()
         api.getUserRecommend("서울",0)
             .enqueue(object : Callback<UserRecommendDTO> {
                 override fun onResponse(

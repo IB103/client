@@ -13,86 +13,138 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/riding_timer"
+        android:id="@+id/printTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="172dp"
-        android:text="00:00"
+        android:layout_marginBottom="260dp"
+        android:text="00:00:00"
         android:textSize="50dp"
         app:layout_constraintBottom_toBottomOf="@+id/riding_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/riding_start_button"
+        android:id="@+id/riding_play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_play_arrow_24"
-        android:visibility="visible"/>
+        app:srcCompat="@drawable/ic_baseline_play_arrow_24" />
 
-    <ImageButton
-        android:id="@+id/riding_pause_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_pause_24"
-        android:visibility="gone"/>
-
-    <!--    <Button-->
-<!--        android:id="@+id/service_start"-->
+<!--    <ImageButton-->
+<!--        android:id="@+id/riding_pause_button"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
 <!--        android:layout_marginBottom="100dp"-->
-<!--        android:onClick="ridingServiceStart"-->
-<!--        android:text="서비스 시작"-->
+<!--        android:visibility="gone"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/service_stop"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:onClick="ridingServiceStop"-->
-<!--        android:text="서비스 정지"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/service_start" />-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:srcCompat="@drawable/ic_baseline_pause_24" />-->
 
-<!--    <Button-->
-<!--        android:id="@+id/service_bind"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:onClick="serviceBind"-->
-<!--        android:text="서비스바인드"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/service_start"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
+    <ImageButton
+        android:id="@+id/riding_camera_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/riding_play_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
 
-<!--    <Button-->
-<!--        android:id="@+id/service_unbind"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:onClick="serviceUnbind"-->
-<!--        android:text="서비스언바인드"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/service_bind"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
+    <ImageButton
+        android:id="@+id/riding_stop_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/riding_play_button"
+        app:srcCompat="@drawable/ic_baseline_stop_24" />
 
-<!--    <Button-->
-<!--        android:id="@+id/service_call"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:onClick="callServiceFunction"-->
-<!--        android:text="서비스 함수 사용"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/service_unbind"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
+    <ImageButton
+        android:id="@+id/riding_check_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/riding_play_button"
+        app:srcCompat="@drawable/ic_baseline_add_location_24" />
+
+    <TextView
+        android:id="@+id/printSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="speed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/printTimer" />
+
+    <TextView
+        android:id="@+id/printKcal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="kcal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/printSpeed"
+        app:layout_constraintTop_toTopOf="@+id/printSpeed" />
+
+    <TextView
+        android:id="@+id/printDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="distance"
+        app:layout_constraintEnd_toStartOf="@+id/printSpeed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/printSpeed" />
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="거리(km)"
+        app:layout_constraintEnd_toStartOf="@+id/speed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/speed" />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="속도(km/h)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/printSpeed" />
+
+    <TextView
+        android:id="@+id/kcal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="칼로리(Kcal)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/speed"
+        app:layout_constraintTop_toTopOf="@+id/speed" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="시간"
+        app:layout_constraintBottom_toTopOf="@+id/printTimer"
+        app:layout_constraintEnd_toEndOf="@+id/printTimer"
+        app:layout_constraintStart_toStartOf="@+id/printTimer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

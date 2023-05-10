@@ -129,6 +129,14 @@ interface RetrofitService {
     fun postReComment(
         @Body reqReComment: ReqReComment
     ): Call<RepComment>
+
+    @Multipart
+    @POST("/api/user-course/create")
+    fun coursePostCreate(
+        @Part("requestDTO") requestDTO:ReqCoursePost,
+        @Part imageList: List<MultipartBody.Part>
+    ): Call<ReqCoursePost>
+
     companion object{
         fun create() : RetrofitService {
             return Retrofit.Builder()

@@ -91,19 +91,27 @@
                 app:layout_constraintTop_toBottomOf="@+id/editTitle"
                 tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/courseImageView"
+            <androidx.fragment.app.FragmentContainerView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="400dp"
+                android:id="@+id/map"
+                android:name="com.naver.maps.map.MapFragment"
                 android:layout_marginLeft="6dp"
                 android:layout_marginTop="1dp"
                 android:layout_marginRight="6dp"
-                android:background="@color/gray"
-                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView8"
-                tools:ignore="MissingClass"/>
+                app:navermap_zoomControlEnabled="false" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/courseImageRecyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/map" />
+
             <TextView
                 android:id="@+id/text_context"
                 android:layout_width="wrap_content"
@@ -114,7 +122,7 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/courseImageView"
+                app:layout_constraintTop_toBottomOf="@+id/courseImageRecyclerview"
                 tools:ignore="MissingConstraints" />
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nestedScrollView"

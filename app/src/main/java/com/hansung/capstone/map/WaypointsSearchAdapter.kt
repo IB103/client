@@ -45,6 +45,7 @@ class WaypointsSearchAdapter(
                 resultIntent.putExtra("place_name", items.place_name)
                 resultIntent.putExtra("place_lat", items.y)
                 resultIntent.putExtra("place_lng", items.x)
+                resultIntent.putExtra("place_url", items.place_url)
 
                 // setResult()를 사용하여 결과 데이터 설정
                 waypointsSearchActivity.setResult(Activity.RESULT_OK, resultIntent)

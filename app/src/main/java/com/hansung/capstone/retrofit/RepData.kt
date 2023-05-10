@@ -103,14 +103,14 @@ data class RepRegister(
 data class RepDoubleCheckID(
     @SerializedName("code")
     val code: Int,
-    @SerializedName("msg")
+    @SerializedName("message")
     val msg: String
 
 )
 data class RepDoubleCheckNickName(
     @SerializedName("code")
     val code: Int,
-    @SerializedName("msg")
+    @SerializedName("message")
     val msg: String
 
 )
@@ -142,7 +142,7 @@ data class RepModifyNick(
     val data:String
 
 )
-data class RepPost(
+data class   RepPost(
     @SerializedName("code")
     val code: Int,
     @SerializedName("success")
@@ -261,3 +261,4 @@ data class Recomment(
     @SerializedName("reCommentVoterId")
     val commentVoterId:List<Int>
 )
+

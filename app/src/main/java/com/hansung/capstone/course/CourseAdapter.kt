@@ -1,4 +1,4 @@
-package com.hansung.capstone.map
+package com.hansung.capstone.course
 
 import android.content.Intent
 import android.util.Log
@@ -6,14 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.Waypoint
 import com.hansung.capstone.databinding.ItemDirectionsRecyclerviewBinding
+import com.hansung.capstone.Waypoint
+import com.hansung.capstone.map.WaypointsAdapter
+import com.hansung.capstone.map.WaypointsSearchActivity
 
-class WaypointsAdapter(
-    private val directionsActivity: DirectionsActivity,
-    var waypoints: MutableList<Waypoint>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class CourseAdapter(
+    private val makeCourseActivity: MakeCourseActivity,
+    var waypoints: MutableList<Waypoint>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding =
             ItemDirectionsRecyclerviewBinding.inflate(
@@ -21,11 +22,11 @@ class WaypointsAdapter(
                 parent,
                 false
             )
-        return WaypointsHolder(binding)
+        return CourseHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewHolder = holder as WaypointsAdapter.WaypointsHolder
+        val viewHolder = holder as CourseAdapter.CourseHolder
         viewHolder.bind(waypoints[position])
         when (position) {
             0 -> {
@@ -46,18 +47,21 @@ class WaypointsAdapter(
         }
         viewHolder.itemView.setOnClickListener {
             Log.d("포지션1",position.toString())
-            val intent = Intent(directionsActivity, WaypointsSearchActivity::class.java)
+            val intent = Intent(makeCourseActivity, WaypointsSearchActivity::class.java)
             intent.putExtra("position", viewHolder.adapterPosition)
             Log.d("포지션2",position.toString())
-            directionsActivity.myLauncher.launch(intent)
+            makeCourseActivity.myLauncher.launch(intent)
         }
         viewHolder.addWaypoint.setOnClickListener {
             Log.d("포지션+",position.toString())
             addItem(itemCount - 1)
+//            makeCourseActivity.changeScroll()
         }
         viewHolder.removeWaypoint.setOnClickListener {
             Log.d("포지션-",position.toString())
             removeItem(position)
+            makeCourseActivity.moveMap()
+//            makeCourseActivity.changeScroll()
         }
     }
 
@@ -65,7 +69,7 @@ class WaypointsAdapter(
         return waypoints.count()
     }
 
-    inner class WaypointsHolder(val binding: ItemDirectionsRecyclerviewBinding) :
+    inner class CourseHolder(val binding: ItemDirectionsRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         var waypointText = binding.waypoint
         val addWaypoint = binding.addWaypoint
@@ -98,17 +102,4 @@ class WaypointsAdapter(
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, waypoints.size)
     }
-
-    fun makeWaypointsDirectionQuery(waypoints: MutableList<Waypoint>): String {
-        var waypointsQuery = ""
-        for (i in waypoints) {
-            waypointsQuery += "${i.place_lng},${i.place_lat};"
-        }
-        Log.d("스트링", waypointsQuery)
-        val removeLast = waypointsQuery.dropLast(1)
-        Log.d("스트링", removeLast)
-        return removeLast
-    }
 }
-
-

@@ -29,6 +29,7 @@ class SignUpActivity:AppCompatActivity() {
         val service = RetrofitService.create()
 
         binding.DoubleCheck.setOnClickListener {
+
             val id = binding.idRegis.text.toString()
             Log.d("id", id)
             //var getReqDoubleCheckID = ReqDoubleCheckID(id)
@@ -191,6 +192,7 @@ class SignUpActivity:AppCompatActivity() {
                                 binding.nicknameConfirm.text = "닉네임 사용 가능합니다"
                                 binding.nicknameConfirm.setTextColor(Color.parseColor("#04B431"))
                                 binding.submitBt.isEnabled = true
+
                                 } else {
                                     Log.d("ERR", "닉네임 중복: $result")
                                 binding.nicknameConfirm.text = "닉네임 사용 불가능합니다"

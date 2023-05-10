@@ -82,6 +82,15 @@ class MainActivity : AppCompatActivity() {
 
        // bottomNavigationView?.setupWithNavController(navController)
 
+        // 전달받은 데이터 처리
+        val data = intent.getStringExtra("openBoardFragment")
+
+        // 프래그먼트 열기
+        if(data.equals("openBoard")) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentLayout, BoardFragment())
+                .commit()
+        }
     }
 
 

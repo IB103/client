@@ -94,6 +94,23 @@ data class ReqPost(
     @SerializedName("content")
     val content:String
     )
+
+data class ReqCoursePost(
+    @SerializedName("coordinates")
+    var coordinates: String,
+    @SerializedName("region")
+    var region: String,
+    @SerializedName("originToDestination")
+    var originToDestination: String,
+    @SerializedName("userId")
+    val userId:Int,
+    @SerializedName("category")
+    val category:String,
+    @SerializedName("title")
+    val title:String,
+    @SerializedName("content")
+    val content:String
+)
 data class ReqComment(
     @SerializedName("postId")
     val postId:Long,
