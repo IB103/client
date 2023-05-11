@@ -385,7 +385,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             Toast.makeText(
                 MyApplication.applicationContext(),
-                "지도 사용을 위해 권한을 허용해주세요.",
+                "라이딩 기록을 위해 권한을 허용해주세요.",
                 Toast.LENGTH_SHORT
             ).show()
             requestLocationPermissionLauncher.launch(permissionCheckResult.toTypedArray())
