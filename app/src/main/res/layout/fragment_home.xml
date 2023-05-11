@@ -55,10 +55,11 @@
 
     </RelativeLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/goRiding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/element_post_list"
         android:text="라이딩"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -120,26 +121,33 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="99dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileBox">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/getDirectionsButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="99dp"
             android:layout_weight="1"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:src="@drawable/search"
+            android:scaleType="fitCenter"
             android:background="@drawable/element_post_list"
+
             android:text="길 찾기" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/makeCourseButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="99dp"
             android:layout_weight="1"
+            android:src="@drawable/makecourse"
+            android:scaleType="fitCenter"
+            app:layout_constraintHorizontal_bias="0.0"
             android:background="@drawable/element_post_list"
             android:text="코스 만들기" />
     </LinearLayout>
