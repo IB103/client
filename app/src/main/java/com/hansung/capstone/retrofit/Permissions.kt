@@ -19,10 +19,11 @@ object Permissions {
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
     }
-    val permissionsCamera = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    val permissionsCamera =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.CAMERA,
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_MEDIA_IMAGES,
         )
     }
     else{
