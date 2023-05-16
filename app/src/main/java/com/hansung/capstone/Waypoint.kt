@@ -31,7 +31,7 @@ data class Waypoint(
 
     // CREATOR 상수를 정의하여 Parcelable.Creator 인터페이스를 구현합니다.
     companion object CREATOR : Parcelable.Creator<Waypoint> {
-        // Parcel에서 Waypoint 객체를 생성합니다.
+        // Parcel Waypoint 객체를 생성합니다.
         override fun createFromParcel(parcel: Parcel): Waypoint {
             return Waypoint(parcel)
         }

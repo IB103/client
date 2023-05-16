@@ -175,7 +175,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                                         val marker = Marker()
                                         markers.add(marker)
                                         marker.position = item
-                                        marker.icon = MarkerIcons.BLUE
+//                                        marker.icon = MarkerIcons.LIGHTBLUE
+                                        marker.icon = MarkerIcons.BLACK
+                                        marker.iconTintColor = Color.parseColor("#87D5AA")
                                         marker.map = naverMap
                                     }
 //                                staticMarker.position =

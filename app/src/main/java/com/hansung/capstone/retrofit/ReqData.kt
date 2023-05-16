@@ -103,14 +103,24 @@ data class ReqCoursePost(
     @SerializedName("originToDestination")
     var originToDestination: String,
     @SerializedName("userId")
-    val userId:Int,
+    val userId:Long,
     @SerializedName("category")
     val category:String,
     @SerializedName("title")
     val title:String,
     @SerializedName("content")
-    val content:String
+    val content:String,
+    @SerializedName("imageInfoList")
+    val imageInfoList: List<ImageInfo>
+//    @SerializedName("thumbnail")
+//    val thumbnail:
 )
+data class ImageInfo(
+    val coordinate:String,
+    val placeName:String,
+    val placeLink:String,
+)
+
 data class ReqComment(
     @SerializedName("postId")
     val postId:Long,

@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.*
+import android.provider.ContactsContract.Data
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
@@ -108,11 +109,33 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         binding.ridingStopButton.setOnClickListener {
-            if (isRiding) {
-                sendCommandToService(ACTION_STOP_SERVICE)
-                nMap.takeSnapshot {
-                    moveToCourseActivity(it)
+            if (!isRiding) {
+                // 마지막 위치 추가
+                if (pathOverlay.size > 1) {
+                    lateinit var snapshotPath: String
+                    val intent = Intent(this, CourseActivity::class.java)
+                    Log.d("coordinatesPathOverlay1",pathOverlay.toString())
+                    pathWaypoints.add(
+                        Waypoint(
+                            place_lat = pathOverlay.last().latitude,
+                            place_lng = pathOverlay.last().longitude
+                        )
+                    )
+                    sendCommandToService(ACTION_STOP_SERVICE)
+                    val encodePath = DataConverter.encode(pathOverlay)
+                    nMap.takeSnapshot { bitmap ->
+                        snapshotPath = Utility.saveSnapshot(this, bitmap)
+                        intent.putParcelableArrayListExtra("waypoints", ArrayList(pathWaypoints))
+                        intent.putExtra("coordinates", encodePath)
+                        intent.putExtra("snapshotPath", snapshotPath)
+                        startActivity(intent)
+                        finish()
+                    }
+
+//                    moveToCourseActivity(it)
                 }
+                else
+                    Toast.makeText(this, "등록에 필요한 기록이 부족합니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -229,6 +252,15 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         RidingService.pathOverlay.observe(this) {
             pathOverlay = it
+            // pathWaypoints 비었을 때 pathOverlay 첫 인덱스 추가
+            if (pathWaypoints.isEmpty() && pathOverlay.size > 0) {
+                pathWaypoints.add(
+                    Waypoint(
+                        place_lat = pathOverlay[0].latitude,
+                        place_lng = pathOverlay[0].longitude
+                    )
+                )
+            }
 //            RidingService.distanceLiveData.postValue(RidingUtility.calculateDistance(it))
             drawPathOverlay()
             moveCameraToLastLocation()

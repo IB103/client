@@ -10,4 +10,6 @@ object Constants {
     const val NOTIFICATION_CHANNEL_NAME = "RIDING_CHANNEL"
     const val NOTIFICATION_ID = 1
 
+    const val OPEN_BOARD_FRAGMENT = "openBoardFragment"
+
 }

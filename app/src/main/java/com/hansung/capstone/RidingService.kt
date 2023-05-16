@@ -144,7 +144,7 @@ class RidingService : LifecycleService() {
 
     // 기록 끝
     private fun stopRidingForegroundService() {
-        initServiceLiveDataValues()
+//        initServiceLiveDataValues()
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         stopSelf()
     }

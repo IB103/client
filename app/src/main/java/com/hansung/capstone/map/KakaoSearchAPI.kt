@@ -35,4 +35,11 @@ interface KakaoSearchAPI {
         @Query("size") size: Int
     ): Call<LocationImageDTO>
 
+    @GET("v2/local/geo/coord2address.json")
+    fun getAddress(
+        @Header("Authorization") key: String,
+        @Query("x") x: String,
+        @Query("y") y: String,
+    ): Call<ResultGetAddress>
+
 }

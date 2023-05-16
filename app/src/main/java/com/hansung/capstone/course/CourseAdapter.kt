@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.databinding.ItemDirectionsRecyclerviewBinding
 import com.hansung.capstone.Waypoint
-import com.hansung.capstone.map.WaypointsAdapter
 import com.hansung.capstone.map.WaypointsSearchActivity
 
 class CourseAdapter(

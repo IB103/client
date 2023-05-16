@@ -1,12 +1,8 @@
 package com.hansung.capstone.course
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -22,9 +18,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.*
+import com.hansung.capstone.BuildConfig
+import com.hansung.capstone.Constants.OPEN_BOARD_FRAGMENT
 import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ActivityCourseBinding
 import com.hansung.capstone.Waypoint
+import com.hansung.capstone.map.KakaoSearchAPI
+import com.hansung.capstone.map.ResultGetAddress
+import com.hansung.capstone.retrofit.ImageInfo
+import com.hansung.capstone.retrofit.ReqCoursePost
 import com.hansung.capstone.retrofit.RetrofitService
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -33,38 +35,41 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PathOverlay
 import kotlinx.android.synthetic.main.activity_course.*
 import kotlinx.android.synthetic.main.activity_post_detail.*
+import kotlinx.android.synthetic.main.item_location_search_results.*
 import kotlinx.android.synthetic.main.item_post_detail_recomments.view.*
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 import java.util.*
-import kotlin.math.round
-
 
 class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
     private val binding by lazy { ActivityCourseBinding.inflate(layoutInflater) }
-    private var serverinfo = MyApplication.getUrl() //username password1 password2 email
-    private var retrofit = Retrofit.Builder().baseUrl(serverinfo)
-        .addConverterFactory(GsonConverterFactory.create()).build()
-    private var service = retrofit.create(RetrofitService::class.java)
-    private lateinit var naverMap: NaverMap // 네이버 맵 객체
+    private lateinit var nMap: NaverMap
     private lateinit var waypoints: MutableList<Waypoint>
-    private lateinit var path: List<LatLng>
-    var imageUriList=ArrayList<Uri>()
+    private lateinit var encodedPath: String
+    private lateinit var coordinates: List<LatLng>
+    private lateinit var snapshotPath: String
+    private lateinit var imageInfoMutableList: MutableList<ImageInfo>
     private lateinit var imageList: ArrayList<MultipartBody.Part>
+    private lateinit var thumbnail: MultipartBody.Part
     private lateinit var courseImageHolder: CourseImageAdapter.CourseImageHolder
     private var position: Int? = 0
     private lateinit var selectedImageUri: Uri
-//    private lateinit var getContent: ActivityResultLauncher<String>
-        private lateinit var getContent: ActivityResultLauncher<Intent>
-    val REQUEST_CODE = 100
+    private lateinit var getImageLauncher: ActivityResultLauncher<Intent>
+    private var origin: String? = null
+    private var destination: String? = null
+    private var originToDestination: String? = null
+    private var region: String? = null
+    private lateinit var api: KakaoSearchAPI
+    private lateinit var waypointsAdapter: CourseImageAdapter
 
+    @SuppressLint("Recycle")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,47 +78,60 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
 
+
+//        Log.d("LiveDataInCourseActivity", RidingService.timeLiveData.value!!.toString())
+
         val intent = intent
-//        val waypoints = intent.getParcelableArrayListExtra<Waypoint>("waypoints",Waypoint::class.java)
-        waypoints = intent.getParcelableArrayListExtra<Waypoint>("waypoints")!!
-        path = intent.getStringExtra("path")?.let { decode(it) }!!
-        Log.d("웨이포인트", waypoints.toString())
-        Log.d("경로", path.toString())
+        @Suppress("DEPRECATION")
+        waypoints = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getParcelableArrayListExtra("waypoints", Waypoint::class.java)!!.toMutableList()
+        else
+            intent.getParcelableArrayListExtra<Waypoint>("waypoints")!!.toMutableList()
+        encodedPath = intent.getStringExtra("coordinates").toString()
+        coordinates = DataConverter.decode(encodedPath)
+        Log.d("coordinates", "$coordinates")
+        snapshotPath = intent.getStringExtra("snapshotPath")!!
 
-//        imageList = ArrayList(waypoints.size)
+        // 값 null imageList 생성
+//        imageList = ArrayList(Collections.nCopies(waypoints.size + 1, null))
         imageList = ArrayList(Collections.nCopies(waypoints.size, null))
-        Log.d("imageList 초기화","${imageList.toString()} + ${waypoints.count()}")
 
-        // registerForActivityResult 대신 getContent라는 ActivityResultLauncher를 생성합니다.
-        getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-//                val selectedImageUri: Uri? = result.data?.data
-                selectedImageUri = result.data?.data!!
-                Log.d("uri출력 in launch",selectedImageUri.toString())
-                selectedImageUri.let { uri ->
-                    courseImageHolder.binding.courseView.setImageURI(uri)
-                    val filename=getFileName(uri)
-                    Log.d("filename","$filename")
-                    // 선택한 이미지를 imageList에 추가하는 코드
-                    var filePart: MultipartBody.Part? = null
-                    val inputStream = contentResolver.openInputStream(uri)
-                    val file = File(cacheDir, uri.lastPathSegment)
-                    val outputStream = FileOutputStream(file)
-                    inputStream?.copyTo(outputStream)
-                    val requestBody = RequestBody.create(MediaType.parse(contentResolver.getType(uri)), file)
-                    filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
-                    imageList[position!!]=filePart!!
-//                    imageList.add(filePart!!)
-                    Log.d("imageList 값 변경",imageList.toString())
+        val snapshotFile = File(snapshotPath)
+        val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), snapshotFile)
+//        imageList[0] = MultipartBody.Part.createFormData("imageList", snapshotFile.name, requestFile)
+        thumbnail = MultipartBody.Part.createFormData("thumbnail", snapshotFile.name, requestFile)
+
+        getImageLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    selectedImageUri = result.data?.data!!
+                    selectedImageUri.let { uri ->
+                        courseImageHolder.binding.courseView.setImageURI(uri)
+                        val filename = getFileName(uri)
+                        // 선택한 이미지 imageList 추가
+                        val filePart: MultipartBody.Part?
+                        val inputStream = contentResolver.openInputStream(uri)
+                        val file = uri.lastPathSegment?.let { File(cacheDir, it) }
+                        val outputStream = FileOutputStream(file)
+                        inputStream?.copyTo(outputStream)
+                        val requestBody =
+                            RequestBody.create(
+                                contentResolver.getType(uri)
+                                    ?.let { MediaType.parse(it) }, file!!
+                            )
+                        filePart =
+                            requestBody.let {
+                                MultipartBody.Part.createFormData(
+                                    "imageList", filename,
+                                    it
+                                )
+                            }
+//                        imageList[position!! + 1] = filePart!!
+                        imageList[position!!] = filePart!!
+                        Log.d("CourseActivityImageList", imageList.toString())
+                    }
                 }
             }
-        }
-
-//            registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-//                uri?.let {
-//                    //                    imageView.setImageURI(uri)
-//                }
-//            }
 
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
@@ -123,81 +141,114 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mapFragment.getMapAsync(this)
 
-        binding.courseImageRecyclerview.adapter = waypoints?.let { CourseImageAdapter(this, it) }
-//        binding.courseImageRecyclerview.addItemDecoration(
-//            PostImageAdapterDecoration()
-//        )
-//        val waypoints = intent.getParcelableArrayListExtra<Waypoint>("waypoints")
 
-        // RidingActivity intent 받기
-        val byteArray = intent.getByteArrayExtra("bitmap")
-        val bitmap = byteArray?.size?.let { BitmapFactory.decodeByteArray(byteArray, 0, it) }
+        waypointsAdapter = CourseImageAdapter(this, waypoints)
+        binding.courseImageRecyclerview.adapter = waypointsAdapter
+//        binding.courseImageRecyclerview.adapter = CourseImageAdapter(this, waypoints)
 
-        val file = bitmapToFile(bitmap)
-//
-        val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), file)
-        val body = MultipartBody.Part.createFormData("imageList", file.name, requestFile)
+        api = KakaoSearchAPI.create()
 
+        // 첫 번째 주소
+        searchAddress(waypoints[0]) { originAddress ->
+            if (originAddress != null) {
+                Log.d("getAddress", "Origin Address: $originAddress")
+                origin = originAddress
+                region = origin!!.take(2)
+                // 두 번째 주소
+                searchAddress(waypoints.last()) { destinationAddress ->
+                    if (destinationAddress != null) {
+                        Log.d("getAddress", "Destination Address: $destinationAddress")
+                        destination = destinationAddress
+                        originToDestination = "$origin -> $destination"
+                        // 글 등록 버튼 클릭
+                        binding.writebutton.setOnClickListener {
 
-        // 글 등록 버튼 클릭
-        binding.writebutton.setOnClickListener {
-//            Log.d("click", "눌렀다")
-//            val title = binding.editTitle.text.toString()
-//            val content = binding.editWriting.text.toString()
-//            val userId = MyApplication.prefs.getInt("userId", 0)
-//            val postReqCoursePost = ReqCoursePost("경로인코드스트링", "서울", "출발->목적지",userId, category = "COURSE", title,content)//FREE category,수정해야함
-//            Log.d("postReqCoursePost", postReqCoursePost.toString())
-//            // 이미지 리스트
-//            Log.d("image", body.toString())
-//            service.coursePostCreate(requestDTO = postReqCoursePost, listOf(body)).enqueue(object :
-//                Callback<ReqCoursePost> {
-//                //  @SuppressLint("Range")
-//                override fun onResponse(call: Call<ReqCoursePost>, response: Response<ReqCoursePost>) {
-//                    if (response.isSuccessful) {
-//                        Log.d("req보냈니", "OK")
-//                        val result: ReqCoursePost? = response.body()
-//                        Log.d("결과",result.toString())
-////                        if (response.code() == 201) { //수정해야함
-////                            if (result?.code == 100) {
-////                                Log.d("게시글작성", "성공: $title")
-////                                MainActivity.getInstance()?.writeCheck(true)
-////                                finish()
-////                            } else {
-////                                Log.d("ERR", "실패: " + result?.toString())
-////                            }
-////                        }
-//                    } else {
-//                        Log.d("ERR", "onResponse 실패")
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<ReqCoursePost>, t: Throwable) {
-//                    Log.d("onFailure", "실패 ")
-//                }
-//            })
+                            imageInfoMutableList = mutableListOf()
+                            for (i in waypoints) {
+                                Log.d("waypoints","$i")
+                                val placeUrl = i.place_url ?: ""
+                                imageInfoMutableList.add(
+                                    ImageInfo(
+                                        "${i.place_lat!!},${i.place_lng!!}",
+                                        i.place_name!!,
+                                        placeUrl
+                                    )
+                                )
+                            }
+                            val imageInfoList: List<ImageInfo> = imageInfoMutableList
 
+                            val title = binding.editTitle.text.toString()
+                            val content = binding.editWriting.text.toString()
+                            val userId = MyApplication.prefs.getLong("userId", 0)
+                            Log.d("imageInfoList", "$imageInfoList")
+                            Log.d(
+                                "writeButtonClick",
+                                "$encodedPath $region $originToDestination $userId $title $content $imageInfoList"
+                            )
+                            val postReqCoursePost = ReqCoursePost(
+                                encodedPath,
+                                region!!,
+                                originToDestination!!,
+                                userId,
+                                category = "COURSE",
+                                title,
+                                content,
+                                imageInfoList
+                            )
+                            val service = RetrofitService.create()
+                            service.coursePostCreate(
+                                requestDTO = postReqCoursePost,
+                                imageList,
+                                thumbnail
+                            )
+                                .enqueue(object :
+                                    Callback<ReqCoursePost> {
+                                    override fun onResponse(
+                                        call: Call<ReqCoursePost>,
+                                        response: Response<ReqCoursePost>
+                                    ) {
+                                        if (response.isSuccessful) {
+                                            val result: ReqCoursePost? = response.body()
+                                            Log.d(
+                                                "onResponse######################################",
+                                                "onResponse: $result"
+                                            )
+                                        } else {
+                                            Log.d(
+                                                "onResponse######################################",
+                                                "onResponse: error"
+                                            )
+                                        }
+                                    }
 
-//            val intent = Intent(this, CourseActivity::class.java)
-//            RidingService.ridingTimer.observe(this) { time ->
-//                intent.putExtra("ridingTime", time) // 시간
-//            }
-//            intent.putExtra("bitmap", byteArray) // 스냅샷
-////        intent.putExtra("courseName", "Android Development") // 거리
-////        intent.putExtra("courseName", "Android Development") // 좌표
-//            startActivity(intent)
-
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("openBoardFragment", "openBoard")
-            startActivity(intent)
-//            requireActivity().supportFragmentManager.beginTransaction()
-//                .replace(R.id.fragmentLayout, MyPageFragment())
-//                .commit()
-//            MainActivity.getInstance()?.transfer()
+                                    override fun onFailure(
+                                        call: Call<ReqCoursePost>,
+                                        t: Throwable
+                                    ) {
+                                        Log.d("onFailure", "onFailure")
+                                    }
+                                })
+                            // 게시판으로 이동하는 함수 필요
+                            val moveToBoardFragment =
+                                Intent(this@CourseActivity, MainActivity::class.java)
+                            moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            moveToBoardFragment.putExtra(OPEN_BOARD_FRAGMENT, 3)
+                            startActivity(moveToBoardFragment)
+                            finish()
+                        }
+                    } else {
+                        Log.d("getAddress", "Failed to get destination address")
+                    }
+                }
+            } else {
+                Log.d("getAddress", "Failed to get origin address")
+            }
         }
     }
 
+
     override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
+        this.nMap = naverMap
         naverMap.lightness = 0.3f
         for (w in waypoints) {
             val marker = Marker()
@@ -205,26 +256,9 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
             marker.map = naverMap
         }
         val pathOverlay = PathOverlay()
-        pathOverlay.coords = path
+        pathOverlay.coords = coordinates
         pathOverlay.map = naverMap
-        zoomToSeeWholeTrack(path)
-    }
-
-        fun bitmapToFile(bitmap: Bitmap?): File {
-        val wrapper = ContextWrapper(applicationContext)
-        var file = wrapper.getDir("images", Context.MODE_PRIVATE)
-        file = File(file, "${UUID.randomUUID()}.jpg")
-
-        try {
-            val stream: OutputStream = FileOutputStream(file)
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            stream.flush()
-            stream.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return file
+        zoomToSeeWholeTrack(coordinates)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -254,40 +288,6 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
         return super.dispatchTouchEvent(ev)
     }
 
-    fun decode(encodedPath: String): List<LatLng> {
-        val len = encodedPath.length
-        val path: MutableList<LatLng> = ArrayList()
-        var index = 0
-        var lat = 0
-        var lng = 0
-        while (index < len) {
-            var result = 1
-            var shift = 0
-            var b: Int
-            do {
-                b = encodedPath[index++].code - 63 - 1
-                result += b shl shift
-                shift += 5
-            } while (b >= 0x1f)
-            lat += if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            result = 1
-            shift = 0
-            do {
-                b = encodedPath[index++].code - 63 - 1
-                result += b shl shift
-                shift += 5
-            } while (b >= 0x1f)
-            lng += if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            path.add(
-                LatLng(
-                    round(lat * 1e-6 * 10000000) / 10000000,
-                    round(lng * 1e-6 * 10000000) / 10000000
-                )
-            )
-        }
-        return path
-    }
-
     private fun zoomToSeeWholeTrack(routeLatLng: List<LatLng>) {
         val bounds = LatLngBounds.Builder()
 
@@ -295,21 +295,17 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
             bounds.include(path)
         }
 
-        naverMap.moveCamera(
+        nMap.moveCamera(
             CameraUpdate.fitBounds(bounds.build(), 300).animate(CameraAnimation.Fly)
         )
     }
 
     @SuppressLint("IntentReset")
-//    fun openGallery(c:CourseImageAdapter.CourseImageHolder,position: Int): Uri? {
-    fun openGallery(c:CourseImageAdapter.CourseImageHolder,position: Int) {
+    fun openGallery(c: CourseImageAdapter.CourseImageHolder, position: Int) {
         this.courseImageHolder = c
         this.position = position
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        getContent.launch(galleryIntent)
-//        Log.d("uri출력2 in function",selectedImageUri.toString())
-//        return selectedImageUri
-
+        getImageLauncher.launch(galleryIntent)
     }
 
     @SuppressLint("Range")
@@ -317,13 +313,9 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
         var result: String? = null
         if (uri.scheme == "content") {
             val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                if (cursor != null) {
-                    cursor.close()
+            cursor.use {
+                if (it != null && it.moveToFirst()) {
+                    result = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                 }
             }
         }
@@ -333,4 +325,52 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
         return result
     }
 
+    private fun searchAddress(waypoint: Waypoint, callback: (String?) -> Unit) {
+        val api = KakaoSearchAPI.create()
+        api.getAddress(
+            BuildConfig.KAKAO_REST_API_KEY,
+            waypoint.place_lng.toString(),
+            waypoint.place_lat.toString()
+        ).enqueue(object : Callback<ResultGetAddress> {
+            override fun onResponse(
+                call: Call<ResultGetAddress>,
+                response: Response<ResultGetAddress>
+            ) {
+                val body = response.body()
+                if (body != null) {
+                    Log.d("getAddress", "onResponse: $body")
+                    val resultAddress =
+                        "${body.documents[0].road_address.region_1depth_name} ${body.documents[0].road_address.region_2depth_name}"
+                    callback(resultAddress)
+                } else {
+                    callback(null)
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ResultGetAddress>,
+                t: Throwable
+            ) {
+                Log.d("getAddress", "onFailure: $t")
+                callback(null)
+            }
+        })
+    }
+
+    val searchLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // 결과 처리
+                val pos = result.data?.getIntExtra("position", -1)
+                val placeName = result.data?.getStringExtra("place_name").toString()
+                val placeUrl = result.data?.getStringExtra("place_url").toString()
+                runOnUiThread {
+                    waypointsAdapter.updateItemBySearch(
+                        pos!!.toInt(),
+                        placeName,
+                        placeUrl
+                    )
+                }
+            }
+        }
 }

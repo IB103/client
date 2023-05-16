@@ -4,7 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.hansung.capstone.Constants.OPEN_BOARD_FRAGMENT
 import com.hansung.capstone.board.Posts
 import com.hansung.capstone.post.PostDetailActivity
 import com.hansung.capstone.recommend.RecommendFragment
@@ -90,6 +92,26 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentLayout, BoardFragment())
                 .commit()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        intent?.let {
+            val selectedNavItem = it.getIntExtra(OPEN_BOARD_FRAGMENT, 3)
+
+            // 백스택의 액티비티2와 액티비티1 제거
+//            supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+//            supportFragmentManager.popBackStack(null, 1)
+
+            if(selectedNavItem==3) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentLayout, BoardFragment())
+                    .commit()
+            }
+            // 보드프래그먼트 선택
+            bottomNavigationView.menu.getItem(selectedNavItem).isChecked = true
         }
     }
 

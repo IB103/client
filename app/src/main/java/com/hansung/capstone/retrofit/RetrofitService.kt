@@ -1,13 +1,9 @@
 package com.hansung.capstone.retrofit
 
-import com.google.gson.JsonObject
-import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MyApplication
-import com.hansung.capstone.RequestParams
 import com.hansung.capstone.board.ModifyPost
 import com.hansung.capstone.board.Posts
 import com.hansung.capstone.board.RePModifyProfileImage
-import com.hansung.capstone.board.ResultGetPosts
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -139,7 +135,8 @@ interface RetrofitService {
     @POST("/api/user-course/create")
     fun coursePostCreate(
         @Part("requestDTO") requestDTO:ReqCoursePost,
-        @Part imageList: List<MultipartBody.Part>
+        @Part imageList: List<MultipartBody.Part>,
+        @Part thumbnail: MultipartBody.Part
     ): Call<ReqCoursePost>
 
     companion object{
