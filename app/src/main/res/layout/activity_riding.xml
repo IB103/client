@@ -29,16 +29,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/riding_play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="100dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_play_arrow_24" />
+        android:scaleType="fitCenter"
+        android:background="@drawable/play"
+         />
 
 <!--    <ImageButton-->
 <!--        android:id="@+id/riding_pause_button"-->
@@ -51,35 +53,40 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:srcCompat="@drawable/ic_baseline_pause_24" />-->
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/riding_camera_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/riding_play_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
+        android:scaleType="fitCenter"
+        android:background="@drawable/camera"
 
-    <ImageButton
+       />
+
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/riding_stop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/riding_play_button"
-        app:srcCompat="@drawable/ic_baseline_stop_24" />
+        android:scaleType="fitCenter"
+      android:background="@drawable/stop" />
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/riding_check_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/riding_play_button"
-        app:srcCompat="@drawable/ic_baseline_add_location_24" />
+        android:scaleType="fitCenter"
+        android:background="@drawable/plus" />
 
     <TextView
         android:id="@+id/printSpeed"

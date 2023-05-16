@@ -67,8 +67,9 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:text="커뮤니티"
-            android:textColor="#9ACED3"
+            android:textColor="@color/maincolor"
             android:textStyle="bold"
+            android:textSize="18sp"
             tools:layout_editor_absoluteX="55dp"
             tools:layout_editor_absoluteY="9dp" />
     </androidx.appcompat.widget.Toolbar>
@@ -90,7 +91,7 @@
             android:background="@drawable/press_border"
             android:text="전체"
             android:textAlignment="center"
-            android:textColor="@color/skyBlue2"
+            android:textColor="@color/maincolor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

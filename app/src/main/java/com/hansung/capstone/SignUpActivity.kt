@@ -44,12 +44,12 @@ class SignUpActivity:AppCompatActivity() {
                         if (result.code == 100) {
                                 Log.d("INFO", "OK: $result")
                             binding.idConfirm.text = "ID 사용 가능합니다"
-                                //binding.idConfirm.setTextColor(R.color.green)
+                            binding.idConfirm.setTextColor(Color.parseColor("#04B431"))
                             binding.submitBt.isEnabled = true
                             } else {
                                 Log.d("ERR", "FAIL: $result")
                             binding.idConfirm.text = "ID 사용 불가능합니다"
-                                // binding.idConfirm.setTextColor(R.color.red)
+                            binding.idConfirm.setTextColor(Color.parseColor("#FF0000"))
                             binding.submitBt.isEnabled = false
                             }
                         }
@@ -67,7 +67,7 @@ class SignUpActivity:AppCompatActivity() {
             })
 
         }
-        binding.Birthday.setOnClickListener {
+        binding.calendar.setOnClickListener {
 
             val currentDate = Calendar.getInstance()
             val setYear = currentDate.get(Calendar.YEAR)
@@ -81,9 +81,9 @@ class SignUpActivity:AppCompatActivity() {
                     val calendar = Calendar.getInstance()
                     calendar.set(year, monthOfYear, dayOfMonth)
                     val date =
-                        SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(calendar.time)
+                        SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(calendar.time)
 
-                    binding.Birthday.text = date
+                    binding.Birthday.setText(date)
                 }
 
                 .spinnerTheme(R.drawable.numberpickerstyle)
@@ -105,11 +105,13 @@ class SignUpActivity:AppCompatActivity() {
                 if (binding.pwRegist.text.toString() == binding.pwCheck.text.toString()
                 ) {
                     binding.pwConfirm.text = "비밀번호가 일치합니다."
+                    binding.pwConfirm.setTextColor(Color.parseColor("#04B431"))
                     // binding.pwConfirm.setTextColor(R.color.green)
                     // 가입 버튼 활성화
                     binding.submitBt.isEnabled = true
                 } else {
                     binding.pwConfirm.text = "비밀번호가 일치하지 않습니다."
+                    binding.pwConfirm.setTextColor(Color.parseColor("#FF0000"))
                     //  binding.pwConfirm.setTextColor(R.color.red)
                     // 가입 버튼 활성화 안한다
                     binding.submitBt.isEnabled = false

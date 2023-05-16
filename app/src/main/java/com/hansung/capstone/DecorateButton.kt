@@ -9,7 +9,7 @@ class DecorateButton(private val binding: BoardFragment) {
     fun decoTotalBt(){
         binding.freeCategory.setTextColor(Color.parseColor("#A4A4A4"))
         binding.courseCategory.setTextColor(Color.parseColor("#A4A4A4"))
-        binding.totalCategory.setTextColor(Color.parseColor("#01DFD7"))
+        binding.totalCategory.setTextColor(Color.parseColor("#87D5AA"))
         binding.courseCategory.background= ContextCompat.getDrawable(binding.requireContext(),R.drawable.normal_border)
         binding.totalCategory.background= ContextCompat.getDrawable(binding.requireContext(),R.drawable.press_border)
         binding.freeCategory.background= ContextCompat.getDrawable(binding.requireContext(),R.drawable.normal_border)
@@ -17,7 +17,7 @@ class DecorateButton(private val binding: BoardFragment) {
     fun decoFreeBt(){
         binding.courseCategory.setTextColor(Color.parseColor("#A4A4A4"))
         binding.totalCategory.setTextColor(Color.parseColor("#A4A4A4"))
-        binding.freeCategory.setTextColor(Color.parseColor("#01DFD7"))
+        binding.freeCategory.setTextColor(Color.parseColor("#87D5AA"))
         binding.totalCategory.background=ContextCompat.getDrawable(binding.requireContext(),R.drawable.normal_border)
         binding.freeCategory.background=ContextCompat.getDrawable(binding.requireContext(),R.drawable.press_border)
         binding.courseCategory.background=ContextCompat.getDrawable(binding.requireContext(),R.drawable.normal_border)
@@ -25,7 +25,7 @@ class DecorateButton(private val binding: BoardFragment) {
     fun decoCourseBt(){
         binding.freeCategory.setTextColor(Color.parseColor("#A4A4A4"))
         binding.totalCategory.setTextColor(Color.parseColor("#A4A4A4"))
-        binding.courseCategory.setTextColor(Color.parseColor("#01DFD7"))
+        binding.courseCategory.setTextColor(Color.parseColor("#87D5AA"))
         binding.totalCategory.background=ContextCompat.getDrawable(binding.requireContext(),R.drawable.normal_border)
         binding.courseCategory.background=ContextCompat.getDrawable(binding.requireContext(),R.drawable.press_border)
         binding.freeCategory.background=ContextCompat.getDrawable(binding.requireContext(),R.drawable.normal_border)

@@ -19,25 +19,27 @@
 
     <ImageButton
         android:id="@+id/add_waypoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginEnd="8dp"
         android:background="#00FFFFFF"
         android:visibility="invisible"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/waypoint"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_circle_outline_24" />
+        app:srcCompat="@drawable/plus1" />
 
     <ImageButton
         android:id="@+id/remove_waypoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="#00FFFFFF"
         android:visibility="invisible"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/waypoint"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_remove_circle_outline_24" />
+        app:srcCompat="@drawable/minus" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -65,9 +65,11 @@
                 android:id="@+id/locationSearch"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="50dp"
                 android:autofillHints=""
-                android:background="@drawable/element_edit_comment"
+                android:background="@drawable/element_edit_box"
                 android:ems="10"
                 android:hint="@string/query_request"
                 android:imeActionLabel="검색"
@@ -79,12 +81,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/find_directions_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#00FFFFFF"
-                android:src="@drawable/ic_sharp_directions_24"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/rightarrow"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/locationSearch"
                 app:layout_constraintTop_toTopOf="parent"
@@ -135,12 +138,6 @@
     <!--                    app:layout_constraintStart_toEndOf="@+id/location_button_view"/>-->
     <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        <Button
-            android:id="@+id/snapshotB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:text="사진찍기" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

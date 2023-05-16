@@ -7,7 +7,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
 <!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:windowLightStatusBar">true</item>
-        <item name="colorPrimary">#59B1BA</item>
+        <item name="colorPrimary">#87D5AA</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->

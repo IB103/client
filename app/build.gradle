@@ -110,4 +110,7 @@ dependencies {
     //deco edittext
     implementation 'com.google.android.material:material:1.4.0'
 
+    //MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+
 }

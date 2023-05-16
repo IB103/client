@@ -163,12 +163,13 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun updateUI(isRiding: Boolean) { // 라이딩 상태에 따른 UI 변경
         this.isRiding = isRiding
         if (!isRiding) { // 주행중이 아닐 때
-            binding.ridingPlayButton.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_baseline_play_arrow_24
-                )
-            )
+            binding.ridingPlayButton.setBackgroundResource(R.drawable.play)
+//            binding.ridingPlayButton.setImageDrawable(
+//                ContextCompat.getDrawable(
+//                    this,
+//                    R.drawable.play
+//                )
+//            )
             binding.ridingCameraButton.alpha = 1f
             binding.ridingCameraButton.isClickable = true
             binding.ridingStopButton.alpha = 1f
@@ -177,12 +178,13 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.ridingCheckButton.isClickable = true
 
         } else {
-            binding.ridingPlayButton.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_baseline_pause_24
-                )
-            )
+            binding.ridingPlayButton.setBackgroundResource(R.drawable.pause)
+//            binding.ridingPlayButton.setImageDrawable(
+//                ContextCompat.getDrawable(
+//                    this,
+//                    R.drawable.pause
+//                )
+           // )
             binding.ridingCameraButton.alpha = 0.3f
             binding.ridingCameraButton.isClickable = false
             binding.ridingStopButton.alpha = 0.3f

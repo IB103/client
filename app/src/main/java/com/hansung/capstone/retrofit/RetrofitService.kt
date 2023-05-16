@@ -17,6 +17,11 @@ import retrofit2.http.*
 
 
 interface RetrofitService {
+    @GET("/api/users/riding/record-history")
+    fun getRecord(
+        @Query("userId") userId: Long,
+        @Query("period") period: Long
+    ): Call<RepFindId>
     @POST("/api/email/send")
     fun send(
         @Query("email") email: String

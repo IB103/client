@@ -17,6 +17,10 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.hansung.capstone.course.CourseActivity
 import com.hansung.capstone.course.MakeCourseActivity
 import com.hansung.capstone.databinding.FragmentHomeBinding
@@ -63,7 +67,21 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentHomeBinding.bind(view)
         val noImage:Long=-1
-
+        val entries = listOf(
+            Entry(0f, 3f),
+            Entry(1f, 4f),
+           Entry(2f, 5f),
+            Entry(3f, 6f),
+           Entry(4f, 4f)
+        )
+        val dataSet = LineDataSet(entries, "라이딩 기록")
+        val lineData = LineData(dataSet)
+        val lineChart = binding.chart
+        lineChart.data = lineData
+        lineChart.invalidate()
+        // 애니메이션 설정
+        lineChart.animateX(1000) // X축 방향 애니메이션 설정
+        lineChart.animateY(1000, Easing.EasingOption.EaseInQuad) // Y축 방향 애니메이션 설정
 //        val navController: NavController = Navigation.findNavController(view)
 
 //        val navHostFragment =
@@ -160,17 +178,17 @@ class HomeFragment : Fragment() {
 
                   temperature.text = "$temper ℃"
                   weatherState.text = weatherDescription
-                  if (weatherState.text.contains("rain")||weatherState.text.contains("Rain")||weatherState.text.contains("drizzle"))
+                  if (weatherDescription.contains("rain")||weatherDescription.contains("Rain")||weatherDescription.contains("drizzle"))
                       weatherIcon.setImageResource(R.drawable.rain)
-                  else if (weatherState.text.contains("clouds")||weatherState.text.contains("mist")||weatherState.text.contains("Smoke"))
+                  else if (weatherDescription.contains("clouds")||weatherDescription.contains("mist")||weatherDescription.contains("Smoke"))
                       weatherIcon.setImageResource(R.drawable.cloud)
-                  else if (weatherState.text.contains("clear"))
+                  else if (weatherDescription.contains("clear"))
                       weatherIcon.setImageResource(R.drawable.clear)
-                  else if (weatherState.text.contains("Tornado")||weatherState.text.contains("Squall"))
+                  else if (weatherDescription.contains("Tornado")||weatherDescription.contains("Squall"))
                       weatherIcon.setImageResource(R.drawable.windy)
-                  else if (weatherState.text.contains("thunderstorm"))
+                  else if (weatherDescription.contains("thunderstorm"))
                       weatherIcon.setImageResource(R.drawable.thunderstorm)
-                  else if (weatherState.text.contains("sand"))
+                  else if (weatherDescription.contains("sand"))
                       weatherIcon.setImageResource(R.drawable.sand)
               }
               override fun onFailure(call: Call<Weather>, t: Throwable) {

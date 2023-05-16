@@ -11,7 +11,7 @@ import retrofit2.Response
 class Token {
 
     var service = RetrofitService.create()
-    private val expiresIn = 30//300//30분으로 수정->30 * 60 * 1000
+    private val expiresIn = 30 * 60 * 1000//300//30분으로 수정->30 * 60 * 1000
     fun set(){
         val currentTime = System.currentTimeMillis()
         MyApplication.prefs.setLong("tokenTime",currentTime)

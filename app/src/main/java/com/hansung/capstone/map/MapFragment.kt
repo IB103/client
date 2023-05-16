@@ -411,12 +411,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
 //        naverMap.symbolScale = 1f
 //        naverMap.isIndoorEnabled = true
 
-        binding.snapshotB.setOnClickListener {
-//            val bitmapImage: Bitmap = viewToBitmap(mapView)
-            naverMap.takeSnapshot {
-                onSnapshotReady(it)
-            }
-        }
+//        binding.snapshotB.setOnClickListener {
+////            val bitmapImage: Bitmap = viewToBitmap(mapView)
+//            naverMap.takeSnapshot {
+//                onSnapshotReady(it)
+//            }
+//        }
 
 
         // 사용자 인터페이스 설정
