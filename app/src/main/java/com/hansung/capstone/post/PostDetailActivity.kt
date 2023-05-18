@@ -256,7 +256,6 @@ class PostDetailActivity : AppCompatActivity() {
         val accessToken=MyApplication.prefs.getString("accessToken","")
         //val myFragment = supportFragmentManager.findFragmentById(R.id.boardFragment) as BoardFragment?
         // Activity 클래스 내부
-
         api.deletePost(accessToken = "Bearer $accessToken",id, postId)
             .enqueue(object : Callback<ResDelete> {
                 @SuppressLint("SetTextI18n")

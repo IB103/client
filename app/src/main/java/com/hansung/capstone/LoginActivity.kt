@@ -1,6 +1,7 @@
 package com.hansung.capstone
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
@@ -28,15 +29,19 @@ class LoginActivity : AppCompatActivity() {
     private var kakaoNickname: String? = null
     var service = RetrofitService.create()
     private var loginNeeded:Boolean=false
+   var completeSignUp=false
+    companion object {
+        private const val SIGNUP_REQUEST_CODE = 123
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         loginNeeded = intent.getBooleanExtra("loginNeeded", false)
         if(loginNeeded){
             Toast.makeText(this, "로그인이 필요한 활동입니다", Toast.LENGTH_SHORT).show()
-
-
         }
 
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
@@ -122,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
                                 MyApplication.prefs.setString("nickname", result.data.nickname)
                                 MyApplication.prefs.setString("accessToken", result.data.tokenInfo.accessToken)
                                 MyApplication.prefs.setString("refreshToken", result.data.tokenInfo.refreshToken)
-
+                                MyApplication.prefs.setString("username", result.data.username)
                                 MyApplication.prefs.setLong("profileImageId", result.data.profileImageId)
                                 MyApplication.prefs.setLong("userId",result.data.userId)
                                 token.set()
@@ -155,8 +160,8 @@ class LoginActivity : AppCompatActivity() {
         }
         binding.tvSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
-            finish()
+            startActivityForResult(intent, SIGNUP_REQUEST_CODE)
+
         }
     }
     private fun updateKakaoLoginInfo() {
@@ -184,6 +189,16 @@ class LoginActivity : AppCompatActivity() {
         }
 
     }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SIGNUP_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+           // completeSignUp = data?.getBooleanExtra("key", false) ?: false
+            Toast.makeText(this,"회원가입이 완료됐습니다. 로그인 해주세요.",Toast.LENGTH_SHORT).show()
+            // completeSignUp 값 활용
+        }
+    }
+
+
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val focusView = currentFocus

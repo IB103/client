@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +34,7 @@ class BoardFragment : Fragment() {
     private lateinit var adapter: BoardAdapter
     var category:String="total"
     var totalPage:Int=0
-
+    private var enable = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -43,7 +44,7 @@ class BoardFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //view_=view
+        updateUI(true)
         adapter= BoardAdapter()
         resultAllPost = view.findViewById(R.id.resultAllPost)
         resultAllPost.addItemDecoration(BoardAdapterDecoration())
@@ -62,6 +63,7 @@ class BoardFragment : Fragment() {
         binding.totalCategory.setOnClickListener {
            DecorateButton(this@BoardFragment).decoTotalBt()
             category="total"
+            updateUI(true)
             page=0
             resultAllPost.scrollToPosition(0)
            init()
@@ -72,6 +74,7 @@ class BoardFragment : Fragment() {
             category="course"
             page=0
             resultAllPost.scrollToPosition(0)
+            updateUI(false)
             initCourseData()
 
         }
@@ -79,6 +82,8 @@ class BoardFragment : Fragment() {
             DecorateButton(this@BoardFragment).decoFreeBt()
             category="free"
             page=0
+            updateUI(true)
+            binding.postB.isEnabled=true
             resultAllPost.scrollToPosition(0)
             initFreeData()
 
@@ -133,6 +138,7 @@ class BoardFragment : Fragment() {
     private fun getAllPost(page:Int){//다음 페이지 요청
         api.getAllPost(page)
             .enqueue(object : Callback<ResultGetPosts> {
+                @SuppressLint("SuspiciousIndentation")
                 override fun onResponse(
                     call: Call<ResultGetPosts>,
                     response: Response<ResultGetPosts>,
@@ -268,9 +274,18 @@ class BoardFragment : Fragment() {
              adapter.changed(MainActivity.getInstance()!!.getChangedPost())
          }
         MainActivity.getInstance()?.stateCheck(-1)
-
     }
-
+    @UiThread
+    private fun updateUI(isEnable: Boolean) {
+        this.enable = isEnable
+        if (enable) {
+            binding.postB.alpha = 1f
+            binding.postB.isClickable = true
+        } else {
+            binding.postB.alpha = 0.3f
+            binding.postB.isClickable = false
+        }
+    }
 }
 
 

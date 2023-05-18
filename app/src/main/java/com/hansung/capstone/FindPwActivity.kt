@@ -1,6 +1,7 @@
 package com.hansung.capstone
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.databinding.ActivityFindpwBinding
 import com.hansung.capstone.modify.ModifyActivity
+import com.hansung.capstone.modify.ModifyMyInfo
 import com.hansung.capstone.retrofit.RepConfirm
 import com.hansung.capstone.retrofit.RepSend
 import com.hansung.capstone.retrofit.RetrofitService
@@ -23,40 +25,63 @@ import retrofit2.Response
 class FindPwActivity:AppCompatActivity() {
     val service=RetrofitService.create()
     private val binding by lazy {ActivityFindpwBinding.inflate(layoutInflater) }
+    private  val MODIFYPW_REQUEST_CODE = 12
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.closeView.setOnClickListener { finish() }
-        setTime()
+        //setTime()
         binding.reqEmailSend.setOnClickListener {
             val email=binding.getId.text.toString()
-            service.send(email).enqueue(object : Callback<RepSend> {
-                @SuppressLint("Range", "ResourceAsColor")
-                override fun onResponse(
-                    call: Call<RepSend>,
-                    response: Response<RepSend>,
-                ) {
+            service.send(email).enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
-                        val result: RepSend = response.body()!!
-                        if (response.code() == 200) {
-                            if (result.code == 200) {//수정
-                                Log.d("INFO", "코드 받기 성공 $result")
-                                setTime()
-                                binding.confirmValue.isEnabled=true
-                            } else {
-                                Log.d("ERR", "코드 받기 실패: $result")
-                            }
-                        }
+                        val responseBody = response.body()
+                        setTime()
+                        binding.confirmValue.isEnabled=true
+
                     } else {
-                        // 통신이 실패한 경우
-                        Log.d("ERR 코드 받기", "onResponse 실패")
+                        val errorBody = response.errorBody()
+
+                        println("Failed to send email. Error: $errorBody")
                     }
                 }
-                override fun onFailure(call: Call<RepSend>, t: Throwable) {
-                    Log.d("ERR 코드 받기", "onFailure 에러: " + t.message.toString())
 
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    // Handle the network request failure here
+                    println("Failed to send email. Exception: ${t.message}")
                 }
             })
+
+
+
+//            service.send(email).enqueue(object : Callback<String> {
+//                @SuppressLint("Range", "ResourceAsColor")
+//                override fun onResponse(
+//                    call: Call<String>,
+//                    response: Response<String>
+//                ) {
+//                    if (response.isSuccessful) {
+//                       // if (response.code() == 200) {
+//
+//                                Log.d("INFO", "코드 받기 성공")
+//                                setTime()
+//                                binding.confirmValue.isEnabled=true
+//                          //  }
+//                          //  }
+//                    else {
+//                            Log.d("ERR", "코드 받기 실패")
+//                        }
+//                    } else {
+//                        // 통신이 실패한 경우
+//                        Log.d("ERR 코드 받기", "onResponse 실패")
+//                    }
+//                }
+//                override fun onFailure(call: Call<String>, t: Throwable) {
+//                    Log.d("ERR 코드 받기", "onFailure 에러: " + t.message.toString())
+//
+//                }
+//            })
         }
 
     }
@@ -92,8 +117,10 @@ class FindPwActivity:AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     val result: RepConfirm = response.body()!!
-                        if (result.code == 200) {//수정
+                        if (response.code() == 200) {//수정
                             Log.d("INFO", "인증 성공$result")
+                            MyApplication.prefs.setString("accessToken","${result.data.accessToken}")
+                            MyApplication.prefs.setString("refreshToken","${result.data.refreshToken}")
                             startActivity()
                         }
                 } else {
@@ -109,8 +136,8 @@ class FindPwActivity:AppCompatActivity() {
     }
     private fun startActivity(){
         val intent = Intent(this, ModifyActivity::class.java)
-        startActivity(intent)
-        finish()
+        startActivityForResult(intent,MODIFYPW_REQUEST_CODE)
+
     }
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val focusView = currentFocus
@@ -127,5 +154,12 @@ class FindPwActivity:AppCompatActivity() {
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MODIFYPW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            setResult(Activity.RESULT_OK)
+        }
+        finish()
     }
 }

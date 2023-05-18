@@ -1,5 +1,6 @@
 package com.hansung.capstone.retrofit
 
+import com.google.gson.GsonBuilder
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.board.ModifyPost
 import com.hansung.capstone.board.Posts
@@ -21,7 +22,7 @@ interface RetrofitService {
     @POST("/api/email/send")
     fun send(
         @Query("email") email: String
-    ):Call<RepSend>
+    ):Call<String>
     @POST("/api/email/confirm")
     fun confirm(
         @Query("email") email: String,
@@ -86,8 +87,8 @@ interface RetrofitService {
     @GET("/api/users/test")
     fun test(@Header("Authorization")accessToken:String): Call<String>
 
-    @Headers("accept: application/json", "content-type: application/json")
-    @POST("/api/users/modifyPW")
+
+    @PUT("/api/users/modifyPW")
     fun modifyPW(
         @Body reqModifyPW: ReqModifyPW
     ): Call<RepModifyPW>
@@ -99,7 +100,7 @@ interface RetrofitService {
 
     @GET("profile-image/{id}")
     fun getProfileImage(
-        @Path("id") id: Long,
+        @Path("id") id: Long
     ): Call<ResponseBody>
 
     @Multipart
@@ -143,7 +144,7 @@ interface RetrofitService {
         fun create() : RetrofitService {
             return Retrofit.Builder()
                 .baseUrl(MyApplication.getUrl())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
                 .build()
                 .create(RetrofitService::class.java)
         }

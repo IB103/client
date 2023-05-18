@@ -1,6 +1,7 @@
 package com.hansung.capstone.modify
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
@@ -58,7 +59,7 @@ class ModifyActivity:AppCompatActivity() {
     }
     fun modifyPw(view: View){
         val pw=binding.getLastPw.text.toString()
-        val email= MyApplication.prefs.getString("id","")
+        val email= MyApplication.prefs.getString("email","")
         val postReqModifyPW = ReqModifyPW(email, pw)
         service.modifyPW(postReqModifyPW).enqueue(object : Callback<RepModifyPW> {
             @SuppressLint("Range", "ResourceAsColor")
@@ -67,17 +68,13 @@ class ModifyActivity:AppCompatActivity() {
                 response: Response<RepModifyPW>,
             ) {
                 if (response.isSuccessful) {
-                    val result: RepModifyPW = response.body()!!
-                    if (response.code() == 200) {//수정해야함
-                        if (result.code == 100) {
-
-                        } else {
-                            Log.d("ERR", "$result")
-                        }
+                    if (response.code()== 200) {//수정해야함
+                            setResult(Activity.RESULT_OK)
+                            finish()
                     }
                 } else {
                     // 통신이 실패한 경우
-                    Log.d("ERR ModifyPW", "onResponse 실패")
+                    Log.d("ERR ModifyPW", "onResponse 실패 ${response.errorBody()}")
                 }
             }
             override fun onFailure(call: Call<RepModifyPW>, t: Throwable) {

@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.hansung.capstone.board.RePModifyProfileImage
 import com.hansung.capstone.databinding.FragmentMypageBinding
+import com.hansung.capstone.modify.ModifyMyInfo
 import com.hansung.capstone.modify.ModifyNickActivity
 import com.hansung.capstone.retrofit.ReqModifyProfileImage
 import com.hansung.capstone.retrofit.RetrofitService
@@ -56,11 +57,9 @@ class MyPageFragment : Fragment() {
 
     @SuppressLint("SuspiciousIndentation")
     private fun visibleProfile() {
-
         val noImage:Long=-1
         binding.userContainer.profile_container.visibility = View.VISIBLE
         binding.userContainer.login_container.visibility = View.GONE
-        Log.d("변경된 닉네임", MyApplication.prefs.getString("nickname", ""))
         binding.userContainer.profile_container.tv_nick.text =
             MyApplication.prefs.getString("nickname", "")
         binding.userContainer.profile_container.tv_email.text =
@@ -70,43 +69,30 @@ class MyPageFragment : Fragment() {
         } else {
             getProfileImage()
         }
-        binding.userContainer.profile_container.profileImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            @Suppress("DEPRECATION")
-            startActivityForResult(intent, defaultGalleryRequestCode)
-            if (ContextCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            ) {
-            } else {
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    0
-                )
-            }
-        }
-        }
-        binding.userContainer.profile_container.logout_bt.setOnClickListener {
 
-            if (MyApplication.prefs.getString("state", "") == "kakao") {
-                UserApiClient.instance.logout { error ->
-                    if (error != null) {
-                        Log.e("LOGOUT", "fail", error)
-                    } else {
-                        MyApplication.prefs.setString("id", "")
-                        Log.d("LOGOUT", "success")
-                    }
-                }
-            }
-            MyApplication.prefs.remove()
-            visibleLogin()
+//        binding.userContainer.profile_container.logout_bt.setOnClickListener {
+//
+//            if (MyApplication.prefs.getString("state", "") == "kakao") {
+//                UserApiClient.instance.logout { error ->
+//                    if (error != null) {
+//                        Log.e("LOGOUT", "fail", error)
+//                    } else {
+//                        MyApplication.prefs.setString("id", "")
+//                        Log.d("LOGOUT", "success")
+//                    }
+//                }
+//            }
+//            MyApplication.prefs.remove()
+//            visibleLogin()
+//        }
+
+        binding.userContainer.profile_container.profileImage.setOnClickListener {
+            val intent = Intent(activity, ModifyMyInfo::class.java)
+            startActivity(intent)
         }
-        //닉네임, 비밀 번호 수정하기
-        binding.userContainer.profile_container.modify_bt.setOnClickListener {
-            val intent = Intent(activity, ModifyNickActivity::class.java)
+
+        binding.userContainer.profile_container.mypage.setOnClickListener {
+            val intent = Intent(activity, ModifyMyInfo::class.java)
             startActivity(intent)
         }
         //내가 쓴 글
@@ -218,6 +204,7 @@ class MyPageFragment : Fragment() {
             commentLogin()
         if(MyApplication.prefs.getString("email", "")!="")
             visibleProfile()
+        else  visibleLogin()
     }
 @Suppress("NAME_SHADOWING")
 @SuppressLint("Range")

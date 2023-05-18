@@ -1,6 +1,8 @@
 package com.hansung.capstone
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
@@ -22,11 +24,39 @@ import java.util.*
 
 class SignUpActivity:AppCompatActivity() {
     private val binding by lazy { ActivitySignupBinding.inflate(layoutInflater) }
+    var idConfirm=false
+    var nicknameConfirm=false
+    var pwConfirm=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //var binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val service = RetrofitService.create()
+
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val nameText = binding.UserName.text.toString()
+                val birthdayText = binding.Birthday.text.toString()
+
+                val allFieldsFilled =nicknameConfirm&&pwConfirm&&
+                       idConfirm&& nameText.isNotBlank() && birthdayText.isNotBlank()
+               binding.submitBt.isEnabled = allFieldsFilled
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // Not used
+            }
+        }
+
+// Add the text change listener to each EditText
+        binding.idRegis.addTextChangedListener(textWatcher)
+        binding.pwRegist.addTextChangedListener(textWatcher)
+        binding.pwCheck.addTextChangedListener(textWatcher)
+       binding.NickName.addTextChangedListener(textWatcher)
+        binding.UserName.addTextChangedListener(textWatcher)
+       binding.Birthday.addTextChangedListener(textWatcher)
 
         binding.DoubleCheck.setOnClickListener {
 
@@ -44,25 +74,27 @@ class SignUpActivity:AppCompatActivity() {
                         if (result.code == 100) {
                                 Log.d("INFO", "OK: $result")
                             binding.idConfirm.text = "ID 사용 가능합니다"
+                            idConfirm=true
                             binding.idConfirm.setTextColor(Color.parseColor("#04B431"))
-                            binding.submitBt.isEnabled = true
+                            //binding.submitBt.isEnabled = true
                             } else {
                                 Log.d("ERR", "FAIL: $result")
                             binding.idConfirm.text = "ID 사용 불가능합니다"
+                            idConfirm=false
                             binding.idConfirm.setTextColor(Color.parseColor("#FF0000"))
-                            binding.submitBt.isEnabled = false
+                            //binding.submitBt.isEnabled = false
                             }
                         }
                     else {
                         // 통신이 실패한 경우
                         Log.d("ERR", "onResponse 실패")
-                        binding.submitBt.isEnabled = false
+                        //binding.submitBt.isEnabled = false
                     }
                 }
 
                 override fun onFailure(call: Call<RepDoubleCheckID>, t: Throwable) {
                     Log.d("ERR", "onFailure 에러: " + t.message.toString())
-                    binding.submitBt.isEnabled = false
+                    //binding.submitBt.isEnabled = false
                 }
             })
 
@@ -85,7 +117,6 @@ class SignUpActivity:AppCompatActivity() {
 
                     binding.Birthday.setText(date)
                 }
-
                 .spinnerTheme(R.drawable.numberpickerstyle)
                 .defaultDate(setYear, month, day)
                 .build().apply {
@@ -105,16 +136,18 @@ class SignUpActivity:AppCompatActivity() {
                 if (binding.pwRegist.text.toString() == binding.pwCheck.text.toString()
                 ) {
                     binding.pwConfirm.text = "비밀번호가 일치합니다."
+                    pwConfirm=true
                     binding.pwConfirm.setTextColor(Color.parseColor("#04B431"))
                     // binding.pwConfirm.setTextColor(R.color.green)
                     // 가입 버튼 활성화
-                    binding.submitBt.isEnabled = true
+                    //binding.submitBt.isEnabled = true
                 } else {
                     binding.pwConfirm.text = "비밀번호가 일치하지 않습니다."
+                    pwConfirm=false
                     binding.pwConfirm.setTextColor(Color.parseColor("#FF0000"))
                     //  binding.pwConfirm.setTextColor(R.color.red)
                     // 가입 버튼 활성화 안한다
-                    binding.submitBt.isEnabled = false
+                    //binding.submitBt.isEnabled = false
                 }
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -125,16 +158,18 @@ class SignUpActivity:AppCompatActivity() {
                 if (binding.pwRegist.text.toString() == binding.pwCheck.text.toString()
                 ) {
                     binding.pwConfirm.text = "비밀번호가 일치합니다."
+                    pwConfirm=true
                     binding.pwConfirm.setTextColor(Color.parseColor("#04B431"))
                     //binding.pwConfirm.setTextColor(R.color.green)
                     // 가입 버튼 활성화
-                    binding.submitBt.isEnabled = true
+                    //binding.submitBt.isEnabled = true
                 } else {
                     binding.pwConfirm.text = "비밀번호가 일치하지 않습니다."
+                    pwConfirm=false
                     binding.pwConfirm.setTextColor(Color.parseColor("#FF0000"))
                     //binding.pwConfirm.setTextColor(R.color.red)
                     // 가입 버튼 활성화 안한다
-                    binding.submitBt.isEnabled = false
+                    //binding.submitBt.isEnabled = false
                 }
             }
         })
@@ -153,11 +188,15 @@ class SignUpActivity:AppCompatActivity() {
                     if (response.isSuccessful) {
                         Log.d("req", "OK")
                         val result: RepRegister? = response.body()
-                        if (response.code() == 200) {
+                        if (response.code() == 201) {
                             //  if(!result?.nickname.isNullOrEmpty()){
                             Log.d("INFO", "성공: " + result?.toString())
                             Log.d("INFO", "닉네임" + result?.nickname)
                             Log.d("INFO", "ID" + result?.id)
+//                            val resultIntent = Intent()
+//                            resultIntent.putExtra("key", true) // 전달할 값 설정
+                            setResult(Activity.RESULT_OK)
+                            finish() // SignUpActivity 종료
                             //startMainActivity()
                             // finish()
                         } else {
@@ -191,26 +230,28 @@ class SignUpActivity:AppCompatActivity() {
                             val result: RepDoubleCheckNickName = response.body()!!
                             if (result.code == 100) {
                                     Log.d("INFO", "닉네임 OK: $result")
+                                nicknameConfirm=true
                                 binding.nicknameConfirm.text = "닉네임 사용 가능합니다"
                                 binding.nicknameConfirm.setTextColor(Color.parseColor("#04B431"))
-                                binding.submitBt.isEnabled = true
+                                //binding.submitBt.isEnabled = true
 
                                 } else {
                                     Log.d("ERR", "닉네임 중복: $result")
+                                nicknameConfirm=false
                                 binding.nicknameConfirm.text = "닉네임 사용 불가능합니다"
                                   binding.nicknameConfirm.setTextColor(Color.parseColor("#FF0000"))
                                     //binding.nicknameConfirm.setTextColor(R.color.red)
-                                binding.submitBt.isEnabled = false
+                                //binding.submitBt.isEnabled = false
                                 }
                         } else {
                             // 통신이 실패한 경우
                             Log.d("ERR", "onResponse 실패")
-                            binding.submitBt.isEnabled = false
+                            //binding.submitBt.isEnabled = false
                         }
                     }
                     override fun onFailure(call: Call<RepDoubleCheckNickName>, t: Throwable) {
                         Log.d("ERR", "onFailure 에러: " + t.message.toString())
-                        binding.submitBt.isEnabled = false
+                       // binding.submitBt.isEnabled = false
                     }
                 })
         }

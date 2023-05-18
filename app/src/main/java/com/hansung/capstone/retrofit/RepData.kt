@@ -9,8 +9,8 @@ data class RepConfirm(
     val success: Boolean,
     @SerializedName("message")
     val message: String,
-    @SerializedName("timestamp")
-    val data:String
+    @SerializedName("data")
+    val data:TokenInfo
 )
 data class RepSend(
     @SerializedName("code")

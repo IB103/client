@@ -18,9 +18,11 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.hansung.capstone.course.CourseActivity
 import com.hansung.capstone.course.MakeCourseActivity
 import com.hansung.capstone.databinding.FragmentHomeBinding
@@ -41,14 +43,16 @@ class HomeFragment : Fragment() {
         const val API_KEY: String = BuildConfig.OPEN_WEATHER_KEY
         const val MIN_TIME: Long = 5000
         const val WEATHER_REQUEST: Int = 102
+        data class RidingData(val date: Long, val distance: Long)
     }
+
     private lateinit var weatherState: TextView
     private lateinit var temperature: TextView
     private lateinit var weatherIcon: ImageView
     private lateinit var profileImage: ImageView
     private lateinit var mLocationManager: LocationManager
     private lateinit var mLocationListener: LocationListener
-
+    private lateinit var dataList: List<RidingData>
     private val minDistance: Float = 100f
     var service = RetrofitService.create()
     val retrofit: Retrofit = Retrofit.Builder()
@@ -67,6 +71,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentHomeBinding.bind(view)
         val noImage:Long=-1
+
         val entries = listOf(
             Entry(0f, 3f),
             Entry(1f, 4f),
@@ -77,11 +82,42 @@ class HomeFragment : Fragment() {
         val dataSet = LineDataSet(entries, "라이딩 기록")
         val lineData = LineData(dataSet)
         val lineChart = binding.chart
+        val xAxis = lineChart.xAxis
         lineChart.data = lineData
-        lineChart.invalidate()
+        xAxis.apply {
+            setDrawGridLines(false)
+            setDrawAxisLine(true)
+            setDrawLabels(true)
+            position = XAxis.XAxisPosition.BOTTOM
+            textColor = resources.getColor(R.color.black, null)
+            textSize = 10f
+            labelRotationAngle = 0f
+            setLabelCount(10, true)
+        }
+        lineChart.apply {
+            axisRight.isEnabled = false   //y축 사용여부
+            axisLeft.isEnabled = false
+            legend.isEnabled = false    //legend 사용여부
+            description.isEnabled = false //주석
+            isScaleYEnabled = false //y축 줌 사용여부
+            isScaleXEnabled = false //x축 줌 사용여부
+        }
+
+        dataSet.apply {
+            color = resources.getColor(R.color.maincolor, null)
+            circleRadius = 5f
+            lineWidth = 1f
+            setCircleColor(resources.getColor(R.color.maincolor, null))
+            setDrawHighlightIndicators(false)
+            setDrawValues(true) // 숫자표시
+            valueTextColor = resources.getColor(R.color.black, null)
+            valueFormatter = DefaultValueFormatter(0)  // 소숫점 자릿수 설정
+            valueTextSize = 10f
+        }
+//        lineChart.invalidate()
         // 애니메이션 설정
-        lineChart.animateX(1000) // X축 방향 애니메이션 설정
-        lineChart.animateY(1000, Easing.EasingOption.EaseInQuad) // Y축 방향 애니메이션 설정
+//        lineChart.animateX(1000) // X축 방향 애니메이션 설정
+//        lineChart.animateY(1000, Easing.EasingOption.EaseInQuad) // Y축 방향 애니메이션 설정
 //        val navController: NavController = Navigation.findNavController(view)
 
 //        val navHostFragment =

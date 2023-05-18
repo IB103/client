@@ -106,8 +106,9 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".FindIdActivity" />
         <activity android:name=".SignUpActivity"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".FindPwActivity" />
+        <activity android:name=".modify.ModifyMyInfo" />
         <activity android:name=".modify.ModifyActivity"
  android:windowSoftInputMode="adjustResize" />
         <activity android:name=".course.CourseActivity" />
