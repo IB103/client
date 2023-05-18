@@ -13,24 +13,18 @@ class BoardAdapterDecoration : RecyclerView.ItemDecoration() {
     ) {
         super.getItemOffsets(outRect, view, parent, state)
 
-//        val position = parent.getChildAdapterPosition(view)
-//        val count = state.itemCount
+        val position = parent.getChildAdapterPosition(view)
+        val count = state.itemCount
         val offset = 10
 
-        outRect.top = offset
-        outRect.bottom = offset
-
-//        when (position) {
-//            0 -> {
-//                outRect.top = offset
-//                outRect.bottom = offset
-//
-//            }
-//            count - 1 -> outRect.bottom = offset
-//            else -> {
-//                outRect.top = offset
-//                outRect.bottom = offset
-//            }
-//        }
+        when (position) {
+            count - 1 -> {
+                outRect.top = offset
+                outRect.bottom = offset
+            }
+            else -> {
+                outRect.top = offset
+            }
+        }
     }
 }

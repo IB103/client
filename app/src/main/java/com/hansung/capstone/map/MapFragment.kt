@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PointF
 import android.location.Location
@@ -147,7 +146,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                     val waypoints: List<LatLng> = returnWaypoints(directionsQuery)
 
                     val api = MapboxDirectionAPI.create()
-                    api.getWaypointsDirection(
+                    api.getWaypointsDirections(
                         directionsQuery, "polyline6", "full", BuildConfig.MAPBOX_TOKEN
                     )
                         .enqueue(object : Callback<ResultSearchDirections> {
@@ -489,7 +488,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.SnapshotReadyCallba
                             LatLng(location.latitude, location.longitude)
                         staticMarker2.icon = MarkerIcons.BLUE
                         staticMarker2.map = naverMap
-                        api2.getSearchDirection(
+                        api2.getSearchDirections(
                             location.longitude, location.latitude, lng.toDouble(), lat.toDouble(),
                             "polyline6", "full", BuildConfig.MAPBOX_TOKEN
                         )

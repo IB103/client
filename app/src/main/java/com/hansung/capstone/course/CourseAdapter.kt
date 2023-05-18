@@ -1,19 +1,18 @@
 package com.hansung.capstone.course
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.databinding.ItemDirectionsRecyclerviewBinding
 import com.hansung.capstone.Waypoint
+import com.hansung.capstone.home.MakeCourseActivity
 import com.hansung.capstone.map.WaypointsSearchActivity
 
 class CourseAdapter(
-    private val makeCourseActivity: MakeCourseActivity,
-    var waypoints: MutableList<Waypoint>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val makeCourseActivity: MakeCourseActivity, var waypoints: MutableList<Waypoint>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding =
             ItemDirectionsRecyclerviewBinding.inflate(
@@ -45,22 +44,16 @@ class CourseAdapter(
             }
         }
         viewHolder.itemView.setOnClickListener {
-            Log.d("포지션1",position.toString())
             val intent = Intent(makeCourseActivity, WaypointsSearchActivity::class.java)
             intent.putExtra("position", viewHolder.adapterPosition)
-            Log.d("포지션2",position.toString())
-            makeCourseActivity.myLauncher.launch(intent)
+            makeCourseActivity.waypointSearchLauncher.launch(intent)
         }
         viewHolder.addWaypoint.setOnClickListener {
-            Log.d("포지션+",position.toString())
             addItem(itemCount - 1)
-//            makeCourseActivity.changeScroll()
         }
         viewHolder.removeWaypoint.setOnClickListener {
-            Log.d("포지션-",position.toString())
             removeItem(position)
-            makeCourseActivity.moveMap()
-//            makeCourseActivity.changeScroll()
+            makeCourseActivity.moveAndDrawMap()
         }
     }
 
@@ -70,7 +63,7 @@ class CourseAdapter(
 
     inner class CourseHolder(val binding: ItemDirectionsRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        var waypointText = binding.waypoint
+        var waypointText = binding.waypointTextView
         val addWaypoint = binding.addWaypoint
         val removeWaypoint = binding.removeWaypoint
         fun bind(items: Waypoint) {

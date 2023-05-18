@@ -6,152 +6,155 @@
     android:layout_height="match_parent"
     tools:context=".RidingActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/riding_view"
-        android:name="com.naver.maps.map.MapFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/riding_stop_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/printTimer"
-        android:layout_width="wrap_content"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/riding_view"
+            android:name="com.naver.maps.map.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:layout_editor_absoluteX="-16dp"
+            tools:layout_editor_absoluteY="-135dp">
+
+            <TextView
+                android:id="@+id/printKcal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kcal"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="@+id/kcal"
+                app:layout_constraintStart_toStartOf="@+id/kcal"
+                app:layout_constraintTop_toTopOf="@+id/printSpeed" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/riding_camera_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/camera"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="@+id/riding_play_button"
+                app:layout_constraintEnd_toStartOf="@+id/riding_play_button"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/printTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:00"
+                android:textSize="48sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/timer" />
+
+            <TextView
+                android:id="@+id/timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="시간"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="속도(km/h)"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/printSpeed" />
+
+            <TextView
+                android:id="@+id/kcal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="칼로리(Kcal)"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/speed"
+                app:layout_constraintTop_toTopOf="@+id/speed" />
+
+            <TextView
+                android:id="@+id/printSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="speed"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/printTimer" />
+
+            <TextView
+                android:id="@+id/printDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="distance"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="@+id/distance"
+                app:layout_constraintStart_toStartOf="@+id/distance"
+                app:layout_constraintTop_toTopOf="@+id/printSpeed" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/riding_play_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/play"
+                android:scaleType="fitCenter"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/riding_check_button"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/riding_camera_button"
+                app:layout_constraintTop_toBottomOf="@+id/speed" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/riding_check_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/plus"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="@+id/riding_play_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/riding_play_button" />
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="거리(km)"
+                app:layout_constraintEnd_toStartOf="@+id/speed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/speed" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/riding_stop_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="260dp"
-        android:text="00:00:00"
-        android:textSize="50dp"
-        app:layout_constraintBottom_toBottomOf="@+id/riding_view"
+        android:text="코스 등록하러가기"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/riding_play_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="100dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:scaleType="fitCenter"
-        android:background="@drawable/play"
-         />
-
-<!--    <ImageButton-->
-<!--        android:id="@+id/riding_pause_button"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginBottom="100dp"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:srcCompat="@drawable/ic_baseline_pause_24" />-->
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/riding_camera_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/riding_play_button"
-        app:layout_constraintStart_toStartOf="parent"
-        android:scaleType="fitCenter"
-        android:background="@drawable/camera"
-
-       />
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/riding_stop_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/riding_play_button"
-        android:scaleType="fitCenter"
-      android:background="@drawable/stop" />
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/riding_check_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/riding_play_button"
-        android:scaleType="fitCenter"
-        android:background="@drawable/plus" />
-
-    <TextView
-        android:id="@+id/printSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="speed"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/printTimer" />
-
-    <TextView
-        android:id="@+id/printKcal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="kcal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/printSpeed"
-        app:layout_constraintTop_toTopOf="@+id/printSpeed" />
-
-    <TextView
-        android:id="@+id/printDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="distance"
-        app:layout_constraintEnd_toStartOf="@+id/printSpeed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/printSpeed" />
-
-    <TextView
-        android:id="@+id/distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="거리(km)"
-        app:layout_constraintEnd_toStartOf="@+id/speed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/speed" />
-
-    <TextView
-        android:id="@+id/speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="속도(km/h)"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/printSpeed" />
-
-    <TextView
-        android:id="@+id/kcal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="칼로리(Kcal)"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/speed"
-        app:layout_constraintTop_toTopOf="@+id/speed" />
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="시간"
-        app:layout_constraintBottom_toTopOf="@+id/printTimer"
-        app:layout_constraintEnd_toEndOf="@+id/printTimer"
-        app:layout_constraintStart_toStartOf="@+id/printTimer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,15 +9,13 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/courseImage"
         android:layout_width="match_parent"
-        android:layout_height="176dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         card_view:cardBackgroundColor="#FFFFFF"
-        card_view:cardCornerRadius="10dp">
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="0dp">
 
         <ImageView
             android:id="@+id/courseView"
@@ -28,18 +26,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/coursePlaceName"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="12dp"
-        android:gravity="center"
-        android:hint="장소를 입력해주세요."
-        app:layout_constraintEnd_toStartOf="@+id/searchButton"
-        app:layout_constraintStart_toStartOf="@+id/courseImage"
-        app:layout_constraintTop_toTopOf="@+id/searchButton" />
-
-<!--    <ImageButton-->
+    <!--    <ImageButton-->
 <!--        android:id="@+id/removeButton"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
@@ -51,15 +38,54 @@
 <!--        android:elevation="10dp"-->
 <!--        card_view:srcCompat="@drawable/ic_baseline_close_24" />-->
 
-    <ImageButton
-        android:id="@+id/searchButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="12dp"
-        android:background="#00FFFFFF"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/element_edit_box"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/courseImage"
-        card_view:srcCompat="@drawable/ic_baseline_search_24" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/courseImage">
+
+        <TextView
+            android:id="@+id/coursePlaceName"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:hint="장소명을 입력해주세요."
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/searchButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/searchButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/element_edit_box"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            card_view:srcCompat="@drawable/ic_baseline_search_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/imageNum"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="0"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/courseImage"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

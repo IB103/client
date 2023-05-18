@@ -13,26 +13,26 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.hansung.capstone.*
 import com.hansung.capstone.BuildConfig
 import com.hansung.capstone.Constants.OPEN_BOARD_FRAGMENT
-import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ActivityCourseBinding
 import com.hansung.capstone.Waypoint
 import com.hansung.capstone.map.KakaoSearchAPI
 import com.hansung.capstone.map.ResultGetAddress
+import com.hansung.capstone.post.PostImageAdapterDecoration
 import com.hansung.capstone.retrofit.ImageInfo
 import com.hansung.capstone.retrofit.ReqCoursePost
 import com.hansung.capstone.retrofit.RetrofitService
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
-import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.PathOverlay
 import kotlinx.android.synthetic.main.activity_course.*
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.item_location_search_results.*
@@ -48,9 +48,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.*
 
-class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
+class CourseActivity : AppCompatActivity() {
     private val binding by lazy { ActivityCourseBinding.inflate(layoutInflater) }
-    private lateinit var nMap: NaverMap
     private lateinit var waypoints: MutableList<Waypoint>
     private lateinit var encodedPath: String
     private lateinit var coordinates: List<LatLng>
@@ -67,7 +66,7 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
     private var originToDestination: String? = null
     private var region: String? = null
     private lateinit var api: KakaoSearchAPI
-    private lateinit var waypointsAdapter: CourseImageAdapter
+    private lateinit var courseImageAdapter: CourseImageAdapter
 
     @SuppressLint("Recycle")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -76,11 +75,10 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = ""
-
 
 //        Log.d("LiveDataInCourseActivity", RidingService.timeLiveData.value!!.toString())
 
+        // 인텐트 값 읽기
         val intent = intent
         @Suppress("DEPRECATION")
         waypoints = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -92,21 +90,35 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.d("coordinates", "$coordinates")
         snapshotPath = intent.getStringExtra("snapshotPath")!!
 
-        // 값 null imageList 생성
-//        imageList = ArrayList(Collections.nCopies(waypoints.size + 1, null))
+
+        // 지도 스냅샷 출력
+        val requestOptions = RequestOptions()
+            .fitCenter()
+            .override(binding.courseCardView.width)
+        Glide.with(this)
+            .load(snapshotPath)
+            .apply(requestOptions)
+            .into(binding.courseImage)
+
+        // 빈 이미지 리스트 생성
         imageList = ArrayList(Collections.nCopies(waypoints.size, null))
 
+        // 스냅샷 이미지 멀티파트
         val snapshotFile = File(snapshotPath)
         val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), snapshotFile)
-//        imageList[0] = MultipartBody.Part.createFormData("imageList", snapshotFile.name, requestFile)
         thumbnail = MultipartBody.Part.createFormData("thumbnail", snapshotFile.name, requestFile)
 
+
+        // 이미지 등록 런처
         getImageLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
                     selectedImageUri = result.data?.data!!
                     selectedImageUri.let { uri ->
-                        courseImageHolder.binding.courseView.setImageURI(uri)
+                        Glide.with(this)
+                            .load(uri) // 이미지 경로 (로컬 파일 경로, 웹 URL 등)
+                            .centerCrop()
+                            .into(courseImageHolder.binding.courseView)
                         val filename = getFileName(uri)
                         // 선택한 이미지 imageList 추가
                         val filePart: MultipartBody.Part?
@@ -126,34 +138,25 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
                                     it
                                 )
                             }
-//                        imageList[position!! + 1] = filePart!!
                         imageList[position!!] = filePart!!
                         Log.d("CourseActivityImageList", imageList.toString())
                     }
                 }
             }
 
-        val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(R.id.map, it).commit()
-            }
+        // RecyclerView 어댑터 연결
+        courseImageAdapter = CourseImageAdapter(this, waypoints)
+        binding.courseImageRecyclerview.adapter = courseImageAdapter
+        binding.courseImageRecyclerview.addItemDecoration(PostImageAdapterDecoration())
 
-        mapFragment.getMapAsync(this)
-
-
-        waypointsAdapter = CourseImageAdapter(this, waypoints)
-        binding.courseImageRecyclerview.adapter = waypointsAdapter
-//        binding.courseImageRecyclerview.adapter = CourseImageAdapter(this, waypoints)
 
         api = KakaoSearchAPI.create()
-
         // 첫 번째 주소
         searchAddress(waypoints[0]) { originAddress ->
             if (originAddress != null) {
                 Log.d("getAddress", "Origin Address: $originAddress")
                 origin = originAddress
-                region = origin!!.take(2)
+                region = origin
                 // 두 번째 주소
                 searchAddress(waypoints.last()) { destinationAddress ->
                     if (destinationAddress != null) {
@@ -161,80 +164,87 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
                         destination = destinationAddress
                         originToDestination = "$origin -> $destination"
                         // 글 등록 버튼 클릭
-                        binding.writebutton.setOnClickListener {
-
-                            imageInfoMutableList = mutableListOf()
-                            for (i in waypoints) {
-                                Log.d("waypoints","$i")
-                                val placeUrl = i.place_url ?: ""
-                                imageInfoMutableList.add(
-                                    ImageInfo(
-                                        "${i.place_lat!!},${i.place_lng!!}",
-                                        i.place_name!!,
-                                        placeUrl
+                        binding.writeButton.setOnClickListener {
+                            if (binding.editTitle.text.toString().isEmpty()) {
+                                Toast.makeText(this, "제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                            } else if (checkWaypoints(waypoints)) {
+                                Toast.makeText(this, "장소 이름을 등록해주세요.", Toast.LENGTH_SHORT).show()
+                            } else if (binding.editWriting.text.toString().isEmpty()) {
+                                Toast.makeText(this, "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                            } else {
+                                imageInfoMutableList = mutableListOf()
+                                for (i in waypoints) {
+                                    Log.d("waypoints", "$i")
+                                    val placeUrl = i.place_url ?: "" // url 없으면 빈 문자열
+                                    imageInfoMutableList.add(
+                                        ImageInfo(
+                                            "${i.place_lat!!},${i.place_lng!!}",
+                                            i.place_name!!,
+                                            placeUrl
+                                        )
                                     )
+                                }
+                                val imageInfoList: List<ImageInfo> = imageInfoMutableList
+                                val title = binding.editTitle.text.toString()
+                                val content = binding.editWriting.text.toString()
+                                val userId = MyApplication.prefs.getLong("userId", 0)
+                                Log.d("writeButtonClick", "$imageInfoList")
+                                Log.d("writeButtonClick", "$imageList")
+                                Log.d(
+                                    "writeButtonClick",
+                                    "$encodedPath $region $originToDestination $userId $title $content $imageInfoList"
                                 )
-                            }
-                            val imageInfoList: List<ImageInfo> = imageInfoMutableList
-
-                            val title = binding.editTitle.text.toString()
-                            val content = binding.editWriting.text.toString()
-                            val userId = MyApplication.prefs.getLong("userId", 0)
-                            Log.d("imageInfoList", "$imageInfoList")
-                            Log.d(
-                                "writeButtonClick",
-                                "$encodedPath $region $originToDestination $userId $title $content $imageInfoList"
-                            )
-                            val postReqCoursePost = ReqCoursePost(
-                                encodedPath,
-                                region!!,
-                                originToDestination!!,
-                                userId,
-                                category = "COURSE",
-                                title,
-                                content,
-                                imageInfoList
-                            )
-                            val service = RetrofitService.create()
-                            service.coursePostCreate(
-                                requestDTO = postReqCoursePost,
-                                imageList,
-                                thumbnail
-                            )
-                                .enqueue(object :
-                                    Callback<ReqCoursePost> {
-                                    override fun onResponse(
-                                        call: Call<ReqCoursePost>,
-                                        response: Response<ReqCoursePost>
-                                    ) {
-                                        if (response.isSuccessful) {
-                                            val result: ReqCoursePost? = response.body()
-                                            Log.d(
-                                                "onResponse######################################",
-                                                "onResponse: $result"
-                                            )
-                                        } else {
-                                            Log.d(
-                                                "onResponse######################################",
-                                                "onResponse: error"
-                                            )
+                                val postReqCoursePost = ReqCoursePost(
+                                    encodedPath,
+                                    region!!,
+                                    originToDestination!!,
+                                    userId,
+                                    category = "COURSE",
+                                    title,
+                                    content,
+                                    imageInfoList
+                                )
+                                val service = RetrofitService.create()
+                                service.coursePostCreate(
+                                    requestDTO = postReqCoursePost,
+                                    imageList,
+                                    thumbnail
+                                )
+                                    .enqueue(object :
+                                        Callback<ReqCoursePost> {
+                                        override fun onResponse(
+                                            call: Call<ReqCoursePost>,
+                                            response: Response<ReqCoursePost>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                val result: ReqCoursePost? = response.body()
+                                                Log.d(
+                                                    "onResponse######################################",
+                                                    "onResponse: $result"
+                                                )
+                                            } else {
+                                                Log.d(
+                                                    "onResponse######################################",
+                                                    "onResponse: error"
+                                                )
+                                            }
                                         }
-                                    }
 
-                                    override fun onFailure(
-                                        call: Call<ReqCoursePost>,
-                                        t: Throwable
-                                    ) {
-                                        Log.d("onFailure", "onFailure")
-                                    }
-                                })
-                            // 게시판으로 이동하는 함수 필요
-                            val moveToBoardFragment =
-                                Intent(this@CourseActivity, MainActivity::class.java)
-                            moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                            moveToBoardFragment.putExtra(OPEN_BOARD_FRAGMENT, 3)
-                            startActivity(moveToBoardFragment)
-                            finish()
+                                        override fun onFailure(
+                                            call: Call<ReqCoursePost>,
+                                            t: Throwable
+                                        ) {
+                                            Log.d("onFailure", "onFailure")
+                                        }
+                                    })
+                                // 게시판으로 이동하는 함수 필요
+                                val moveToBoardFragment =
+                                    Intent(this@CourseActivity, MainActivity::class.java)
+                                moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                moveToBoardFragment.putExtra(OPEN_BOARD_FRAGMENT, 3)
+                                startActivity(moveToBoardFragment)
+                                finish()
+                            }
                         }
                     } else {
                         Log.d("getAddress", "Failed to get destination address")
@@ -244,21 +254,6 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
                 Log.d("getAddress", "Failed to get origin address")
             }
         }
-    }
-
-
-    override fun onMapReady(naverMap: NaverMap) {
-        this.nMap = naverMap
-        naverMap.lightness = 0.3f
-        for (w in waypoints) {
-            val marker = Marker()
-            marker.position = LatLng(w.place_lat!!.toDouble(), w.place_lng!!.toDouble())
-            marker.map = naverMap
-        }
-        val pathOverlay = PathOverlay()
-        pathOverlay.coords = coordinates
-        pathOverlay.map = naverMap
-        zoomToSeeWholeTrack(coordinates)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -286,18 +281,6 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    private fun zoomToSeeWholeTrack(routeLatLng: List<LatLng>) {
-        val bounds = LatLngBounds.Builder()
-
-        for (path in routeLatLng) {
-            bounds.include(path)
-        }
-
-        nMap.moveCamera(
-            CameraUpdate.fitBounds(bounds.build(), 300).animate(CameraAnimation.Fly)
-        )
     }
 
     @SuppressLint("IntentReset")
@@ -340,7 +323,7 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (body != null) {
                     Log.d("getAddress", "onResponse: $body")
                     val resultAddress =
-                        "${body.documents[0].road_address.region_1depth_name} ${body.documents[0].road_address.region_2depth_name}"
+                        "${body.documents[0].address.region_1depth_name} ${body.documents[0].address.region_2depth_name}"
                     callback(resultAddress)
                 } else {
                     callback(null)
@@ -365,7 +348,7 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
                 val placeName = result.data?.getStringExtra("place_name").toString()
                 val placeUrl = result.data?.getStringExtra("place_url").toString()
                 runOnUiThread {
-                    waypointsAdapter.updateItemBySearch(
+                    courseImageAdapter.updateItemBySearch(
                         pos!!.toInt(),
                         placeName,
                         placeUrl
@@ -373,4 +356,12 @@ class CourseActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+
+    private fun checkWaypoints(waypoints: MutableList<Waypoint>): Boolean {
+        for (w in waypoints) {
+            if (w.place_name.isNullOrEmpty())
+                return true
+        }
+        return false
+    }
 }

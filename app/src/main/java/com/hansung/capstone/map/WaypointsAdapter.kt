@@ -67,7 +67,7 @@ class WaypointsAdapter(
 
     inner class WaypointsHolder(val binding: ItemDirectionsRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        var waypointText = binding.waypoint
+        var waypointText = binding.waypointTextView
         val addWaypoint = binding.addWaypoint
         val removeWaypoint = binding.removeWaypoint
         fun bind(items: Waypoint) {

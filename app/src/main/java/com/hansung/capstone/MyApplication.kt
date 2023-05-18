@@ -8,11 +8,7 @@ import java.time.format.DateTimeFormatter
 
 class MyApplication : Application() {
 
-//    val ridingViewModel by lazy {
-//        ViewModelProvider.AndroidViewModelFactory.getInstance(this).create(RidingViewModel::class.java)
-//    }
-
-    init{
+    init {
         instance = this
     }
 
@@ -21,17 +17,17 @@ class MyApplication : Application() {
 
         // 서버 주소
         private const val serverInfo = "3.39.20.68:8080"
-        //private const val serverInfo = "223.194.130.55:8080"
-
         private const val url = "http://$serverInfo/"
         fun getUrl(): String {
             return url
         }
+
         // context 접근용
         lateinit var instance: MyApplication
-        fun applicationContext() : Context {
+        fun applicationContext(): Context {
             return instance.applicationContext
         }
+
         // LocalDateTime 변환
         fun convertDate(date: String): LocalDateTime {
             val subDate = date.substring(0 until 19)

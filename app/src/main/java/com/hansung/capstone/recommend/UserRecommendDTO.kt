@@ -1,6 +1,6 @@
 package com.hansung.capstone.recommend
 
-import com.hansung.capstone.post.Post
+import com.hansung.capstone.retrofit.ImageInfo
 
 data class UserRecommendDTO(
     var code: Int = 0,
@@ -15,5 +15,8 @@ data class UserRecommend(
     var region: String,
     var originToDestination: String,
     var postId: Long,
+    var thumbnailId: Long,
+    var imageId: List<Long>,
+    var imageInfoList: List<ImageInfo>,
     var numOfFavorite: Int
 )

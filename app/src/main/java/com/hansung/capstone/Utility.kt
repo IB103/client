@@ -2,6 +2,11 @@ package com.hansung.capstone
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.NaverMap
 import java.io.File
 import java.io.FileOutputStream
 
@@ -18,5 +23,17 @@ object Utility {
         outputStream.close()
 
         return file.absolutePath
+    }
+
+    fun zoomToSeeWholeTrack(path: List<LatLng>, naverMap: NaverMap) {
+        val bounds = LatLngBounds.Builder()
+        if (path.isNotEmpty()) {
+            for (pos in path) {
+                bounds.include(pos)
+            }
+            naverMap.moveCamera(
+                CameraUpdate.fitBounds(bounds.build(), 200).animate(CameraAnimation.Easing)
+            )
+        }
     }
 }

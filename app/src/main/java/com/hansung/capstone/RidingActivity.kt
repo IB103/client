@@ -37,6 +37,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.MarkerIcons
 import kotlinx.android.synthetic.main.activity_riding.view.*
+import kotlinx.android.synthetic.main.item_waypoint_search_result_recyclerview.*
 import kotlinx.android.synthetic.main.layout_bottom_sheet.*
 import java.io.ByteArrayOutputStream
 
@@ -56,7 +57,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
     private var requestLocationPermissionLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permission ->
             if (permission.all { it.value }) {
-//                Log.d("checkLocationPermission","권한 승인")
                 checkLocationPermission()
             } else {
                 Toast.makeText(this, "경로를 기록하려면 권한을 허용해 주세요.", Toast.LENGTH_SHORT).show()
@@ -97,8 +97,10 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
             // 처음 시작을 누를 때 isRiding = false
             if (!isRiding) {
                 sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+                locationOverlay.isVisible = false
             } else {
                 sendCommandToService(ACTION_PAUSE_SERVICE)
+                locationOverlay.isVisible = true
                 // isRiding -> false 변경
             }
         }
@@ -114,7 +116,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (pathOverlay.size > 1) {
                     lateinit var snapshotPath: String
                     val intent = Intent(this, CourseActivity::class.java)
-                    Log.d("coordinatesPathOverlay1",pathOverlay.toString())
+                    Log.d("coordinatesPathOverlay1", pathOverlay.toString())
                     pathWaypoints.add(
                         Waypoint(
                             place_lat = pathOverlay.last().latitude,
@@ -133,8 +135,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
 
 //                    moveToCourseActivity(it)
-                }
-                else
+                } else
                     Toast.makeText(this, "등록에 필요한 기록이 부족합니다.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -187,12 +188,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         this.isRiding = isRiding
         if (!isRiding) { // 주행중이 아닐 때
             binding.ridingPlayButton.setBackgroundResource(R.drawable.play)
-//            binding.ridingPlayButton.setImageDrawable(
-//                ContextCompat.getDrawable(
-//                    this,
-//                    R.drawable.play
-//                )
-//            )
             binding.ridingCameraButton.alpha = 1f
             binding.ridingCameraButton.isClickable = true
             binding.ridingStopButton.alpha = 1f
@@ -201,13 +196,8 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.ridingCheckButton.isClickable = true
 
         } else {
+//            locationOverlay.isVisible = false
             binding.ridingPlayButton.setBackgroundResource(R.drawable.pause)
-//            binding.ridingPlayButton.setImageDrawable(
-//                ContextCompat.getDrawable(
-//                    this,
-//                    R.drawable.pause
-//                )
-           // )
             binding.ridingCameraButton.alpha = 0.3f
             binding.ridingCameraButton.isClickable = false
             binding.ridingStopButton.alpha = 0.3f
@@ -316,7 +306,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         // LiveData Location 좌표를 이용해 오버레이 표시
         RidingService.currentLocation.observe(this) {
             locationOverlay.position = it
-            locationOverlay.isVisible = true
+//            locationOverlay.isVisible = true
         }
     }
 
@@ -352,7 +342,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
         this.nMap = naverMap // 메인의 객체와 연결
-        naverMap.lightness = 0f // 밝기 조절
+        nMap.lightness = 0.5f // 밝기 조절
 
         // 지도 UI 설정
         val uiSettings = naverMap.uiSettings
@@ -386,10 +376,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                         LatLng(
                             RidingService.currentLocation.value!!.latitude,
                             RidingService.currentLocation.value!!.longitude
-                        ).apply {
-                            locationOverlay.position = this
-                            locationOverlay.isVisible = true
-                        }, 17.0
+                        ), 17.0
                     )
                         .animate(CameraAnimation.Fly)
                 nMap.moveCamera(cameraUpdate)
@@ -408,7 +395,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                                     ).apply {
                                         locationOverlay.position = this
                                         locationOverlay.isVisible = true
-                                    }, 13.0
+                                    }, 17.0
                                 )
                                     .animate(CameraAnimation.Fly)
                             nMap.moveCamera(cameraUpdate)
@@ -472,8 +459,10 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         if (lastLocation != null) {
             pathWaypoints.add(
                 Waypoint(
+                    place_name = "",
                     place_lat = lastLocation.latitude,
-                    place_lng = lastLocation.longitude
+                    place_lng = lastLocation.longitude,
+                    place_url = ""
                 )
             )
             val marker = Marker()

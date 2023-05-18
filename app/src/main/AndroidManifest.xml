@@ -27,15 +27,22 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".course.DialogActivity"
-            android:theme="@style/AppTheme.Dialog"
+            android:name=".recommend.LocationSetActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".course.MakeCourseActivity"
+            android:name=".course.DialogActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.Dialog">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".home.MakeCourseActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -105,12 +112,14 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".FindIdActivity" />
-        <activity android:name=".SignUpActivity"
-            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".SignUpActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".FindPwActivity" />
         <activity android:name=".modify.ModifyMyInfo" />
-        <activity android:name=".modify.ModifyActivity"
- android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".modify.ModifyActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".course.CourseActivity" />
         <activity
             android:name=".WriteActivity"

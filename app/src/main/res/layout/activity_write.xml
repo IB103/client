@@ -44,7 +44,7 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/titleT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -57,7 +57,7 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/courseT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -96,7 +96,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/titleT"
         tools:ignore="MissingConstraints" />
 
     <androidx.core.widget.NestedScrollView
@@ -104,7 +104,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/courseT"
         tools:ignore="MissingConstraints">
 
 
