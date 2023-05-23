@@ -110,6 +110,7 @@ class PostDetailActivity : AppCompatActivity() {
                     binding.PostDetailDate.text = createdDate
                     var count = 0
 
+                    Log.d("getPostDetails",body.toString())
                     for (i in body?.data?.commentList!!) {
                         count += i.reCommentList.size
                     }

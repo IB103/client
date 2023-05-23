@@ -5,12 +5,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.*
-import android.provider.ContactsContract.Data
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
@@ -19,7 +17,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.hansung.capstone.Constants.ACTION_CREATE_SERVICE
@@ -28,8 +25,7 @@ import com.hansung.capstone.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.hansung.capstone.Constants.ACTION_STOP_SERVICE
 import com.hansung.capstone.course.CourseActivity
 import com.hansung.capstone.databinding.ActivityRidingBinding
-import com.hansung.capstone.retrofit.PermissionUtils
-import com.hansung.capstone.retrofit.Permissions
+import com.hansung.capstone.retrofit.*
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.LocationOverlay
@@ -39,7 +35,9 @@ import com.naver.maps.map.util.MarkerIcons
 import kotlinx.android.synthetic.main.activity_riding.view.*
 import kotlinx.android.synthetic.main.item_waypoint_search_result_recyclerview.*
 import kotlinx.android.synthetic.main.layout_bottom_sheet.*
-import java.io.ByteArrayOutputStream
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -97,11 +95,8 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
             // 처음 시작을 누를 때 isRiding = false
             if (!isRiding) {
                 sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
-                locationOverlay.isVisible = false
             } else {
                 sendCommandToService(ACTION_PAUSE_SERVICE)
-                locationOverlay.isVisible = true
-                // isRiding -> false 변경
             }
         }
 
@@ -112,31 +107,32 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.ridingStopButton.setOnClickListener {
             if (!isRiding) {
-                // 마지막 위치 추가
-                if (pathOverlay.size > 1) {
-                    lateinit var snapshotPath: String
-                    val intent = Intent(this, CourseActivity::class.java)
-                    Log.d("coordinatesPathOverlay1", pathOverlay.toString())
-                    pathWaypoints.add(
-                        Waypoint(
-                            place_lat = pathOverlay.last().latitude,
-                            place_lng = pathOverlay.last().longitude
-                        )
-                    )
-                    sendCommandToService(ACTION_STOP_SERVICE)
-                    val encodePath = DataConverter.encode(pathOverlay)
-                    nMap.takeSnapshot { bitmap ->
-                        snapshotPath = Utility.saveSnapshot(this, bitmap)
-                        intent.putParcelableArrayListExtra("waypoints", ArrayList(pathWaypoints))
-                        intent.putExtra("coordinates", encodePath)
-                        intent.putExtra("snapshotPath", snapshotPath)
-                        startActivity(intent)
-                        finish()
-                    }
-
-                    //moveToCourseActivity(it)
-                } else
-                    Toast.makeText(this, "등록에 필요한 기록이 부족합니다.", Toast.LENGTH_SHORT).show()
+//                // 마지막 위치 추가
+//                if (pathOverlay.size > 1) {
+//                    lateinit var snapshotPath: String
+//                    val intent = Intent(this, CourseActivity::class.java)
+//                    Log.d("coordinatesPathOverlay1", pathOverlay.toString())
+//                    pathWaypoints.add(
+//                        Waypoint(
+//                            place_lat = pathOverlay.last().latitude,
+//                            place_lng = pathOverlay.last().longitude
+//                        )
+//                    )
+//                    sendCommandToService(ACTION_STOP_SERVICE)
+//                    val encodePath = DataConverter.encode(pathOverlay)
+//                    nMap.takeSnapshot { bitmap ->
+//                        snapshotPath = Utility.saveSnapshot(this, bitmap)
+//                        intent.putParcelableArrayListExtra("waypoints", ArrayList(pathWaypoints))
+//                        intent.putExtra("coordinates", encodePath)
+//                        intent.putExtra("snapshotPath", snapshotPath)
+//                        startActivity(intent)
+//                        finish()
+//                    }
+//
+//                    //moveToCourseActivity(it)
+//                } else
+//                    Toast.makeText(this, "등록에 필요한 기록이 부족합니다.", Toast.LENGTH_SHORT).show()
+                ridingDialog(this)
             }
         }
 
@@ -179,7 +175,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onDestroy() {
         Log.d("RidingActivity", "onDestroy")
         // 액티비티가 종료 될 때 서비스 종료 액션 전달
-        sendCommandToService(ACTION_STOP_SERVICE)
+//        sendCommandToService(ACTION_STOP_SERVICE)
         super.onDestroy()
     }
 
@@ -207,21 +203,21 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun moveToCourseActivity(bitmap: Bitmap) { // 코스 등록 화면으로 이동
-        // Bitmap 객체를 Parcelable 형태로 변환
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-//        val byteArray = stream.toByteArray()
-
-        val intent = Intent(this, CourseActivity::class.java)
-        RidingService.timeLiveData.observe(this) { time ->
-            intent.putExtra("ridingTime", time) // 시간
-        }
-//        intent.putExtra("bitmap", byteArray) // 스냅샷
-//        intent.putExtra("courseName", "Android Development") // 거리
-//        intent.putExtra("courseName", "Android Development") // 좌표
-        startActivity(intent)
-    }
+//    private fun moveToCourseActivity(bitmap: Bitmap) { // 코스 등록 화면으로 이동
+//        // Bitmap 객체를 Parcelable 형태로 변환
+//        val stream = ByteArrayOutputStream()
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+////        val byteArray = stream.toByteArray()
+//
+//        val intent = Intent(this, CourseActivity::class.java)
+//        RidingService.timeLiveData.observe(this) { time ->
+//            intent.putExtra("ridingTime", time) // 시간
+//        }
+////        intent.putExtra("bitmap", byteArray) // 스냅샷
+////        intent.putExtra("courseName", "Android Development") // 거리
+////        intent.putExtra("courseName", "Android Development") // 좌표
+//        startActivity(intent)
+//    }
 
     // 서비스에 명령 보내는 함수
     private fun sendCommandToService(action: String) {
@@ -243,6 +239,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         RidingService.pathOverlay.observe(this) {
             pathOverlay = it
             // pathWaypoints 비었을 때 pathOverlay 첫 인덱스 추가
+//            ##################################################################################
             if (pathWaypoints.isEmpty() && pathOverlay.size > 0) {
                 pathWaypoints.add(
                     Waypoint(
@@ -251,6 +248,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                     )
                 )
             }
+//            ##################################################################################
 //            RidingService.distanceLiveData.postValue(RidingUtility.calculateDistance(it))
             drawPathOverlay()
             moveCameraToLastLocation()
@@ -321,8 +319,8 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun drawPathOverlay() {
         if (pathOverlay.isNotEmpty() && pathOverlay.size > 1) {
             val path = PathOverlay()
-            path.coords =
-                listOf(pathOverlay.takeLast(2).firstOrNull(), pathOverlay.takeLast(1).firstOrNull())
+            path.coords = listOf(pathOverlay.takeLast(2).firstOrNull(), pathOverlay.takeLast(1).firstOrNull())
+//            path.coords.add(pathOverlay.takeLast(1).firstOrNull())
             path.outlineWidth = 0
             path.color = Color.BLUE
             path.map = nMap
@@ -442,9 +440,10 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun addMarkerDialog(context: Context) {
         val alertDialogBuilder = AlertDialog.Builder(context)
-        alertDialogBuilder.setMessage("현 위치에서 마커를 추가하시겠습니까?")
+        alertDialogBuilder.setMessage("현 위치에 경유지를 추가하시겠습니까?")
         alertDialogBuilder.setPositiveButton("등록") { dialogInterface: DialogInterface, _: Int ->
             addMarker()
+            Toast.makeText(this, "경유지가 추가되었습니다.", Toast.LENGTH_SHORT).show()
             dialogInterface.dismiss() // 다이얼로그 닫기
         }
         alertDialogBuilder.setNegativeButton("취소") { dialogInterface: DialogInterface, _: Int ->
@@ -472,5 +471,128 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 //            nMapMarkers.add(marker)
             RidingService.pathWaypoints.postValue(pathWaypoints)
         }
+    }
+
+    private fun ridingDialog(context: Context) {
+        Utility.zoomToSeeWholeTrack(pathOverlay, nMap)
+        locationOverlay.isVisible = false
+        val alertDialog = AlertDialog.Builder(context)
+        alertDialog.setMessage("라이딩 기록을 저장하시겠습니까?")
+        alertDialog.setPositiveButton("저장") { dialog, _ ->
+            val reqRidingData = ReqRidingData(
+                ridingTime = RidingService.timeLiveData.value!!,
+                ridingDistance = RidingService.distanceLiveData.value!!,
+                calorie = RidingService.kcalLiveData.value!!,
+                userId = MyApplication.prefs.getLong("userId", 0),
+            )
+//            Log.d("reqRidingData",reqRidingData.toString())
+            val api = RetrofitService.create()
+            api.recordRidingData(reqRidingData).enqueue(object :
+                Callback<RepRidingData> {
+                override fun onResponse(
+                    call: Call<RepRidingData>,
+                    response: Response<RepRidingData>
+                ) {
+                    if (response.isSuccessful) {
+                        val result: RepRidingData? = response.body()
+                        Log.d(
+                            "recordRidingData######################################",
+                            "onResponse: $result"
+                        )
+                        Toast.makeText(this@RidingActivity, "라이딩 기록이 저장되었습니다.", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Log.d(
+                            "recordRidingData######################################",
+                            "onResponse: error"
+                        )
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<RepRidingData>,
+                    t: Throwable
+                ) {
+                    Log.d("onFailure", "onFailure")
+                }
+            })
+            dialog.dismiss()
+            if (pathOverlay.size > 1) {
+                courseDialog(context)
+            } else
+                finish()
+        }
+        alertDialog.setNegativeButton("취소") { dialog, _ ->
+            dialog.dismiss()
+            if (pathOverlay.size > 1)
+                courseDialog(context)
+            else
+                finish()
+        }
+        alertDialog.show()
+    }
+
+    private fun courseDialog(context: Context) {
+        val alertDialog = AlertDialog.Builder(context)
+        alertDialog.setMessage("코스를 등록하시겠습니까?")
+        alertDialog.setPositiveButton("등록") { _, _ ->
+            // 위치오버레이 종료하고
+//            locationOverlay.isVisible = false
+            // 카메라 줌 땡겨야 함
+//            Utility.zoomToSeeWholeTrack(pathOverlay, nMap)
+            lateinit var snapshotPath: String
+            val intent = Intent(this, CourseActivity::class.java)
+            // 마지막 좌표에 경유지 추가
+//            ##########################################################################
+            pathWaypoints.add(
+                Waypoint(
+                    place_lat = pathOverlay.last().latitude,
+                    place_lng = pathOverlay.last().longitude
+                )
+            )
+//            ##########################################################################
+            sendCommandToService(ACTION_STOP_SERVICE)
+            // 이름 추가
+            val encodePath = DataConverter.encode(pathOverlay)
+            nMap.takeSnapshot { bitmap ->
+                snapshotPath = Utility.saveSnapshot(this, bitmap)
+                intent.putParcelableArrayListExtra("waypoints", ArrayList(pathWaypoints))
+                intent.putExtra("coordinates", encodePath)
+                intent.putExtra("snapshotPath", snapshotPath)
+                startActivity(intent)
+                finish()
+            }
+        }
+        alertDialog.setNegativeButton("취소") { dialog, _ ->
+            sendCommandToService(ACTION_STOP_SERVICE)
+            dialog.dismiss()
+            finish()
+        }
+        alertDialog.show()
+    }
+
+    private fun backPressedDialog(context: Context) {
+        sendCommandToService(ACTION_PAUSE_SERVICE)
+        val alertDialog = AlertDialog.Builder(context)
+        //
+//        val input = EditText(context)
+//        alertDialog.setView(input)
+
+        //
+        alertDialog.setMessage("라이딩을 종료하시겠습니까?")
+        alertDialog.setPositiveButton("나가기") { dialog, _ ->
+            sendCommandToService(ACTION_STOP_SERVICE)
+            dialog.dismiss()
+            finish()
+        }
+        alertDialog.setNegativeButton("취소") { dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.show()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        backPressedDialog(this)
     }
 }

@@ -1,5 +1,7 @@
 package com.hansung.capstone.retrofit
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import okhttp3.MultipartBody
 
@@ -112,14 +114,54 @@ data class ReqCoursePost(
     val content:String,
     @SerializedName("imageInfoList")
     val imageInfoList: List<ImageInfo>
-//    @SerializedName("thumbnail")
-//    val thumbnail:
 )
+data class ReqRidingData(
+    @SerializedName("ridingTime")
+    var ridingTime: Long,
+    @SerializedName("ridingDistance")
+    var ridingDistance: Float,
+    @SerializedName("originToDestination")
+    var calorie: Int,
+    @SerializedName("userId")
+    var userId:Long,
+)
+//data class ImageInfo(
+//    val coordinate:String,
+//    val placeName:String,
+//    val placeLink:String,
+//)
 data class ImageInfo(
-    val coordinate:String,
-    val placeName:String,
-    val placeLink:String,
-)
+    val coordinate: String,
+    val placeName: String,
+    val placeLink: String
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    )
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(coordinate)
+        parcel.writeString(placeName)
+        parcel.writeString(placeLink)
+    }
+
+    companion object CREATOR : Parcelable.Creator<ImageInfo> {
+        override fun createFromParcel(parcel: Parcel): ImageInfo {
+            return ImageInfo(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ImageInfo?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 data class ReqComment(
     @SerializedName("postId")

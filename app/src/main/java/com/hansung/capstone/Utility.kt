@@ -32,8 +32,16 @@ object Utility {
                 bounds.include(pos)
             }
             naverMap.moveCamera(
-                CameraUpdate.fitBounds(bounds.build(), 200).animate(CameraAnimation.Easing)
+                CameraUpdate.fitBounds(bounds.build(), 200,300,200,200).animate(CameraAnimation.Easing)
             )
         }
+    }
+
+
+
+    fun moveToMarker(pos: LatLng, naverMap: NaverMap) {
+        val cameraUpdate = CameraUpdate.scrollAndZoomTo(pos, 15.0)
+            .animate(CameraAnimation.Fly,1000)
+        naverMap.moveCamera(cameraUpdate)
     }
 }

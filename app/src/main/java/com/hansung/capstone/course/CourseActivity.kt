@@ -29,6 +29,7 @@ import com.hansung.capstone.map.KakaoSearchAPI
 import com.hansung.capstone.map.ResultGetAddress
 import com.hansung.capstone.post.PostImageAdapterDecoration
 import com.hansung.capstone.retrofit.ImageInfo
+import com.hansung.capstone.retrofit.RepCoursePost
 import com.hansung.capstone.retrofit.ReqCoursePost
 import com.hansung.capstone.retrofit.RetrofitService
 import com.naver.maps.geometry.LatLng
@@ -75,8 +76,6 @@ class CourseActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-//        Log.d("LiveDataInCourseActivity", RidingService.timeLiveData.value!!.toString())
 
         // 인텐트 값 읽기
         val intent = intent
@@ -162,7 +161,7 @@ class CourseActivity : AppCompatActivity() {
                     if (destinationAddress != null) {
                         Log.d("getAddress", "Destination Address: $destinationAddress")
                         destination = destinationAddress
-                        originToDestination = "$origin -> $destination"
+                        originToDestination = "$origin → $destination"
                         // 글 등록 버튼 클릭
                         binding.writeButton.setOnClickListener {
                             if (binding.editTitle.text.toString().isEmpty()) {
@@ -211,30 +210,30 @@ class CourseActivity : AppCompatActivity() {
                                     thumbnail
                                 )
                                     .enqueue(object :
-                                        Callback<ReqCoursePost> {
+                                        Callback<RepCoursePost> {
                                         override fun onResponse(
-                                            call: Call<ReqCoursePost>,
-                                            response: Response<ReqCoursePost>
+                                            call: Call<RepCoursePost>,
+                                            response: Response<RepCoursePost>
                                         ) {
                                             if (response.isSuccessful) {
-                                                val result: ReqCoursePost? = response.body()
+                                                val result = response.body()
                                                 Log.d(
-                                                    "onResponse######################################",
+                                                    "coursePostCreate######################################",
                                                     "onResponse: $result"
                                                 )
                                             } else {
                                                 Log.d(
-                                                    "onResponse######################################",
+                                                    "coursePostCreate######################################",
                                                     "onResponse: error"
                                                 )
                                             }
                                         }
 
                                         override fun onFailure(
-                                            call: Call<ReqCoursePost>,
+                                            call: Call<RepCoursePost>,
                                             t: Throwable
                                         ) {
-                                            Log.d("onFailure", "onFailure")
+                                            Log.d("coursePostCreate", "onFailure")
                                         }
                                     })
                                 // 게시판으로 이동하는 함수 필요
@@ -364,4 +363,5 @@ class CourseActivity : AppCompatActivity() {
         }
         return false
     }
+
 }

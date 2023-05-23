@@ -33,7 +33,6 @@ class UserRecommendAdapter(val body: UserRecommendDTO) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(items: UserRecommend) {
             Log.d("위치",items.originToDestination)
-            binding.textView.text = items.originToDestination
         }
     }
 }

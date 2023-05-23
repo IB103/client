@@ -12,6 +12,13 @@ class MyApplication : Application() {
         instance = this
     }
 
+//    val retrofit: Retrofit by lazy {
+//        Retrofit.Builder()
+//            .baseUrl("https://api.example.com/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//    }
+
     companion object {
         lateinit var prefs: Preference
 

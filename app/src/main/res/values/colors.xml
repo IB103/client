@@ -21,5 +21,11 @@
     <color name="green3">#7BEA64</color>
     <color name="green4">#C7E976</color>
     <color name="maincolor">#87D5AA</color>
+    <color name="startMarker">#EAE86F</color>
+    <color name="waypointMarker">#90EE90</color>
+    <color name="endMarker">#87D5AA</color>
+    <color name="pathOverlayColor">#249AD9</color>
+    <color name="pathOverlayColor2">#88C2F1</color>
+
 
 </resources>

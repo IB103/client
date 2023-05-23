@@ -281,3 +281,24 @@ data class Recomment(
     val commentVoterId:List<Int>
 )
 
+data class RepCoursePost(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message :String,
+//    @SerializedName("data")
+//    val data :String,
+)
+
+
+data class RepRidingData(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val msg: Boolean,
+    @SerializedName("message")
+    val message :String,
+)
+

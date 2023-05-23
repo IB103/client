@@ -1,7 +1,6 @@
 package com.hansung.capstone.map
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,18 +44,14 @@ class WaypointsAdapter(
             }
         }
         viewHolder.itemView.setOnClickListener {
-            Log.d("포지션1",position.toString())
             val intent = Intent(directionsActivity, WaypointsSearchActivity::class.java)
             intent.putExtra("position", viewHolder.adapterPosition)
-            Log.d("포지션2",position.toString())
-            directionsActivity.myLauncher.launch(intent)
+            directionsActivity.directionsSearchLauncher.launch(intent)
         }
         viewHolder.addWaypoint.setOnClickListener {
-            Log.d("포지션+",position.toString())
             addItem(itemCount - 1)
         }
         viewHolder.removeWaypoint.setOnClickListener {
-            Log.d("포지션-",position.toString())
             removeItem(position)
         }
     }
@@ -104,10 +99,7 @@ class WaypointsAdapter(
         for (i in waypoints) {
             waypointsQuery += "${i.place_lng},${i.place_lat};"
         }
-        Log.d("스트링", waypointsQuery)
-        val removeLast = waypointsQuery.dropLast(1)
-        Log.d("스트링", removeLast)
-        return removeLast
+        return waypointsQuery.dropLast(1)
     }
 }
 

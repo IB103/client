@@ -23,7 +23,8 @@ interface KakaoSearchAPI {
     @GET("v2/local/search/keyword.json")
     fun getSearchKeyword(
         @Header("Authorization") key: String,
-        @Query("query") query: String
+        @Query("query") query: String,
+        @Query("size") size: Int = 5
         // 매개변수 추가 가능
         // @Query("category_group_code") category: String
     ): Call<ResultSearchKeyword>

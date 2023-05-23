@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="250dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
     android:layout_height="170dp">
 
     <EditText
         android:id="@+id/placeName"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/transparent"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/element_edit_box2"
         android:ems="10"
         android:hint="장소명을 입력해주세요."
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/cancelButton"
-        app:layout_constraintStart_toStartOf="@+id/enrollButton"
+        android:paddingHorizontal="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <Button
         android:id="@+id/enrollButton"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="등록"
-        app:layout_constraintBottom_toBottomOf="@+id/cancelButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cancelButton"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cancelButton" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -43,6 +47,7 @@
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:layout_marginTop="8dp"
         android:paddingStart="8dp"
         android:text="장소명 변경"
         android:textSize="20sp"

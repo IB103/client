@@ -68,7 +68,9 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
                 if (items.userProfileImageId != noImage.toLong()) {
                     Glide.with(context)
                         .load("${MyApplication.getUrl()}profile-image/${items.userProfileImageId}") // 불러올 이미지 url
-                        .override(200, 200)
+//                        .override(200, 200)
+                        .placeholder(R.drawable.no_image)
+                        .error(R.drawable.no_image)
                         .centerCrop()
                         .into(binding.CommentProfileImage)
                 } else binding.CommentProfileImage.setImageResource(R.drawable.user)

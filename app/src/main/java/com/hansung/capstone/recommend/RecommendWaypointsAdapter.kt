@@ -2,6 +2,7 @@ package com.hansung.capstone.recommend
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -27,10 +28,21 @@ class RecommendWaypointsAdapter(private val context: Context, private var userRe
         val viewHolder = holder as RecommendWaypointsAdapter.RecommendWaypointsHolder
         viewHolder.setImage(userRecommend.imageId[position],userRecommend.imageInfoList[position])
         viewHolder.waypointNum.text = (position+1).toString()
+        viewHolder.itemView.setOnClickListener {
+            val intent = Intent(context, CheckCourseActivity::class.java)
+            intent.putParcelableArrayListExtra("imageInfoList", ArrayList(userRecommend.imageInfoList))
+            intent.putExtra("originToDestination", userRecommend.originToDestination)
+            intent.putExtra("coordinates", userRecommend.coordinates)
+            intent.putExtra("postId", userRecommend.postId)
+            intent.putExtra("imageId", userRecommend.imageId.toLongArray())
+            intent.putExtra("numOfFavorite", userRecommend.numOfFavorite)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
         return userRecommend.imageId.size
+//        return userRecommend.imageInfoList.size
     }
 
 //    @SuppressLint("NotifyDataSetChanged")

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.annotation.UiThread
 import com.hansung.capstone.BuildConfig
 import com.hansung.capstone.R
@@ -25,6 +26,8 @@ class LocationSetActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setSupportActionBar(binding.setLocToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // 받아온 좌표
         prePosition = intent.getStringExtra("prePosition").toString()
@@ -93,9 +96,14 @@ class LocationSetActivity : AppCompatActivity(), OnMapReadyCallback {
                 val body = response.body()
                 if (body != null) {
                     Log.d("getAddress", "onResponse: $body")
-                    val resultAddress =
-                        "${body.documents[0].address.region_1depth_name} ${body.documents[0].address.region_2depth_name}"
-                    callback(resultAddress)
+                    if (body.documents.isNotEmpty()) {
+                        val resultAddress =
+                            "${body.documents[0].address.region_1depth_name} ${body.documents[0].address.region_2depth_name}"
+                        callback(resultAddress)
+                    } else {
+                        val resultAddress = "위치 정보가 없습니다."
+                        callback(resultAddress)
+                    }
                 } else {
                     callback(null)
                 }
@@ -109,5 +117,15 @@ class LocationSetActivity : AppCompatActivity(), OnMapReadyCallback {
                 callback(null)
             }
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

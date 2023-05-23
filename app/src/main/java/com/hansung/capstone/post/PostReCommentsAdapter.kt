@@ -60,7 +60,9 @@ class PostReCommentsAdapter(private val comment: Comments,private val context: P
                 if (items.userProfileImageId != noImage.toLong()) {
                     Glide.with(context)
                         .load("${MyApplication.getUrl()}profile-image/${items.userProfileImageId}")
-                        .override(200, 200)
+//                        .override(200, 200)
+                        .placeholder(R.drawable.no_image)
+                        .error(R.drawable.no_image)
                         .centerCrop()
                         .into(binding.reCommentProfileImage)
 

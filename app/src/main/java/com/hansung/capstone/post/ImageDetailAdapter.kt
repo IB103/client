@@ -11,12 +11,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.hansung.capstone.MyApplication
+import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ActivityImageFullScreenBinding
 import com.hansung.capstone.databinding.ItemImageDetailBinding
 import kotlinx.coroutines.*
@@ -51,7 +53,7 @@ class ImageDetailAdapter(
                     put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
                     put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
                 }
-                Log.d("이미지", image.toString())
+//                Log.d("이미지", image.toString())
                     Glide.with(context)
                         .asBitmap()
                         .load("${MyApplication.getUrl()}image/${image}") // 불러올 이미지 url
@@ -69,6 +71,7 @@ class ImageDetailAdapter(
                                     outputStream?.close()
                                 }
                                 binding.progressImage.visibility = View.GONE
+                                Toast.makeText(context, "사진이 저장되었습니다.", Toast.LENGTH_SHORT).show()
                             }
 
                             override fun onLoadCleared(placeholder: Drawable?) {
@@ -92,6 +95,8 @@ class ImageDetailAdapter(
             Log.d("dd", image.toString())
             Glide.with(context)
                 .load("${MyApplication.getUrl()}image/${image}") // 불러올 이미지 url
+                .placeholder(R.drawable.no_image)
+                .error(R.drawable.no_image)
                 .into(binding.photoView) // 이미지를 넣을 뷰
         }
 

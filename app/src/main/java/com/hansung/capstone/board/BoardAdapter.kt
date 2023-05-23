@@ -153,15 +153,17 @@ class BoardAdapter :
             binding.CommentCount.text = count.toString()
             Glide.with(context!!)
                 .load("${MyApplication.getUrl()}image/${items.imageId[0]}") // 불러올 이미지 url
-                .override(100, 100)
+//                .override(100, 100)
+                .placeholder(R.drawable.no_image)
+                .error(R.drawable.no_image)
                 .centerCrop()
                 .into(binding.BoardImageView)
             if(items.authorProfileImageId!= noImage.toLong()){
                 Glide.with(context!!)
                     .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
-                    .override(100, 100)
-//                    .placeholder()
-//                    .error(defaultImage)
+//                    .override(100, 100)
+                    .placeholder(R.drawable.no_image)
+                    .error(R.drawable.no_image)
 //                    .fallback(defaultImage)
                     .circleCrop()
                     .into(binding.BoardProfileImage)
@@ -214,7 +216,9 @@ class BoardAdapter :
             if(items.authorProfileImageId!= noImage.toLong()){
                 Glide.with(context!!)
                     .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url
-                    .override(100, 100)
+//                    .override(100, 100)
+                    .placeholder(R.drawable.no_image)
+                    .error(R.drawable.no_image)
                     .circleCrop()
                     .into(binding.BoardProfileImage)
             }else binding.BoardProfileImage.setImageResource(R.drawable.user)

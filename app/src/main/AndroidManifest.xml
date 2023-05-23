@@ -27,6 +27,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".recommend.CheckCourseActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".recommend.LocationSetActivity"
             android:exported="false">
             <meta-data
@@ -127,7 +134,8 @@
             android:name=".WriteActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modify.ModifyNickActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".mypage.MyStory" />
         <activity android:name=".mypage.MyScrap" />
         <activity

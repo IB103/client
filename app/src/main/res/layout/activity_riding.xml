@@ -152,7 +152,7 @@
         android:id="@+id/riding_stop_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="코스 등록하러가기"
+        android:text="라이딩 기록하기"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

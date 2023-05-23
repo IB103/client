@@ -139,7 +139,12 @@ interface RetrofitService {
         @Part("requestDTO") requestDTO:ReqCoursePost,
         @Part imageList: List<MultipartBody.Part>,
         @Part thumbnail: MultipartBody.Part
-    ): Call<ReqCoursePost>
+    ): Call<RepCoursePost>
+
+    @POST("/api/users/riding/record")
+    fun recordRidingData(
+        @Body reqRidingData: ReqRidingData
+    ): Call<RepRidingData>
 
     companion object{
         fun create() : RetrofitService {

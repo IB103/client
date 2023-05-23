@@ -65,4 +65,13 @@ object DataConverter {
         }
         result.append(Character.toChars((v + 63).toInt()))
     }
+
+    // 쿼리문 만드는 함수
+    fun makeWaypointsDirectionsQuery(waypoints: MutableList<LatLng>): String {
+        var waypointsQuery = ""
+        for (i in waypoints) {
+            waypointsQuery += "${i.longitude},${i.latitude};"
+        }
+        return waypointsQuery.dropLast(1)
+    }
 }
