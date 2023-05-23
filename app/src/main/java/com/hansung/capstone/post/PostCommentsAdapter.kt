@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
 import com.hansung.capstone.Token

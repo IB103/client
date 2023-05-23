@@ -111,23 +111,25 @@
                 android:value="" />
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".FindIdActivity" />
-        <activity
-            android:name=".SignUpActivity"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".FindPwActivity" />
+        <activity android:name=".find.FindIdActivity" />
+
+        <activity android:name=".SignUpActivity"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".find.FindPwActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modify.ModifyMyInfo" />
-        <activity
-            android:name=".modify.ModifyActivity"
-            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".modify.ModifyActivity"
+            android:windowSoftInputMode="adjustPan"  />
+
         <activity android:name=".course.CourseActivity" />
+        <activity android:name=".SearchBoardActivity" />
         <activity
             android:name=".WriteActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modify.ModifyNickActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".MyStory" />
-        <activity android:name=".MyScrap" />
+        <activity android:name=".mypage.MyStory" />
+        <activity android:name=".mypage.MyScrap" />
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true"

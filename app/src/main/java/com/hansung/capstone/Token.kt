@@ -25,7 +25,7 @@ class Token {
         }
         return false
     }
-    fun issueNewToken(callback: () -> Unit):String {
+    fun issueNewToken(callback: (() -> Unit)?):String {
         val currentTime = System.currentTimeMillis()
         service.reissue(
             accessToken = "Bearer ${MyApplication.prefs.getString("accessToken","")}",
@@ -39,7 +39,9 @@ class Token {
                         MyApplication.prefs.setLong("tokenTime", currentTime)
                         MyApplication.prefs.setString("accessToken", result.data.accessToken)
                         MyApplication.prefs.setString("refreshToken", result.data.refreshToken)
-                        callback() // 토큰 발급 후 콜백 함수 실행
+                        if (callback != null) {
+                            callback()
+                        } // 토큰 발급 후 콜백 함수 실행
                     }
                 } else {
                     Log.d("ERR", "onResponse test 실패 ${response.body().toString()}")

@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.find
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -12,11 +12,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.hansung.capstone.MyApplication
 import com.hansung.capstone.databinding.ActivityFindpwBinding
 import com.hansung.capstone.modify.ModifyActivity
-import com.hansung.capstone.modify.ModifyMyInfo
 import com.hansung.capstone.retrofit.RepConfirm
-import com.hansung.capstone.retrofit.RepSend
 import com.hansung.capstone.retrofit.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,7 +29,6 @@ class FindPwActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.closeView.setOnClickListener { finish() }
-        //setTime()
         binding.reqEmailSend.setOnClickListener {
             val email=binding.getId.text.toString()
             service.send(email).enqueue(object : Callback<String> {

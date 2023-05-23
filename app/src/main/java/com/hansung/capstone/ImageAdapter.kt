@@ -17,26 +17,11 @@ class ImageAdapter(private val context: WriteActivity, private val binding:Activ
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
         return ViewHolder(view).listen { position, _ ->
-            //if(modifyCheck)
-              //  removeModifyImage(position)
-            //else
                 removeImage(position)
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        if(modifyCheck){
-//            val image = imageList[position]
-//            //var photo:Uri=MyApplication.getUrl()1
-//          //  uriList.add()
-//            Glide.with(context)
-//                .load("${MyApplication.getUrl()}image/${image}") // 불러올 이미지 url
-//               // .centerCrop()
-//                .into(holder.image)
-//            holder.delete.setOnClickListener {
-//                removeModifyImage(position)
-//            }
-//        }else {
             Glide.with(context)
                 .load(uriList[position])
                 .into(holder.image)

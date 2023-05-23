@@ -1,31 +1,34 @@
-package com.hansung.capstone
+package com.hansung.capstone.mypage
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.hansung.capstone.*
 import com.hansung.capstone.board.RePModifyProfileImage
 import com.hansung.capstone.databinding.FragmentMypageBinding
+import com.hansung.capstone.home.CustomMarkerView
+import com.hansung.capstone.linechart.GetRecordData
 import com.hansung.capstone.modify.ModifyMyInfo
-import com.hansung.capstone.modify.ModifyNickActivity
 import com.hansung.capstone.retrofit.ReqModifyProfileImage
 import com.hansung.capstone.retrofit.RetrofitService
-import com.kakao.sdk.user.UserApiClient
+import com.hansung.capstone.retrofit.RidingData
+import kotlinx.android.synthetic.main.fragment_mypage.view.*
 import kotlinx.android.synthetic.main.view_login.view.*
 import kotlinx.android.synthetic.main.view_profile.view.*
 import okhttp3.*
@@ -34,6 +37,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.roundToLong
 
 class MyPageFragment : Fragment() {
 
@@ -42,6 +46,8 @@ class MyPageFragment : Fragment() {
     lateinit var binding: FragmentMypageBinding
     private val defaultGalleryRequestCode = 0
     private var filePart: MultipartBody.Part? = null
+    private var weekRidingDataList: List<RidingData> = emptyList()
+    private var monthRidingDataList: List<RidingData> = emptyList()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -50,12 +56,13 @@ class MyPageFragment : Fragment() {
         if (MyApplication.prefs.getString("email", "") == "") {
             visibleLogin()
         } else {
+            binding.modifyInfo.visibility=View.VISIBLE
             visibleProfile()
         }
         return binding.root
     }
 
-    @SuppressLint("SuspiciousIndentation")
+    @SuppressLint("SuspiciousIndentation", "SetTextI18n")
     private fun visibleProfile() {
         val noImage:Long=-1
         binding.userContainer.profile_container.visibility = View.VISIBLE
@@ -69,32 +76,12 @@ class MyPageFragment : Fragment() {
         } else {
             getProfileImage()
         }
-
-//        binding.userContainer.profile_container.logout_bt.setOnClickListener {
-//
-//            if (MyApplication.prefs.getString("state", "") == "kakao") {
-//                UserApiClient.instance.logout { error ->
-//                    if (error != null) {
-//                        Log.e("LOGOUT", "fail", error)
-//                    } else {
-//                        MyApplication.prefs.setString("id", "")
-//                        Log.d("LOGOUT", "success")
-//                    }
-//                }
-//            }
-//            MyApplication.prefs.remove()
-//            visibleLogin()
-//        }
-
-        binding.userContainer.profile_container.profileImage.setOnClickListener {
+        binding.modifyInfo.setOnClickListener {
             val intent = Intent(activity, ModifyMyInfo::class.java)
             startActivity(intent)
         }
 
-        binding.userContainer.profile_container.mypage.setOnClickListener {
-            val intent = Intent(activity, ModifyMyInfo::class.java)
-            startActivity(intent)
-        }
+
         //내가 쓴 글
         binding.userContainer.profile_container.mystory_bt.setOnClickListener {
             val intent = Intent(activity, MyStory::class.java)
@@ -105,10 +92,28 @@ class MyPageFragment : Fragment() {
             val intent = Intent(activity, MyScrap::class.java)
             startActivity(intent)
         }
+        GetRecordData().getRidingData(7) { result ->
+            if (result.isNotEmpty()) {
+                binding.userContainer.noResult.visibility=View.GONE
+                this.weekRidingDataList=result
+                draw(result)
+                //adapter.setData(result)
+            } else {
+                binding.userContainer.noResult.visibility=View.VISIBLE
+            }
+        }
+        GetRecordData().getRidingData(30) { result ->
+            Log.d("getMonthlyData","$result")
+            if (result.isNotEmpty()) {
+                sumData(result)
+            } else {
+            }
+        }
     }
 
 
     private fun visibleLogin() {
+        binding.modifyInfo.visibility=View.GONE
         binding.userContainer.login_container.visibility = View.VISIBLE
         binding.userContainer.profile_container.visibility = View.GONE
         binding.userContainer.login_container.login_bt.setOnClickListener {
@@ -119,7 +124,79 @@ class MyPageFragment : Fragment() {
         }
 
     }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun draw(ridingDataList: List<RidingData>) {
+        binding.userContainer.chart.visibility = View.VISIBLE
+        val entries = ridingDataList.map { Entry(it.ridingTime.toFloat(), it.ridingDistance) }
+        val dataSet = LineDataSet(entries, "라이딩 기록")
+        Log.d("ridinglist","$ridingDataList")
 
+        val markerView = CustomMarkerView(requireContext(), R.layout.marker_layout)
+        val lineData = LineData(dataSet)
+        val lineChart = binding.userContainer.chart
+        lineChart.marker = markerView
+        val xAxis = lineChart.xAxis
+        lineChart.data = lineData
+        lineChart.invalidate()
+        xAxis.apply {
+            setDrawGridLines(false)
+            setDrawAxisLine(true)
+            setDrawLabels(true)
+            position = XAxis.XAxisPosition.BOTTOM
+            textColor = resources.getColor(R.color.black, null)
+            textSize = 10f
+            valueFormatter = DefaultValueFormatter(2)
+            labelRotationAngle = 0f
+            setLabelCount(10, true)
+        }
+
+        lineChart.apply {
+
+            axisRight.isEnabled = false   //y축 사용여부
+            axisLeft.isEnabled = true
+            legend.isEnabled = false    //legend 사용여부
+            description.isEnabled = false //주석
+            isScaleYEnabled = false //y축 줌 사용여부
+            isScaleXEnabled = false //x축 줌 사용여부
+        }
+
+        dataSet.apply {
+            color = resources.getColor(R.color.maincolor, null)
+            circleRadius = 3f
+            lineWidth = 1f
+            setCircleColor(resources.getColor(R.color.maincolor, null))
+            setDrawHighlightIndicators(false)
+            setDrawValues(false) // 숫자표시
+            valueTextColor = resources.getColor(R.color.black, null)
+            valueFormatter = DefaultValueFormatter(2)  // 소숫점 자릿수 설정
+            valueTextSize = 10f
+
+        }
+        lineChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                if (e != null) {
+                    lineChart.highlightValue(h) // 하이라이트 표시
+                }
+            }
+
+            override fun onNothingSelected() {
+            }
+        })
+
+        lineChart.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val highlight = lineChart.getHighlightByTouchPoint(event.x, event.y)
+                if (highlight == null) { }
+            }
+            false
+        }
+    }
+        private fun sumData(data:List<RidingData>){
+            this.monthRidingDataList=data
+            binding.userContainer.monthDistance.text= String.format("%.2f",monthRidingDataList.sumByDouble { it.ridingDistance.toDouble() })+"km"
+            binding.userContainer.monthTime.text=String.format("%.2f",monthRidingDataList.sumByDouble { it.ridingTime.toDouble() })+"H"
+            binding.userContainer.monthC.text=String.format("%.2f",monthRidingDataList.sumByDouble { it.calorie.toDouble() })+"C"
+        }
     private fun getProfileImage() {
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
         Glide.with(requireActivity())
@@ -135,7 +212,7 @@ class MyPageFragment : Fragment() {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == this.requestCode) {
-            if (resultCode == Activity.RESULT_OK ||MyApplication.prefs.getString("email","")!="") {
+            if (resultCode == Activity.RESULT_OK || MyApplication.prefs.getString("email","")!="") {
                 Log.d("resultCode","$resultCode")
                 Log.d(">>>>>>>>>>>>>>cc", MyApplication.prefs.getString("email", ""))
                 Log.d("FINISH",">>>>>>>>>>>>>>")
@@ -179,7 +256,7 @@ class MyPageFragment : Fragment() {
         Toast.makeText(context, "프로필 사진이 변경됐습니다.", Toast.LENGTH_SHORT).show()
     }
     private fun modifyImage(image: MultipartBody.Part){
-        val userId=MyApplication.prefs.getLong("userId",0)
+        val userId= MyApplication.prefs.getLong("userId",0)
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
         val putModifyProfileImage= ReqModifyProfileImage(userId, profileImageId = profileImageId)
         api.modifyProfileImage(putModifyProfileImage,image).enqueue(object : Callback<RePModifyProfileImage> {
@@ -200,6 +277,10 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if(weekRidingDataList.isNotEmpty())
+           draw(weekRidingDataList)
+        else if(monthRidingDataList.isNotEmpty())
+            sumData(monthRidingDataList)
         if(MainActivity.getInstance()?.getLoginState()!!)
             commentLogin()
         if(MyApplication.prefs.getString("email", "")!="")

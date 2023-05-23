@@ -15,7 +15,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="비밀번호 변경하기"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@color/maincolor"
+            android:textStyle="bold"/>
         <ImageView
             android:id="@+id/closeView"
             android:layout_width="wrap_content"
@@ -33,9 +40,12 @@
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
         android:text="수정할 비밀번호"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CommunityToolbar" />
 
@@ -43,12 +53,35 @@
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
         android:text="비밀번호 확인"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getFirstPw" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintTop_toBottomOf="@+id/textView13">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/getFirstPw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
     <Button
         android:id="@+id/modifyPw"
         android:layout_width="0dp"
@@ -63,38 +96,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/getFirstPw"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textlayout9"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPersonName"
-        android:padding="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="120dp"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintTop_toBottomOf="@+id/textView15">
 
-    <EditText
-        android:id="@+id/getLastPw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="14dp"
-        android:ems="10"
-        android:hint="Password"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/getLastPw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호"
+            android:inputType="textPassword" />
 
-        android:inputType="textVisiblePassword"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/commentPw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getLastPw" />
+        app:layout_constraintTop_toBottomOf="@+id/textlayout9" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,7 +24,7 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:text="아이디를 확인하세요"
         android:textColor="#171616"
@@ -37,9 +37,11 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="71dp"
         android:text="성명"
+        android:textStyle="bold"
+        android:textSize="16dp"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
@@ -48,10 +50,12 @@
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="43dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
         android:text="생년월일"
         android:textColor="#000000"
+        android:textSize="16dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textlayout" />
 
@@ -60,7 +64,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,12 +79,11 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-
     <TextView
         android:id="@+id/getBirthday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
+        android:layout_marginStart="20dp"
         android:hint="생년월일"
         android:padding="12dp"
         android:textSize="18sp"
@@ -105,6 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="*"
+        android:textSize="16dp"
         android:textColor="#E61837"
         app:layout_constraintBottom_toTopOf="@+id/textlayout"
         app:layout_constraintStart_toEndOf="@+id/textView10" />
@@ -114,6 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="*"
+        android:textSize="16dp"
         android:textColor="#E61837"
         app:layout_constraintBottom_toTopOf="@+id/getBirthday"
         app:layout_constraintStart_toEndOf="@+id/textView11" />
@@ -122,7 +127,7 @@
         android:id="@+id/textView19"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:fontFamily="sans-serif-medium"
         android:text="자전GO"

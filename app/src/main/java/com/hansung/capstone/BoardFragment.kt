@@ -50,6 +50,7 @@ class BoardFragment : Fragment() {
         resultAllPost.addItemDecoration(BoardAdapterDecoration())
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.BoardSwipe)
         swipe.setOnRefreshListener {
+            page=0
             MyApplication.prefs.removeCommentCount()
             MyApplication.prefs.removeDeletedCount()
            when(category){
@@ -60,10 +61,15 @@ class BoardFragment : Fragment() {
            // renewPage()
             swipe.isRefreshing = false
         }
+        binding.search.setOnClickListener {
+            val intent = Intent(requireActivity(), SearchBoardActivity::class.java)
+            startActivity(intent)
+            requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.none)
+        }
         binding.totalCategory.setOnClickListener {
            DecorateButton(this@BoardFragment).decoTotalBt()
             category="total"
-            updateUI(true)
+            updateUI(false)
             page=0
             resultAllPost.scrollToPosition(0)
            init()
@@ -92,6 +98,7 @@ class BoardFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1)&&page<body!!.totalPage) {
+
                         when(category){
                             "total"->getAllPost(++page)
                             "free"->getAllFreePost(++page)
@@ -116,6 +123,9 @@ class BoardFragment : Fragment() {
         }
     }
     private fun init() {
+        MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+        MainActivity.getInstance()!!.setCommentCount(-1)
+
         api.getAllPost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
@@ -160,6 +170,9 @@ class BoardFragment : Fragment() {
 
     }
     private fun initFreeData() {
+        MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+        MainActivity.getInstance()!!.setCommentCount(-1)
+
         api.getAllFreePost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
@@ -205,6 +218,9 @@ class BoardFragment : Fragment() {
 
     }
     private fun initCourseData() {
+        MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+        MainActivity.getInstance()!!.setCommentCount(-1)
+
         api.getAllCoursePost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 @SuppressLint("SuspiciousIndentation")
@@ -245,33 +261,44 @@ class BoardFragment : Fragment() {
                 }
             })
     }
+    private fun initCategory(){
+        MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+        MainActivity.getInstance()!!.setCommentCount(-1)
+
+        when(category){
+            "total" -> init()
+            "free" -> initFreeData()
+            "course" -> initCourseData()
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
         MainActivity.getInstance()?.setModifyCheck(false)
-        val init = {
-            when(category){
-                "total" -> init()
-                "free" -> initFreeData()
-                "course" -> initCourseData()
-            }
-        }()
+
        when(MainActivity.getInstance()?.getStateCheck()){
            0->{ Toast.makeText(activity, "게시글이 삭제됐습니다", Toast.LENGTH_SHORT).show()
                page=0
-               init
+               initCategory()
            }
            1->{ Toast.makeText(activity, "게시글이 등록됐습니다", Toast.LENGTH_SHORT).show()
                page=0
-               init
+               initCategory()
 
            }
            2->{Toast.makeText(activity, "게시글이 수정됐습니다", Toast.LENGTH_SHORT).show()
                page=0
            }
        }
-         if(MainActivity.getInstance()?.getCommentCount()!=0||MainActivity.getInstance()?.getDeletedCommentCount()!=0){
-             adapter.changed(MainActivity.getInstance()!!.getChangedPost())
+         if(MainActivity.getInstance()?.getCommentCount()!=0||MainActivity.getInstance()?.getDeletedCommentCount()!=0
+           ){
+
+             adapter.commentChanged(MainActivity.getInstance()!!.getChangedPost())
+         }else if(  MainActivity.getInstance()?.getHeartCheck()!=-1){
+             Log.d("check#1","1")
+             adapter.heartChanged(MainActivity.getInstance()!!.getChangedPost())
+             MainActivity.getInstance()!!.hearCheck(-1)
          }
         MainActivity.getInstance()?.stateCheck(-1)
     }

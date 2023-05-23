@@ -12,6 +12,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.databinding.ActivityLoginBinding
+import com.hansung.capstone.find.FindIdActivity
+import com.hansung.capstone.find.FindPwActivity
+import com.hansung.capstone.mypage.MyPageFragment
 import com.hansung.capstone.retrofit.RepLogin
 import com.hansung.capstone.retrofit.ReqLogin
 import com.hansung.capstone.retrofit.RetrofitService
@@ -31,6 +34,7 @@ class LoginActivity : AppCompatActivity() {
     private var loginNeeded:Boolean=false
    var completeSignUp=false
     companion object {
+        private const val MODIFYPWACT_REQUEST_CODE = 12
         private const val SIGNUP_REQUEST_CODE = 123
     }
 
@@ -99,12 +103,11 @@ class LoginActivity : AppCompatActivity() {
         binding.findId.setOnClickListener {
             val intent = Intent(this, FindIdActivity::class.java)
             startActivity(intent)
-           // finish()
+
         }
         binding.findPw.setOnClickListener {
             val intent = Intent(this, FindPwActivity::class.java)
-            startActivity(intent)
-            // finish()
+            startActivityForResult(intent, MODIFYPWACT_REQUEST_CODE)
         }
         binding.loginbt.setOnClickListener {
             val email = binding.idtext.text.toString()
@@ -195,6 +198,9 @@ class LoginActivity : AppCompatActivity() {
            // completeSignUp = data?.getBooleanExtra("key", false) ?: false
             Toast.makeText(this,"회원가입이 완료됐습니다. 로그인 해주세요.",Toast.LENGTH_SHORT).show()
             // completeSignUp 값 활용
+        }
+        else if (requestCode ==MODIFYPWACT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Toast.makeText(this,"비밀번호 변경이 완료됐습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 

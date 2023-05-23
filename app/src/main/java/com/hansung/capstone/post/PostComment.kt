@@ -30,6 +30,7 @@ class PostComment(private val context: PostDetailActivity) {
                             //MyApplication.prefs.setInt("commentCount",++count)
                             context.commentSuccess(1)
                             MainActivity.getInstance()?.setCommentCount(1)
+                            Log.d("commentCount","${ MainActivity.getInstance()?.getCommentCount()}")
                             postComments(postId,binding)
                         } else {
                             Log.d("ERR", "댓글 작성 실패 " + result.toString())

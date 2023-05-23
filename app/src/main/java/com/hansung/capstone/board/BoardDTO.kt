@@ -57,7 +57,9 @@ data class Posts(
     var postScraperId: Set<Long>,
     // 게시판에 들어갈 item type 설정
     var postType : Int,
-    var changed:Boolean
+    var commentChanged:Boolean,
+    var heartChanged:Boolean,
+    var commentCount:Int
 )
 data class Comments(
     var id : Long,

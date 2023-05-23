@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.hansung.capstone.HomeFragment"
+        android:name="com.hansung.capstone.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
 
@@ -28,7 +28,7 @@
         tools:layout="@layout/fragment_recommend" />
     <fragment
         android:id="@+id/myPageFragment"
-        android:name="com.hansung.capstone.MyPageFragment"
+        android:name="com.hansung.capstone.mypage.MyPageFragment"
         android:label="fragment_myPage"
         tools:layout="@layout/fragment_mypage" />
 </navigation>

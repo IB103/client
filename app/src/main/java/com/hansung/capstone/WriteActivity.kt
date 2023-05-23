@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.hansung.capstone.board.ModifyPost
-import com.hansung.capstone.board.ResultGetPosts
 import com.hansung.capstone.databinding.ActivityWriteBinding
 import com.hansung.capstone.retrofit.*
 import kotlinx.android.synthetic.main.activity_post_detail.*
@@ -88,25 +87,30 @@ class WriteActivity : AppCompatActivity() {
 //            category="COURSE"
 //        }
         if(MainActivity.getInstance()?.getModifyCheck()==false){
-            binding.editTitle.addTextChangedListener( object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    binding.writebutton.isEnabled=false
+            binding.editTitle.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    checkInputFields()
                 }
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun afterTextChanged(p0: Editable?) {
-                    binding.writebutton.isEnabled =binding.editTitle.text.toString() != ""
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 }
             })
+
             binding.editWriting.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    binding.writebutton.isEnabled=false
+                override fun afterTextChanged(s: Editable?) {
+                    checkInputFields()
                 }
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun afterTextChanged(p0: Editable?) {
-                    binding.writebutton.isEnabled =
-                        binding.editWriting.text.toString() != ""
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 }
             })
+
         }
         binding.writebutton.setOnClickListener {
             val title = binding.editTitle.text.toString()
@@ -124,6 +128,11 @@ class WriteActivity : AppCompatActivity() {
             else createPost(userId, title, content)}
 
         }
+    }
+    private fun checkInputFields() {
+        val input1 = binding.editTitle.text.toString().trim()
+        val input2 = binding.editWriting.text.toString().trim()
+       binding.writebutton.isEnabled = input1.isNotEmpty() && input2.isNotEmpty()
     }
     private fun createPost(userId: Long, title: String, content: String) {
         val postReqPost = ReqPost(userId, title, category = "FREE", content)

@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.find
 
 import android.annotation.SuppressLint
 import android.graphics.Rect
@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ActivityFindidBinding
 import com.hansung.capstone.retrofit.RepFindId
 import com.hansung.capstone.retrofit.RetrofitService

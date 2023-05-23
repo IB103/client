@@ -134,7 +134,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                         finish()
                     }
 
-//                    moveToCourseActivity(it)
+                    //moveToCourseActivity(it)
                 } else
                     Toast.makeText(this, "등록에 필요한 기록이 부족합니다.", Toast.LENGTH_SHORT).show()
             }

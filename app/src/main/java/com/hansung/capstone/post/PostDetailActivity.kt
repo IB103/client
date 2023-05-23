@@ -176,11 +176,13 @@ class PostDetailActivity : AppCompatActivity() {
                         runOnUiThread {
                             when (heartCheck) {
                                 0 -> {
+                                    MainActivity.getInstance()!!.hearCheck(1)
                                     binding.HeartB.setImageResource(R.drawable.ic_heart_check)
                                     binding.HeartCount.text = "${++heartCount}"
                                     heartCheck = 1
                                 }
                                 else -> {
+                                    MainActivity.getInstance()!!.hearCheck(0)
                                     binding.HeartB.setImageResource(R.drawable.ic_heart_no_check)
                                     binding.HeartCount.text = "${--heartCount}"
                                     heartCheck = 0

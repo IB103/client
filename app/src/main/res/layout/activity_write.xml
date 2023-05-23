@@ -22,8 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="게시글 작성하기"
-            android:textAlignment="center"
-            android:textColor="#9ACED3"
+            android:textColor="@color/maincolor"
             android:textSize="20sp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="55dp"
@@ -38,6 +37,7 @@
         android:layout_height="wrap_content"
         android:text="게시글 올리기"
         android:textStyle="bold"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,12 +61,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="8dp"
         android:text="내용을 입력하세요"
         android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTitle"
+        app:layout_constraintTop_toBottomOf="@+id/view3"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -81,6 +81,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nestedScrollView" />
 
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTitle" />
     <EditText
         android:id="@+id/editTitle"
         android:layout_width="match_parent"
@@ -102,7 +111,8 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/courseT"
         tools:ignore="MissingConstraints">
@@ -111,11 +121,8 @@
         <EditText
             android:id="@+id/editWriting"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="24dp"
+            android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:ems="10"
             android:gravity="top"
             android:hint="내용을 입력하세요. (최대 1000자 까지 입력가능)"
             android:inputType="textMultiLine"
@@ -128,6 +135,13 @@
             tools:layout_editor_absoluteY="198dp" />
     </androidx.core.widget.NestedScrollView>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/light_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/nestedScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
     <LinearLayout
         android:id="@+id/photo_container"
         android:layout_width="match_parent"

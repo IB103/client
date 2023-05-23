@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FBFBFB"
-    tools:context=".HomeFragment">
+    tools:context=".home.HomeFragment">
 
 
     <androidx.appcompat.widget.Toolbar
@@ -70,11 +70,11 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-
     <RelativeLayout
         android:id="@+id/weather_tip_tv"
         android:layout_width="match_parent"
         android:layout_height="85dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/element_post_list"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -122,6 +122,7 @@
         android:id="@+id/profileBox"
         android:layout_width="0dp"
         android:layout_height="104dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/element_post_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -177,19 +178,20 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileBox">
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:padding="16dp"
             android:id="@+id/goRiding"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:layout_weight="1"
-
             android:background="@drawable/element_post_list"
+
+            android:padding="16dp"
             android:scaleType="fitCenter"
             android:src="@drawable/riding"
             android:text="길 찾기"
@@ -198,11 +200,11 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/makeCourseButton"
-            android:padding="16dp"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:background="@drawable/element_post_list"
+            android:padding="16dp"
             android:scaleType="fitCenter"
             android:src="@drawable/makingcourse"
             android:text="코스 만들기"
@@ -212,14 +214,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
-        android:layout_height="238dp"
+        android:layout_height="0dp"
         android:background="@drawable/element_post_list"
         android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weather_tip_tv">
+        app:layout_constraintTop_toBottomOf="@+id/weather_tip_tv"
+        app:layout_constraintVertical_bias="1.0">
 
         <TextView
+            android:id="@+id/noDataComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="라이딩 기록이 없습니다."
@@ -229,20 +235,166 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/chart" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/noDataImage"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="80dp"
+            android:background="@drawable/bikeandgrass"
+            android:scaleType="fitCenter"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+            app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/noDataComment" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/podium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="나의 기록 순위"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView7"
+            app:layout_constraintStart_toEndOf="@+id/imageView7"
+            app:layout_constraintTop_toTopOf="@+id/imageView7" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView7">
+
+
+            <TextView
+                android:id="@+id/first_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="-"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+                app:layout_constraintStart_toEndOf="@+id/imageView8"
+                app:layout_constraintTop_toTopOf="@+id/imageView8" />
+
+            <TextView
+                android:id="@+id/first_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="-"
+                app:layout_constraintBottom_toBottomOf="@+id/first_one"
+                app:layout_constraintStart_toEndOf="@+id/first_one"
+                app:layout_constraintTop_toTopOf="@+id/first_one" />
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/first"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageView7" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/second"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/view5" />
+
+            <TextView
+                android:id="@+id/second_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="-"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+                app:layout_constraintStart_toEndOf="@+id/imageView9"
+                app:layout_constraintTop_toTopOf="@+id/imageView9" />
+
+            <TextView
+                android:id="@+id/second_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="-"
+                app:layout_constraintBottom_toBottomOf="@+id/second_one"
+                app:layout_constraintStart_toEndOf="@+id/second_one"
+                app:layout_constraintTop_toTopOf="@+id/second_one" />
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/light_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/third"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+            <TextView
+                android:id="@+id/third_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="-"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView11"
+                app:layout_constraintStart_toEndOf="@+id/imageView11"
+                app:layout_constraintTop_toTopOf="@+id/imageView11" />
+
+            <TextView
+                android:id="@+id/third_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="-"
+                app:layout_constraintBottom_toBottomOf="@+id/third_one"
+                app:layout_constraintStart_toEndOf="@+id/third_one"
+                app:layout_constraintTop_toTopOf="@+id/third_one" />
+
+            <View
+                android:id="@+id/view6"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/light_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

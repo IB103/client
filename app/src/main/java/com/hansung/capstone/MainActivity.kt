@@ -4,10 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hansung.capstone.Constants.OPEN_BOARD_FRAGMENT
 import com.hansung.capstone.board.Posts
+import com.hansung.capstone.home.HomeFragment
+import com.hansung.capstone.mypage.MyPageFragment
 import com.hansung.capstone.post.PostDetailActivity
 import com.hansung.capstone.recommend.RecommendFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        var hearCheck=-1
         var showPost:Posts?=null
         var commentCount=0
         var deleteCount=0
@@ -165,7 +167,12 @@ class MainActivity : AppCompatActivity() {
     fun getStateCheck():Int{
         return stateCheck
     }
-
+    fun hearCheck(int:Int){
+        hearCheck=int
+    }
+    fun getHeartCheck():Int{
+        return hearCheck
+    }
     fun setModifyCheck(boolean: Boolean){
         modifyCheck=boolean
     }

@@ -22,6 +22,25 @@ data class RepSend(
     @SerializedName("timestamp")
     val timestamp:String
 )
+data class RepGetRecord(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data:List<RidingData>
+)
+data class RidingData(
+    @SerializedName("ridingTime")
+    val ridingTime: Long,
+    @SerializedName("ridingDistance")
+    val ridingDistance: Float,
+    @SerializedName("calorie")
+    val calorie: Long,
+    val date: Long,
+    val distance: Long)
 data class RepFindId(
     @SerializedName("code")
     val code: Int,

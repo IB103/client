@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.hansung.capstone.*
 import com.hansung.capstone.board.RePModifyProfileImage
 import com.hansung.capstone.databinding.ActivityModifymyinfoBinding
+import com.hansung.capstone.find.FindPwActivity
 import com.hansung.capstone.retrofit.ReqModifyProfileImage
 import com.hansung.capstone.retrofit.RetrofitService
 import kotlinx.android.synthetic.main.view_profile.view.*
@@ -45,10 +46,11 @@ class ModifyMyInfo:AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toobar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = ""
         getProfileImage()
         info()
         binding.modifyPwActivity.setOnClickListener {
-            val intent= Intent(this,FindPwActivity::class.java)
+            val intent= Intent(this, FindPwActivity::class.java)
             startActivityForResult(intent, MODIFYPWACT_REQUEST_CODE)
         }
         binding. logoutBt.setOnClickListener {    MyApplication.prefs.remove()
@@ -172,11 +174,10 @@ class ModifyMyInfo:AppCompatActivity() {
                     inputStream?.copyTo(outputStream)
                     val requestBody = RequestBody.create(MediaType.parse(this.contentResolver.getType(photoUri)!!), file)
                     filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
-                    val modify={modifyImage(filePart!!)}
                     if (Token().checkToken()) {
-                        Token().issueNewToken(modify)
+                        Token().issueNewToken{modifyImage(filePart!!)}
                     }else{
-                       modify
+                        modifyImage(filePart!!)
                     }
 
                 }

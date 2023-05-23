@@ -1,4 +1,4 @@
-package com.hansung.capstone
+package com.hansung.capstone.home
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,14 +17,20 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
-import com.hansung.capstone.home.MakeCourseActivity
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.hansung.capstone.*
 import com.hansung.capstone.databinding.FragmentHomeBinding
+import com.hansung.capstone.linechart.GetRecordData
+import com.hansung.capstone.mypage.MyPageFragment
 import com.hansung.capstone.retrofit.RetrofitService
+import com.hansung.capstone.retrofit.RidingData
 import com.hansung.capstone.retrofit.Weather
 import kotlinx.android.synthetic.main.view_profile.view.*
 import retrofit2.Call
@@ -32,16 +39,18 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 
 class HomeFragment : Fragment() {
     companion object {
+        lateinit var  binding: FragmentHomeBinding
         const val API_KEY: String = BuildConfig.OPEN_WEATHER_KEY
         const val MIN_TIME: Long = 5000
         const val WEATHER_REQUEST: Int = 102
-        data class RidingData(val date: Long, val distance: Long)
     }
 
+    private var ridingDataList: List<RidingData> = emptyList()
     private lateinit var weatherState: TextView
     private lateinit var temperature: TextView
     private lateinit var weatherIcon: ImageView
@@ -59,61 +68,31 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     @SuppressLint("SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentHomeBinding.bind(view)
+       // lineChart=binding.chart
         val noImage:Long=-1
+        if(MyApplication.prefs.getLong("userId", 0)!=null){
+         GetRecordData().getRidingData(7){result ->
+             if (result.isNotEmpty()) {
+                 this.ridingDataList = result
+                 ranking(result)
+               // draw(result)
+             } else {
+                 binding.noDataComment.visibility=View.VISIBLE
+                 binding.noDataImage.visibility=View.VISIBLE
 
-        val entries = listOf(
-            Entry(0f, 3f),
-            Entry(1f, 4f),
-           Entry(2f, 5f),
-            Entry(3f, 6f),
-           Entry(4f, 4f)
-        )
-        val dataSet = LineDataSet(entries, "라이딩 기록")
-        val lineData = LineData(dataSet)
-        val lineChart = binding.chart
-        val xAxis = lineChart.xAxis
-        lineChart.data = lineData
-        xAxis.apply {
-            setDrawGridLines(false)
-            setDrawAxisLine(true)
-            setDrawLabels(true)
-            position = XAxis.XAxisPosition.BOTTOM
-            textColor = resources.getColor(R.color.black, null)
-            textSize = 10f
-            labelRotationAngle = 0f
-            setLabelCount(10, true)
-        }
-        lineChart.apply {
-            axisRight.isEnabled = false   //y축 사용여부
-            axisLeft.isEnabled = false
-            legend.isEnabled = false    //legend 사용여부
-            description.isEnabled = false //주석
-            isScaleYEnabled = false //y축 줌 사용여부
-            isScaleXEnabled = false //x축 줌 사용여부
+                // binding.chart.visibility=View.GONE
+             }
+         }
         }
 
-        dataSet.apply {
-            color = resources.getColor(R.color.maincolor, null)
-            circleRadius = 5f
-            lineWidth = 1f
-            setCircleColor(resources.getColor(R.color.maincolor, null))
-            setDrawHighlightIndicators(false)
-            setDrawValues(true) // 숫자표시
-            valueTextColor = resources.getColor(R.color.black, null)
-            valueFormatter = DefaultValueFormatter(0)  // 소숫점 자릿수 설정
-            valueTextSize = 10f
-        }
-//        lineChart.invalidate()
-        // 애니메이션 설정
-//        lineChart.animateX(1000) // X축 방향 애니메이션 설정
-//        lineChart.animateY(1000, Easing.EasingOption.EaseInQuad) // Y축 방향 애니메이션 설정
 //        val navController: NavController = Navigation.findNavController(view)
 
 //        val navHostFragment =
@@ -121,7 +100,6 @@ class HomeFragment : Fragment() {
 //        val navController = navHostFragment.navController
       //  val navController = findNavController()
       //  navController.navigate(R.id.myPageFragment)
-
         binding.apply {
             temperature = temperatureTv
             weatherState = weatherTv
@@ -160,6 +138,112 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+@SuppressLint("ClickableViewAccessibility")
+//private fun draw(ridingDataList:List<RidingData>) {
+//    binding.noDataComment.visibility = View.GONE
+//    binding.noDataImage.visibility = View.GONE
+//    binding.chart.visibility = View.VISIBLE
+//    //if(ridingDataList.isNotEmpty()){
+//    Log.d("ready", "$ridingDataList")
+//
+//    val entries = ridingDataList.map { Entry(it.ridingTime.toFloat(), it.ridingDistance) }
+//    val dataSet = LineDataSet(entries, "라이딩 기록")
+//    val markerView = CustomMarkerView(requireContext(), R.layout.marker_layout)
+//    val lineData = LineData(dataSet)
+//    val lineChart = binding.chart
+//    lineChart.marker = markerView
+//    val xAxis = lineChart.xAxis
+//    lineChart.data = lineData
+//    lineChart.invalidate()
+//    xAxis.apply {
+//        setDrawGridLines(false)
+//        setDrawAxisLine(true)
+//        setDrawLabels(true)
+//        position = XAxis.XAxisPosition.BOTTOM
+//        textColor = resources.getColor(R.color.black, null)
+//        textSize = 10f
+//        labelRotationAngle = 0f
+//        setLabelCount(10, true)
+//    }
+//
+//    lineChart.apply {
+//
+//        axisRight.isEnabled = false   //y축 사용여부
+//        axisLeft.isEnabled = true
+//        legend.isEnabled = false    //legend 사용여부
+//        description.isEnabled = false //주석
+//        isScaleYEnabled = false //y축 줌 사용여부
+//        isScaleXEnabled = false //x축 줌 사용여부
+//    }
+//
+//    dataSet.apply {
+//        color = resources.getColor(R.color.maincolor, null)
+//        circleRadius = 3f
+//        lineWidth = 1f
+//        setCircleColor(resources.getColor(R.color.maincolor, null))
+//        setDrawHighlightIndicators(false)
+//        setDrawValues(false) // 숫자표시
+//        valueTextColor = resources.getColor(R.color.black, null)
+//        valueFormatter = DefaultValueFormatter(2)  // 소숫점 자릿수 설정
+//        valueTextSize = 10f
+//
+//    }
+//    lineChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+//        override fun onValueSelected(e: Entry?, h: Highlight?) {
+//            if (e != null) {
+//                lineChart.highlightValue(h) // 하이라이트 표시
+//            }
+////                markerView.refreshContent(e.x, e.y)
+////                lineChart.highlightValue(h)
+////                lineChart.invalidate()
+////            } else {
+////                lineChart.highlightValue(null)
+////                lineChart.invalidate()
+////            }
+//        }
+//
+//        override fun onNothingSelected() {
+//            //  lineChart.marker = null
+////            lineChart.highlightValue(null)
+////            lineChart.invalidate()
+//        }
+//    })
+//
+//    lineChart.setOnTouchListener { v, event ->
+//        if (event.action == MotionEvent.ACTION_DOWN) {
+//            val highlight = lineChart.getHighlightByTouchPoint(event.x, event.y)
+//            if (highlight == null) {
+//                // 좌표 지점이 아닌 곳을 터치했을 때 MarkerView를 숨김
+//
+//            }
+//        }
+//        false
+//    }
+//}
+   private fun ranking(data:List<RidingData>){
+    val size=data.size
+    val sortedList = data.sortedBy { it.ridingDistance }
+    val reversedList=sortedList.reversed()
+    val textView = requireActivity().findViewById<TextView>(R.id.first_one)
+
+   textView.text=String.format("%.2f",reversedList[0].ridingDistance )+"km"
+    binding.firstTwo.text=reversedList[0].ridingTime.toString()
+
+
+    if(size==2){
+        binding.secondOne.text=String.format("%.2f",reversedList[1].ridingDistance )+"km"
+        binding.secondTwo.text=reversedList[1].ridingTime.toString()
+    }else if(size==3){
+        binding.secondOne.text=String.format("%.2f",reversedList[1].ridingDistance )+"km"
+        binding.secondTwo.text=reversedList[1].ridingTime.toString()
+        binding.thirdOne.text=String.format("%.2f",reversedList[2].ridingDistance)+"km"
+         binding.thirdTwo.text=reversedList[2].ridingTime.toString()
+    }
+
+
+
+   }
     private fun getProfileImage() {
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
         Glide.with(requireActivity())
@@ -231,6 +315,8 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+      //if(ridingDataList.isNotEmpty())
+        //ranking(ridingDataList)
         if(MyApplication.prefs.getString("latitude","")!="")
             doWeather()
         getWeatherInCurrentLocation()
@@ -238,3 +324,4 @@ class HomeFragment : Fragment() {
     }
 
 }
+

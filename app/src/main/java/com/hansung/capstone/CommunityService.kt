@@ -2,6 +2,7 @@ package com.hansung.capstone
 
 import com.hansung.capstone.board.*
 import com.hansung.capstone.post.ResultGetPostDetail
+import com.hansung.capstone.retrofit.RepGetRecord
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -9,6 +10,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface CommunityService {
+    @GET("/api/community/post/list/title-or-content")
+    fun searchBoard(
+        @Query("titleOrContent") titleOrContent: String,
+        @Query("page") page: Int
+    ): Call<ResultGetPosts>
     @GET("api/community/post/list/all")
     fun getAllPost(
         @Query("page") query: Int,

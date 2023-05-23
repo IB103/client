@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.util.Log
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MainActivity
-import com.hansung.capstone.MyApplication
 import com.hansung.capstone.board.ResDeleteReComment
 import com.hansung.capstone.post.PostDetailActivity
 import retrofit2.Call
@@ -13,10 +12,7 @@ import retrofit2.Response
 
 class DeleteReComment {
     val api = CommunityService.create()
-
     fun delete(accessToken:String, userId:Long, reCommentId:Long){
-        Log.d("myapplicationUserId","${MyApplication.prefs.getLong("userId",0)}")
-        Log.d("userid","$userId")
         api.deleteReComment(accessToken = "Bearer $accessToken",userId, reCommentId)
             .enqueue(object : Callback<ResDeleteReComment> {
                 @SuppressLint("SetTextI18n")

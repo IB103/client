@@ -77,9 +77,16 @@ class BoardAdapter :
 //        }
     }
 
-    fun changed(changedItem:Posts){
+    fun commentChanged(changedItem:Posts){
+
         val position=this.resultGetPosts.indexOf(changedItem)
-        this.resultGetPosts[position]!!.changed=true
+        this.resultGetPosts[position]!!.commentChanged=true
+        notifyItemChanged(position)
+    }
+    fun heartChanged(changedItem:Posts){
+        Log.d("check#","2")
+        val position=this.resultGetPosts.indexOf(changedItem)
+        this.resultGetPosts[position]!!.heartChanged=true
         notifyItemChanged(position)
     }
     @SuppressLint("NotifyDataSetChanged")
@@ -92,6 +99,10 @@ class BoardAdapter :
     fun setInitItems(resultGetPosts: ArrayList<Posts>){//초기 화면 세팅
         this.resultGetPosts.clear()
         this.resultGetPosts.addAll(resultGetPosts)
+        notifyDataSetChanged()
+    }
+    fun removeAll(){//초기 화면 세팅
+        this.resultGetPosts.clear()
         notifyDataSetChanged()
     }
 
@@ -114,7 +125,14 @@ class BoardAdapter :
             binding.BoardContent.text = items.content
             binding.BoardDate.text = createdDate.toString()
             binding.ImageCount.text = items.imageId.size.toString()
-            binding.HeartCount.text = items.postVoterId.size.toString()
+            if(items.heartChanged){
+
+                val d = Log.d("check#", "3")
+                val size = items.postVoterId.size+1
+                binding.HeartCount.text = size.toString()
+                resultGetPosts[position]!!.heartChanged=false
+            }else binding.HeartCount.text = items.postVoterId.size.toString()
+
             for (i in items.commentList) {
                 count += i.reCommentList.size
             }
@@ -123,12 +141,14 @@ class BoardAdapter :
                 if(items.commentList[i].userId!=j)
                     ++count
             }
-            if(items.changed){
+            if(items.commentChanged){
+
                 count+= MainActivity.getInstance()!!.getCommentCount()
                 count-=  MainActivity.getInstance()!!.getDeletedCommentCount()
-                MainActivity.getInstance()!!.setCommentCount(-1)
-                MainActivity.getInstance()!!.setDeletedCommentCount(-1)
-                resultGetPosts[position]!!.changed=false
+                //MainActivity.getInstance()!!.setCommentCount(-1)
+                //MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+                resultGetPosts[position]!!.commentCount=count
+                resultGetPosts[position]!!.commentChanged=false
             }
             binding.CommentCount.text = count.toString()
             Glide.with(context!!)
@@ -161,19 +181,27 @@ class BoardAdapter :
             binding.BoardTitle.text = items.title
             binding.BoardContent.text = items.content
             binding.BoardDate.text = createdDate.toString()
-            binding.HeartCount.text = items.postVoterId.size.toString()
+            if(items.heartChanged){
+                var size: Int =0
+                if(MainActivity.getInstance()!!.getHeartCheck()==1)
+                    size = items.postVoterId.size+1
+                else if(MainActivity.getInstance()!!.getHeartCheck()==0)
+                    size= items.postVoterId.size-1
+                binding.HeartCount.text = size.toString()
+                resultGetPosts[position]!!.heartChanged=false
+            }else binding.HeartCount.text = items.postVoterId.size.toString()
             for (i in items.commentList) {
                 count += i.reCommentList.size
             }
-            if(items.changed){
+            if(items.commentChanged){
                 count+= MainActivity.getInstance()!!.getCommentCount()//추가한 댓글 더하기
                 count-=  MainActivity.getInstance()!!.getDeletedCommentCount()
 //                if(deleteCount!=0){//삭제한 댓글 카운트
 //                    count-=deleteCount
 //                }
-                MainActivity.getInstance()!!.setCommentCount(-1)
-                MainActivity.getInstance()!!.setDeletedCommentCount(-1)
-                resultGetPosts[position]!!.changed=false
+               // MainActivity.getInstance()!!.setCommentCount(-1)
+                //MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+                resultGetPosts[position]!!.commentChanged=false
             }
 
 

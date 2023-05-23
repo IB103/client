@@ -14,9 +14,6 @@ import retrofit2.Response
 class DeleteComment {
     val api = CommunityService.create()
     fun delete(accessToken:String, userId:Long, commentId:Long){
-        Log.d("myapplicationUserId","${MyApplication.prefs.getLong("userId",0)}")
-        Log.d("userid","$userId")
-        Log.d("commentId","$commentId")
         api.deleteComment(accessToken = "Bearer $accessToken",userId, commentId)
             .enqueue(object : Callback<ResDelete> {
                 @SuppressLint("SetTextI18n")
@@ -28,7 +25,6 @@ class DeleteComment {
                         if(body?.code==100) {
                             Log.d("INFO deleteComment", "$body")
                             MainActivity.getInstance()?.setDeletedCommentCount(1)
-                            //MyApplication.prefs.setInt("deleteCount",deleteCount)
                             PostDetailActivity.getInstance()?.postComment()
                             PostDetailActivity.getInstance()?.commentSuccess(3)
                         }
