@@ -63,6 +63,7 @@ class MyPageFragment : Fragment() {
         resultAllPost = binding.userContainer.resultAllPost
         resultAllPost.addItemDecoration(BoardAdapterDecoration())
         resultAllPost.adapter=adapter
+        resultAllPost.setHasFixedSize(true);
         resultAllPost.layoutManager=linearLayoutManager
         if (MyApplication.prefs.getString("email", "") == "") {
             visibleLogin()
@@ -98,10 +99,12 @@ class MyPageFragment : Fragment() {
         binding.userContainer.profile_container.profileImage.setOnClickListener {
             val intent = Intent(activity, ModifyMyInfo::class.java)
             startActivity(intent)
+            requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.none)
         }
         binding.modifyInfo.setOnClickListener {
             val intent = Intent(activity, ModifyMyInfo::class.java)
             startActivity(intent)
+            requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.none)
         }
         var isInitialSelection = true  //spinner selector
         val selectX = resources.getStringArray(R.array.select_x)
@@ -152,11 +155,13 @@ class MyPageFragment : Fragment() {
         binding.userContainer.profile_container.mystory_bt.setOnClickListener {
             val intent = Intent(activity, MyStory::class.java)
             startActivity(intent)
+            requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.none)
         }
         //내가 스크랩 글
         binding.userContainer.myscraplist_bt.setOnClickListener {
             val intent = Intent(activity, MyScrap::class.java)
             startActivity(intent)
+            requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.none)
         }
         binding.userContainer.renewBt.setOnClickListener {
             Log.d("position3","@@@@@@@@@@@@@@@@")
@@ -427,7 +432,7 @@ class MyPageFragment : Fragment() {
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
         Glide.with(requireActivity())
             .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
-            .override(200, 200)
+//            .override(200, 200)
             .centerCrop()
             .into(binding.userContainer.profile_container.profileImage)
     }
@@ -446,7 +451,7 @@ class MyPageFragment : Fragment() {
     }
 
     private fun commentLogin(){
-        Toast.makeText(requireActivity(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireActivity(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show()
         MainActivity.getInstance()!!.setLoginState(-1)
     } private fun commentLogOut(){
         Toast.makeText(requireActivity(),"로그아웃 되었습니다.",Toast.LENGTH_SHORT).show()

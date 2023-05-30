@@ -6,7 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+//import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.UiThread
@@ -165,7 +165,7 @@ class DirectionsActivity : AppCompatActivity(), OnMapReadyCallback {
                     call: Call<ResultSearchDirections>,
                     t: Throwable
                 ) {
-                    Log.d("getWaypointsDirection", "onFailure: $t")
+//                    Log.d("getWaypointsDirection", "onFailure: $t")
                 }
             })
         Utility.zoomToSeeWholeTrack(waypointsPositions, nMap)

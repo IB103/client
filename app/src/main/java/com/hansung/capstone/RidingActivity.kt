@@ -47,8 +47,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
     private var fusedLocationClient: FusedLocationProviderClient? = null // 사용자 위치로 카메라 이동 용도
     private var pathOverlay = mutableListOf<LatLng>() // 경로 표시용 좌표 리스트
     private var pathWaypoints = mutableListOf<Waypoint>() // 경유지 저장용 리스트
-
-    //    private var nMapMarkers = mutableListOf<Marker>() // 생성한 마커 저장용 리스트
     private var isRiding = false // 경로중 판별 변수
 
     // 권한 요청 후 처리용 Launcher
@@ -85,7 +83,7 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("RidingActivity", "onCreate")
+//        Log.d("RidingActivity", "onCreate")
         setContentView(binding.root)
 
         updateUI(isRiding)
@@ -107,10 +105,9 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.ridingStopButton.setOnClickListener {
             if (!isRiding) {
-                if(pathWaypoints.size>0) {
+                if (pathWaypoints.size > 0) {
                     ridingDialog(this)
-                }
-                else{
+                } else {
                     Toast.makeText(this, "코스 정보가 부족합니다.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -135,28 +132,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                 fm.beginTransaction().add(R.id.riding_view, it).commit()
             }
         mapFragment.getMapAsync(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("RidingActivity", "onResume")
-    }
-
-    override fun onPause() {
-        Log.d("RidingActivity", "onPause")
-        super.onPause()
-    }
-
-    override fun onStop() {
-        Log.d("RidingActivity", "onStop")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.d("RidingActivity", "onDestroy")
-        // 액티비티가 종료 될 때 서비스 종료 액션 전달
-//        sendCommandToService(ACTION_STOP_SERVICE)
-        super.onDestroy()
     }
 
     @UiThread
@@ -202,8 +177,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         RidingService.pathOverlay.observe(this) {
             pathOverlay = it
-            // pathWaypoints 비었을 때 pathOverlay 첫 인덱스 추가
-//            ##################################################################################
             if (pathWaypoints.isEmpty() && pathOverlay.size > 0) {
                 pathWaypoints.add(
                     Waypoint(
@@ -212,8 +185,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                     )
                 )
             }
-//            ##################################################################################
-//            RidingService.distanceLiveData.postValue(RidingUtility.calculateDistance(it))
             drawPathOverlay()
             moveCameraToLastLocation()
         }
@@ -221,8 +192,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         // LiveData 라이딩 시간을 observe 해서 실시간으로 값을 바꿔서 출력한다
         RidingService.timeLiveData.observe(this) {
             binding.printTimer.text = RidingUtility.convertMs(it)
-
-            // ############## 추가 ##############
             // 거리 수정
             RidingService.distanceLiveData.postValue(
                 RidingService.pathOverlay.value?.let { it1 ->
@@ -267,7 +236,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         // LiveData Location 좌표를 이용해 오버레이 표시
         RidingService.currentLocation.observe(this) {
             locationOverlay.position = it
-//            locationOverlay.isVisible = true
         }
     }
 
@@ -288,7 +256,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                     pathOverlay.takeLast(2).firstOrNull(),
                     pathOverlay.takeLast(1).firstOrNull()
                 )
-//            path.coords.add(pathOverlay.takeLast(1).firstOrNull())
             path.outlineWidth = 0
             path.width = 12
             path.color = Color.parseColor(resources.getString(R.color.pathOverlayColor))

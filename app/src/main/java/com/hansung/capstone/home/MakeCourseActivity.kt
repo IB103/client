@@ -5,7 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+//import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.UiThread
@@ -25,8 +25,8 @@ import com.naver.maps.map.util.MarkerIcons
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-//import com.naver.maps.map.overlay.InfoWindow
 
+//import com.naver.maps.map.overlay.InfoWindow
 
 
 class MakeCourseActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -60,11 +60,11 @@ class MakeCourseActivity : AppCompatActivity(), OnMapReadyCallback {
 //                    Utility.zoomToSeeWholeTrack(waypointsPositions, nMap)
                     nMap.takeSnapshot { bitmap ->
                         snapshotPath = Utility.saveSnapshot(this, bitmap)
-                        Log.d("snapshotPath", snapshotPath)
+//                        Log.d("snapshotPath", snapshotPath)
                         intent.putParcelableArrayListExtra("waypoints", ArrayList(waypoints))
                         intent.putExtra("coordinates", coordinates)
                         intent.putExtra("snapshotPath", snapshotPath)
-                        intent.putExtra("modeSet",2)
+                        intent.putExtra("modeSet", 2)
                         startActivity(intent)
                     }
                 } else
@@ -166,7 +166,7 @@ class MakeCourseActivity : AppCompatActivity(), OnMapReadyCallback {
                     call: Call<ResultSearchDirections>,
                     t: Throwable
                 ) {
-                    Log.d("getWaypointsDirection", "onFailure: $t")
+//                    Log.d("getWaypointsDirection", "onFailure: $t")
                 }
             })
         Utility.zoomToSeeWholeTrack(waypointsPositions, nMap)

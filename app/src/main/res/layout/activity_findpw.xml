@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,31 +10,32 @@
         android:id="@+id/CommunityToolbar"
         android:layout_width="0dp"
         android:layout_height="50dp"
-
-        android:background="#FFFFFF"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        tools:ignore="MissingConstraints">
+        android:elevation="1dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="이메일 인증하기"
-            android:textAlignment="center"
             android:textColor="@color/maincolor"
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/closeView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:layout_marginEnd="1dp"
-            android:padding="12dp"
-            app:srcCompat="@drawable/ic_baseline_close_24"
-            tools:layout_editor_absoluteX="371dp"
-            tools:layout_editor_absoluteY="16dp" />
+<!--        <ImageView-->
+<!--            android:id="@+id/closeView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:layout_marginEnd="1dp"-->
+<!--            android:padding="12dp"-->
+<!--            app:srcCompat="@drawable/ic_baseline_close_24"-->
+<!--            tools:layout_editor_absoluteX="371dp"-->
+<!--            tools:layout_editor_absoluteY="16dp" />-->
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -102,16 +104,36 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <Button
-        android:id="@+id/reqEmailSend"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:text="전송"
-        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayout3"
-        app:layout_constraintTop_toTopOf="@+id/textInputLayout3" />
+<!--    <Button-->
+<!--        android:id="@+id/reqEmailSend"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:text="전송"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/textInputLayout3"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/textInputLayout3" />-->
+    <androidx.cardview.widget.CardView
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="2dp"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="3dp"
+        card_view:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toEndOf="@+id/textInputLayout3"
+        card_view:layout_constraintTop_toTopOf="@+id/textInputLayout3">
+
+        <Button
+            android:id="@+id/reqEmailSend"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/maincolor"
+            android:text="전송"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/confirmValue"

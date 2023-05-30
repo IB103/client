@@ -1,27 +1,27 @@
 package com.hansung.capstone.board
 
-import okhttp3.MultipartBody
-
-
 data class ResultRespond(
     var code: Int,
     var success: Boolean,
     var message: String,
 )
+
 data class RePModifyProfileImage(
     var code: Int,
     var success: Boolean,
     var message: String,
     var data: ModifiedProfile
 )
+
 data class ModifiedProfile(
     var id: Long,
     var email: String,
     var username: String,
     var birthday: String,
     var nickname: String,
-    var profileImageId:Long
+    var profileImageId: Long
 )
+
 data class ModifyPost(
     var code: Int,
     var success: Boolean,
@@ -29,11 +29,12 @@ data class ModifyPost(
     var totalPage: Int,
     var data: Posts
 )
-data class ResultGet(
-    var code: Int,
-    var success: Boolean,
-    var message: String
-)
+
+//data class ResultGet(
+//    var code: Int,
+//    var success: Boolean,
+//    var message: String
+//)
 data class ResultGetPosts(
     var code: Int,
     var success: Boolean,
@@ -56,18 +57,19 @@ data class Posts(
     var postVoterId: Set<Long>,
     var postScraperId: Set<Long>,
     // 게시판에 들어갈 item type 설정
-    var postType : Int,
-    var commentChanged:Boolean,
-    var heartChanged:Boolean,
-    var commentCount:Int,
-    var heartCount:Int
+    var postType: Int,
+    var commentChanged: Boolean,
+    var heartChanged: Boolean,
+    var commentCount: Int,
+    var heartCount: Int
 )
+
 data class Comments(
-    var id : Long,
+    var id: Long,
     var content: String,
     var createdDate: String,
     var modifiedDate: String,
-    var userId : Long,
+    var userId: Long,
     var userNickname: String,
     var userProfileImageId: Long,
     var reCommentList: List<ReComments>,
@@ -75,23 +77,25 @@ data class Comments(
 )
 
 data class ReComments(
-    var id : Long,
+    var id: Long,
     var content: String,
     var createdDate: String,
     var modifiedDate: String,
-    var userId : Long,
+    var userId: Long,
     var userNickname: String,
     var userProfileImageId: Long,
     var reCommentVoterId: Set<Long>
 )
+
 data class ResDelete(
     var code: Int,
-    var success:Boolean,
+    var success: Boolean,
     var message: String
 )
+
 data class ResDeleteReComment(
     var code: Int,
-    var success:Boolean,
+    var success: Boolean,
     var message: String,
-    var data:Boolean
+    var data: Boolean
 )

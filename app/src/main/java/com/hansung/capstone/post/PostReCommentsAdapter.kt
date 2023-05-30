@@ -5,27 +5,31 @@ import android.content.DialogInterface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
 import com.hansung.capstone.Token
 import com.hansung.capstone.databinding.ItemPostDetailRecommentsBinding
-import com.hansung.capstone.delete.DeleteComment
 import com.hansung.capstone.delete.DeleteReComment
 import java.time.format.DateTimeFormatter
 
-class PostReCommentsAdapter(private val comment: Comments,private val context: PostDetailActivity) :
+class PostReCommentsAdapter(
+    private val comment: Comments,
+    private val context: PostDetailActivity
+) :
 
-    RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
-    val noImage:Long=-1
-    var reCommentId:Long=0
-    var accessToken=MyApplication.prefs.getString("accessToken","")
-    var userId=MyApplication.prefs.getLong("userId",0)
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    val noImage: Long = -1
+    var reCommentId: Long = 0
+    var accessToken = MyApplication.prefs.getString("accessToken", "")
+    var userId = MyApplication.prefs.getLong("userId", 0)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = ItemPostDetailRecommentsBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = ItemPostDetailRecommentsBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return PostReCommentsHolder(binding)
     }
 
@@ -39,34 +43,33 @@ class PostReCommentsAdapter(private val comment: Comments,private val context: P
     }
 
     inner class PostReCommentsHolder(private val binding: ItemPostDetailRecommentsBinding) :
-        RecyclerView.ViewHolder(binding.root){
-        fun bind(items: ReComments){
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(items: ReComments) {
             binding.reCommentContent.text = items.content
             binding.reCommentUserName.text = items.userNickname
             val createdDate = MyApplication.convertDate(items.createdDate).format(
-                DateTimeFormatter.ofPattern("MM/dd HH:mm"))
+                DateTimeFormatter.ofPattern("MM/dd HH:mm")
+            )
             binding.reCommentCreatedDate.text = createdDate
 //            binding.delelteReComment.isVisible =
 //                items.userNickname==MyApplication.prefs.getString("nickname","")
-            if(items.userNickname==MyApplication.prefs.getString("nickname","")){
+            if (items.userNickname == MyApplication.prefs.getString("nickname", "")) {
                 binding.deleteReComment.alpha = 1f
                 binding.deleteReComment.isEnabled = true
-            }
-            else{
+            } else {
                 binding.deleteReComment.alpha = 0.3f
                 binding.deleteReComment.isEnabled = false
             }
             binding.deleteReComment.setOnClickListener {
-                context.reCommentId= items.id
-                reCommentId=items.id
+                context.reCommentId = items.id
+                reCommentId = items.id
                 showDialog()
             }
 
-            Log.d("userProfileImageId","${items.userProfileImageId}")
-            if(items.userProfileImageId==noImage.toLong()){
+            Log.d("userProfileImageId", "${items.userProfileImageId}")
+            if (items.userProfileImageId == noImage.toLong()) {
                 binding.reCommentProfileImage.setImageResource(R.drawable.user)
-            }
-            else{
+            } else {
                 if (items.userProfileImageId != noImage.toLong()) {
                     Glide.with(context)
                         .load("${MyApplication.getUrl()}profile-image/${items.userProfileImageId}")
@@ -81,26 +84,26 @@ class PostReCommentsAdapter(private val comment: Comments,private val context: P
 
         }
     }
-    private fun showDialog(){
-        val dataArr=arrayOf("삭제하기","수정하기")
-        val builder: AlertDialog.Builder= AlertDialog.Builder(context)
+
+    private fun showDialog() {
+        val dataArr = arrayOf("삭제하기", "수정하기")
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setTitle("댓글 활동")
-        val listener= DialogInterface.OnClickListener { _, which ->
-            if(dataArr[which]==dataArr[0]){
+        val listener = DialogInterface.OnClickListener { _, which ->
+            if (dataArr[which] == dataArr[0]) {
                 if (Token().checkToken()) {
-                    Token().issueNewToken{
-                        DeleteReComment().delete(userId,reCommentId)
+                    Token().issueNewToken {
+                        DeleteReComment().delete(userId, reCommentId)
                     }
                 } else {
-                    DeleteReComment().delete(userId,reCommentId)
+                    DeleteReComment().delete(userId, reCommentId)
                 }
-            }
-            else if(dataArr[which]==dataArr[1]){
+            } else if (dataArr[which] == dataArr[1]) {
                 context.keyBordShow(3)
             }
         }
-        builder.setItems(dataArr,listener)
-        builder.setNegativeButton("취소",null)
+        builder.setItems(dataArr, listener)
+        builder.setNegativeButton("취소", null)
         builder.show()
     }
 }

@@ -50,15 +50,14 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/user_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mypageToolbar"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@id/mypageToolbar">
 
         <include
             layout="@layout/view_login"
@@ -68,5 +67,5 @@
             layout="@layout/view_profile"
             android:visibility="invisible" />
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

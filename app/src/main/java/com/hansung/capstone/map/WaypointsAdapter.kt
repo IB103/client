@@ -48,7 +48,6 @@ class WaypointsAdapter(
             val intent = Intent(directionsActivity, WaypointsSearchActivity::class.java)
             intent.putExtra("position", viewHolder.adapterPosition)
             directionsActivity.directionsSearchLauncher.launch(intent)
-            //
             directionsActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.none)
         }
         viewHolder.addWaypoint.setOnClickListener {
@@ -71,13 +70,18 @@ class WaypointsAdapter(
         fun bind(items: Waypoint) {
             if (items.place_name != null) {
                 waypointText.text = items.place_name
-            }
-            else
+            } else
                 waypointText.text = null
         }
     }
 
-    fun updateItem(position: Int, placeName: String, placeLat: String, placeLng: String, placeUrl: String) {
+    fun updateItem(
+        position: Int,
+        placeName: String,
+        placeLat: String,
+        placeLng: String,
+        placeUrl: String
+    ) {
         waypoints[position].place_name = placeName
         waypoints[position].place_lat = placeLat.toDouble()
         waypoints[position].place_lng = placeLng.toDouble()
@@ -97,13 +101,6 @@ class WaypointsAdapter(
         notifyItemRangeChanged(position, waypoints.size)
     }
 
-    fun makeWaypointsDirectionQuery(waypoints: MutableList<Waypoint>): String {
-        var waypointsQuery = ""
-        for (i in waypoints) {
-            waypointsQuery += "${i.place_lng},${i.place_lat};"
-        }
-        return waypointsQuery.dropLast(1)
-    }
 }
 
 

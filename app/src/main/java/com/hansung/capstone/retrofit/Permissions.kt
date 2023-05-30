@@ -21,17 +21,16 @@ object Permissions {
     }
     val permissionsCamera =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_MEDIA_IMAGES,
-        )
-    }
-    else{
-        arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-    }
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_IMAGES,
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        }
 }
 
 object PermissionUtils {

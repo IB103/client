@@ -96,13 +96,12 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
             }
         }
         binding.movePostButton.setOnClickListener {
-            if(moveCheck == 0) {
+            if (moveCheck == 0) {
                 val intentToPost = Intent(this, PostDetailActivity::class.java)
                 intentToPost.putExtra("postid", postId)
                 intentToPost.putExtra("moveCheck", 1)
                 startActivity(intentToPost)
-            }
-            else{
+            } else {
                 finish()
             }
         }
@@ -131,7 +130,7 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
             ) {
                 if (response.isSuccessful) {
                     val data = response.body()!!.data
-                    Log.d("getCourseDetail", "onResponse : ${response.body().toString()}")
+//                    Log.d("getCourseDetail", "onResponse : ${response.body().toString()}")
                     imageInfoList = data.imageInfoList
                     originToDestination = data.originToDestination
                     coordinates = data.coordinates
@@ -213,7 +212,7 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
             }
 
             override fun onFailure(call: Call<RepCourseDetailData>, t: Throwable) {
-                Log.d("getCourseDetail:", "onFailure : $t")
+//                Log.d("getCourseDetail:", "onFailure : $t")
             }
         })
 
@@ -227,12 +226,11 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false)
 
         binding.bikeButton.setOnClickListener {
-            if(bikeState == 0) {
+            if (bikeState == 0) {
                 naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)
                 bikeState = 1
                 binding.bikeButton.setImageResource(R.drawable.bike_on)
-            }
-            else{
+            } else {
                 naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, false)
                 bikeState = 0
                 binding.bikeButton.setImageResource(R.drawable.bike_off)

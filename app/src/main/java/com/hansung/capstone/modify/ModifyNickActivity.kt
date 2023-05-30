@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.MyApplication
+import com.hansung.capstone.R
 import com.hansung.capstone.Token
 import com.hansung.capstone.databinding.ActivityModifynicknameBinding
 import com.hansung.capstone.doublecheck.CheckNick
@@ -108,4 +109,5 @@ class ModifyNickActivity:AppCompatActivity(){
         }
         return super.dispatchTouchEvent(ev)
     }
+
 }

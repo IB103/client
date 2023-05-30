@@ -33,14 +33,15 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 
-class ModifyMyInfo:AppCompatActivity() {
+class ModifyMyInfo : AppCompatActivity() {
     companion object {
         private const val MODIFY_REQUEST_CODE = 123
         private const val MODIFYPWACT_REQUEST_CODE = 12
         private const val defaultGalleryRequestCode = 0
     }
+
     private val binding by lazy { ActivityModifymyinfoBinding.inflate(layoutInflater) }
-    var api= RetrofitService.create()
+    var api = RetrofitService.create()
     private var filePart: MultipartBody.Part? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,21 +52,26 @@ class ModifyMyInfo:AppCompatActivity() {
         getProfileImage()
         info()
         binding.modifyPwActivity.setOnClickListener {
-            val intent= Intent(this, FindPwActivity::class.java)
+            val intent = Intent(this, FindPwActivity::class.java)
             startActivityForResult(intent, MODIFYPWACT_REQUEST_CODE)
         }
-        binding. logoutBt.setOnClickListener {   logOut()
+        binding.logoutBt.setOnClickListener {
+            logOut()
             MyApplication.prefs.remove()
-         }
+        }
         binding.modifyNickActivity.setOnClickListener {
-            val intent= Intent(this,ModifyNickActivity::class.java)
+            val intent = Intent(this, ModifyNickActivity::class.java)
             startActivityForResult(intent, MODIFY_REQUEST_CODE)
         }
         binding.editProfileImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             @Suppress("DEPRECATION")
             startActivityForResult(intent, defaultGalleryRequestCode)
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
                         this,
                         android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -81,43 +87,60 @@ class ModifyMyInfo:AppCompatActivity() {
             }
         }
     }
-    private fun requestLogOut(){
-        val accessToken= MyApplication.prefs.getString("accessToken","")
-        api.logOut(accessToken = "Bearer $accessToken").enqueue(object:Callback<RepLogOut>{
+
+    private fun requestLogOut() {
+        val accessToken = MyApplication.prefs.getString("accessToken", "")
+        api.logOut(accessToken = "Bearer $accessToken").enqueue(object : Callback<RepLogOut> {
             override fun onResponse(call: Call<RepLogOut>, response: Response<RepLogOut>) {
-                if(response.code()==200){
-                    val result: RepLogOut =response.body()!!
+                if (response.code() == 200) {
+                    val result: RepLogOut = response.body()!!
                     MainActivity.getInstance()!!.setLoginState(0)
-                    Log.d("resultLogOut","$result")
+                    Log.d("resultLogOut", "$result")
+//=======
+//                if (response.code() == 200) {
+//                    val result: RepLogOut = response.body()!!
+//                    Log.d("result", "$result")
+//>>>>>>> Stashed changes
                     finish()
+//                    overridePendingTransition(0, R.anim.slide_out_right)
                     // setData(result.data)
                 }
             }
+
             override fun onFailure(call: Call<RepLogOut>, t: Throwable) {
-                Log.d("fail","${t.message}")
+                Log.d("fail", "${t.message}")
 
             }
         })
     }
-    private  fun logOut(){
+
+    private fun logOut() {
         if (Token().checkToken()) {
             Token().issueNewToken {
 
-               requestLogOut()
+                requestLogOut()
             }
-        }else {
+        } else {
 
-            requestLogOut()}
+            requestLogOut()
+        }
+//=======
+//                requestLogOut()
+//            }
+//        } else requestLogOut()
+//>>>>>>> Stashed changes
     }
-    private fun info(){
 
-        binding.tvEmail.text=MyApplication.prefs.getString("email","")
-        binding.tvUsername.text=MyApplication.prefs.getString("username","")
-        binding.tvNick.text=MyApplication.prefs.getString("nickname","")
+    private fun info() {
+
+        binding.tvEmail.text = MyApplication.prefs.getString("email", "")
+        binding.tvUsername.text = MyApplication.prefs.getString("username", "")
+        binding.tvNick.text = MyApplication.prefs.getString("nickname", "")
 
     }
-    private fun changed(){
-        val noImage:Long=-1
+
+    private fun changed() {
+        val noImage: Long = -1
         if (MyApplication.prefs.getLong("profileImageId", 0) == noImage) {
             binding.profileImage.setImageResource(R.drawable.user)
         } else {
@@ -125,24 +148,27 @@ class ModifyMyInfo:AppCompatActivity() {
         }
         Toast.makeText(this, "프로필 사진이 변경됐습니다.", Toast.LENGTH_SHORT).show()
     }
+
     private fun getProfileImage() {
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
-        val noImage:Long=-1
+        val noImage: Long = -1
 
-         if (MyApplication.prefs.getLong("profileImageId", 0) == noImage) {
+        if (MyApplication.prefs.getLong("profileImageId", 0) == noImage) {
             binding.profileImage.setImageResource(R.drawable.user)
-        }else{
-        Glide.with(this)
-            .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
-            .override(200, 200)
-            .centerCrop()
-            .into(binding.profileImage)
-    }}
+        } else {
+            Glide.with(this)
+                .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
+                .override(200, 200)
+                .centerCrop()
+                .into(binding.profileImage)
+        }
+    }
+
     @SuppressLint("Range")
     fun getFileName(uri: Uri): String? {
         var result: String? = null
         if (uri.scheme == "content") {
-            val cursor: Cursor? =this.contentResolver.query(uri, null, null, null, null)
+            val cursor: Cursor? = this.contentResolver.query(uri, null, null, null, null)
             cursor.use { cursor ->
                 if (cursor != null && cursor.moveToFirst()) {
                     cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
@@ -155,60 +181,75 @@ class ModifyMyInfo:AppCompatActivity() {
         }
         return result
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
+                overridePendingTransition(0, R.anim.slide_out_right)
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun modifyImage(image: MultipartBody.Part){
-        val userId=MyApplication.prefs.getLong("userId",0)
+
+    private fun modifyImage(image: MultipartBody.Part) {
+        val userId = MyApplication.prefs.getLong("userId", 0)
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
-        val putModifyProfileImage= ReqModifyProfileImage(userId, profileImageId = profileImageId)
-        val accessToken= MyApplication.prefs.getString("accessToken", "")
-        api.modifyProfileImage(accessToken = "Bearer $accessToken",putModifyProfileImage,image).enqueue(object :
-            Callback<RePModifyProfileImage> {
-            override fun onResponse(call: Call<RePModifyProfileImage>, response: Response<RePModifyProfileImage>) {
-                if (response.isSuccessful) {
-                    MyApplication.prefs.setLong("profileImageId",  response.body()!!.data.profileImageId)
-                    changed()
-                }else
-                    Log.d("ERR", "onResponse 실패 $response")
-            }
-            override fun onFailure(call: Call<RePModifyProfileImage>, t: Throwable) {
-                Log.d("onFailure", "실패 $t")
-            }
-        })
+        val putModifyProfileImage = ReqModifyProfileImage(userId, profileImageId = profileImageId)
+        val accessToken = MyApplication.prefs.getString("accessToken", "")
+        api.modifyProfileImage(accessToken = "Bearer $accessToken", putModifyProfileImage, image)
+            .enqueue(object :
+                Callback<RePModifyProfileImage> {
+                override fun onResponse(
+                    call: Call<RePModifyProfileImage>,
+                    response: Response<RePModifyProfileImage>
+                ) {
+                    if (response.isSuccessful) {
+                        MyApplication.prefs.setLong(
+                            "profileImageId",
+                            response.body()!!.data.profileImageId
+                        )
+                        changed()
+                    } else
+                        Log.d("ERR", "onResponse 실패 $response")
+                }
+
+                override fun onFailure(call: Call<RePModifyProfileImage>, t: Throwable) {
+                    Log.d("onFailure", "실패 $t")
+                }
+            })
     }
+
     @SuppressLint("Recycle")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MODIFY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             info()
-            Toast.makeText(this,"닉네임 변경이 완료됐습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "닉네임 변경이 완료됐습니다.", Toast.LENGTH_SHORT).show()
             // completeSignUp 값 활용
-        }else if (requestCode == MODIFYPWACT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this,"비밀번호 변경이 완료됐습니다.", Toast.LENGTH_SHORT).show()
+        } else if (requestCode == MODIFYPWACT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Toast.makeText(this, "비밀번호 변경이 완료됐습니다.", Toast.LENGTH_SHORT).show()
         }
         when (requestCode) {
             defaultGalleryRequestCode -> {
                 if (resultCode == Activity.RESULT_OK && requestCode == defaultGalleryRequestCode) {
                     val photoUri: Uri = data?.data!!
-                    val filename=getFileName(photoUri)
-                    Log.d("filename","$filename")
+                    val filename = getFileName(photoUri)
+                    Log.d("filename", "$filename")
                     // 선택한 이미지 list 추가 코드
                     val inputStream = this.contentResolver.openInputStream(photoUri)
                     val file = File(this.cacheDir, photoUri.lastPathSegment!!)
                     val outputStream = FileOutputStream(file)
                     inputStream?.copyTo(outputStream)
-                    val requestBody = RequestBody.create(MediaType.parse(this.contentResolver.getType(photoUri)!!), file)
+                    val requestBody = RequestBody.create(
+                        MediaType.parse(this.contentResolver.getType(photoUri)!!),
+                        file
+                    )
                     filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
                     if (Token().checkToken()) {
-                        Token().issueNewToken{modifyImage(filePart!!)}
-                    }else{
+                        Token().issueNewToken { modifyImage(filePart!!) }
+                    } else {
                         modifyImage(filePart!!)
                     }
 
@@ -216,5 +257,10 @@ class ModifyMyInfo:AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0, R.anim.slide_out_right)
     }
 }

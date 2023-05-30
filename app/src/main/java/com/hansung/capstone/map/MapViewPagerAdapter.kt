@@ -14,7 +14,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: List<Place> ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: List<Place>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding =
@@ -32,7 +33,7 @@ class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: L
         viewHolder.bind(placeList[position])
         viewHolder.itemView.setOnClickListener {
             Utility.moveToMarker(
-                LatLng(placeList[position].y.toDouble(),placeList[position].x.toDouble()),
+                LatLng(placeList[position].y.toDouble(), placeList[position].x.toDouble()),
                 mapFragment.nMap
             )
         }
@@ -56,25 +57,28 @@ class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: L
                 if (mapFragment.pathOverlaysCheck) {
                     mapFragment.pathOverlay2.map = null
                     mapFragment.pathOverlaysCheck = false
-//                    for(i in MapFragment.markers.indices){
-//                            MapFragment.markers[i].map = mapFragment.nMap
-//                    }
-                    for(i in mapFragment.markers.indices){
+                    for (i in mapFragment.markers.indices) {
                         mapFragment.markers[i].map = mapFragment.nMap
                     }
                 } else
-                    mapFragment.toPlace(LatLng(placeList[position].y.toDouble(),placeList[position].x.toDouble()), position)
+                    mapFragment.toPlace(
+                        LatLng(
+                            placeList[position].y.toDouble(),
+                            placeList[position].x.toDouble()
+                        ), position
+                    )
             } else if (mapFragment.pathOverlaysCheck) {
                 mapFragment.pathOverlay2.map = null
                 mapFragment.pathOverlaysCheck = false
-//                for(i in MapFragment.markers.indices){
-//                    MapFragment.markers[i].map = mapFragment.nMap
-//                }
-                for(i in mapFragment.markers.indices){
+                for (i in mapFragment.markers.indices) {
                     mapFragment.markers[i].map = mapFragment.nMap
                 }
             } else {
-                Toast.makeText(mapFragment.requireActivity(), "위치 추적 버튼을 활성화 해주세요.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    mapFragment.requireActivity(),
+                    "위치 추적 버튼을 활성화 해주세요.",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
@@ -84,23 +88,13 @@ class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: L
         return placeList.size
     }
 
-//    @SuppressLint("NotifyDataSetChanged")
-//    fun submitList(newList: List<Place>) {
-//        placeList = newList
-//        notifyDataSetChanged()
-//    }
-
     inner class MapViewPagerHolder(val binding: ItemCourseViewpagerBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(items: Place) {
-//            Glide.with(mapFragment)
-//                .load("${MyApplication.getUrl()}image/${image}") // 불러올 이미지 url
-//                .centerCrop()
-//                .into(binding.courseImage2) // 이미지를 넣을 뷰
             val api = KakaoSearchAPI.create()
             api.getSearchImage(
                 BuildConfig.KAKAO_REST_API_KEY,
-                items.place_name,1
+                items.place_name, 1
             ).enqueue(object : Callback<LocationImageDTO> {
                 override fun onResponse(
                     call: Call<LocationImageDTO>,
@@ -109,7 +103,7 @@ class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: L
                     val url = response.body()
                     if (url != null) {
                         Log.d("검색 결과", "Body: ${response.body()}")
-                        if(url.documents.isNotEmpty()) { // 비었는지 확인
+                        if (url.documents.isNotEmpty()) { // 비었는지 확인
                             Glide.with(itemView)
                                 .load(url.documents[0].image_url) // 불러올 이미지 url
                                 .placeholder(R.drawable.no_image) // 에러 발생 시 대체할 이미지
@@ -119,6 +113,7 @@ class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: L
                         }
                     }
                 }
+
                 override fun onFailure(call: Call<LocationImageDTO>, t: Throwable) {
                     Log.d("결과:", "실패 : $t")
                 }

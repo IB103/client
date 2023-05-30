@@ -2,10 +2,11 @@ package com.hansung.capstone.map
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
+//import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ItemWaypointSearchResultRecyclerviewBinding
 
 class WaypointsSearchAdapter(
@@ -38,7 +39,7 @@ class WaypointsSearchAdapter(
             binding.addressName.text = items.address_name
             itemView.setOnClickListener {
                 val position = waypointsSearchActivity.intent.getIntExtra("position", -1)
-                Log.d("포지션", position.toString())
+//                Log.d("포지션", position.toString())
                 // "전달할 값"이라는 문자열을 포함하는 Intent 생성
                 val resultIntent = Intent()
                 resultIntent.putExtra("position", position)
@@ -52,6 +53,7 @@ class WaypointsSearchAdapter(
 
                 // 액티비티 종료
                 waypointsSearchActivity.finish()
+                waypointsSearchActivity.overridePendingTransition(0, R.anim.slide_out_right)
             }
         }
     }

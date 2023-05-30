@@ -48,7 +48,6 @@ class CourseAdapter(
             val intent = Intent(makeCourseActivity, WaypointsSearchActivity::class.java)
             intent.putExtra("position", viewHolder.adapterPosition)
             makeCourseActivity.waypointSearchLauncher.launch(intent)
-            //
             makeCourseActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.none)
         }
         viewHolder.addWaypoint.setOnClickListener {

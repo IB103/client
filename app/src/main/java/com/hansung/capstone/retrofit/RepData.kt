@@ -3,7 +3,6 @@ package com.hansung.capstone.retrofit
 import com.google.gson.annotations.SerializedName
 import com.hansung.capstone.recommend.UserRecommend
 
-
 data class RepConfirm(
     @SerializedName("code")
     val code: Int,
@@ -23,8 +22,6 @@ data class RepLogOut(
     @SerializedName("message")
     val message: String
 )
-
-
 
 data class RepRank(
     @SerializedName("code")
@@ -174,8 +171,6 @@ data class RepDoubleCheckNickName(
 
 )
 
-
-
 data class RepModifyPW(
     @SerializedName("code")
     val code: Int,
@@ -233,7 +228,6 @@ data class PostData(
     @SerializedName("imageId")
     val imageID: List<Int>
 )
-
 
 data class RepComment(
     @SerializedName("code")

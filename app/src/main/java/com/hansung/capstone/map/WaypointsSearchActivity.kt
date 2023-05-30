@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+//import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -64,10 +64,6 @@ class WaypointsSearchActivity : AppCompatActivity() {
             val imm3 = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm3.showSoftInput(binding.waypointSearchBox, InputMethodManager.SHOW_IMPLICIT)
         }
-
-//        binding.goBackButton.setOnClickListener {
-//            onBackPressedDispatcher.onBackPressed()
-//        }
     }
 
     private fun locationSearch(text: String) {
@@ -85,7 +81,7 @@ class WaypointsSearchActivity : AppCompatActivity() {
                 ) {
                     val body = response.body()
                     if (body != null) {
-                        Log.d("getSearchKeyword","body : $body ${body.documents.size}")
+//                        Log.d("getSearchKeyword","body : $body ${body.documents.size}")
                         if (body.documents.isNotEmpty()) {
                             binding.waypointSearchResultRecyclerview.visibility = View.VISIBLE
                             binding.noResult.visibility = View.GONE
@@ -103,7 +99,7 @@ class WaypointsSearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
-                    Log.d("getSearchKeyword:", "onFailure : $t")
+//                    Log.d("getSearchKeyword:", "onFailure : $t")
                 }
             })
 
@@ -120,6 +116,7 @@ class WaypointsSearchActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(0, R.anim.slide_out_right)

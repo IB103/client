@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
+import com.hansung.capstone.R
 import com.hansung.capstone.board.*
 import com.hansung.capstone.databinding.ActivityMystoryBinding
 import retrofit2.Call
@@ -112,6 +113,7 @@ class MyStory: AppCompatActivity() {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
+                overridePendingTransition(0, R.anim.slide_out_right)
                 return true
             }
         }
@@ -128,5 +130,11 @@ class MyStory: AppCompatActivity() {
             adapter.heartChanged(MainActivity.getInstance()!!.getChangedPost())
         }
         MainActivity.getInstance()?.stateCheck(-1)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0, R.anim.slide_out_right)
     }
 }

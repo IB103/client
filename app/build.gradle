@@ -101,14 +101,14 @@ dependencies {
 //    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
 
     // tabLayout
-    implementation 'com.google.android.material:material:1.8.0'
+//    implementation 'com.google.android.material:material:1.8.0'
 
     implementation 'androidx.lifecycle:lifecycle-service:2.4.0'
 
     //spinner 달력
     implementation   'com.github.drawers:SpinnerDatePicker:2.0.1'
     //deco edittext
-    implementation 'com.google.android.material:material:1.4.0'
+//    implementation 'com.google.android.material:material:1.4.0'
 
     //MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'

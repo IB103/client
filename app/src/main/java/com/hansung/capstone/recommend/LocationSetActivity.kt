@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+//import android.util.Log
 import android.view.MenuItem
 import androidx.annotation.UiThread
 import com.hansung.capstone.BuildConfig
@@ -95,7 +95,7 @@ class LocationSetActivity : AppCompatActivity(), OnMapReadyCallback {
             ) {
                 val body = response.body()
                 if (body != null) {
-                    Log.d("getAddress", "onResponse: $body")
+//                    Log.d("getAddress", "onResponse: $body")
                     if (body.documents.isNotEmpty()) {
                         val resultAddress =
                             "${body.documents[0].address.region_1depth_name} ${body.documents[0].address.region_2depth_name}"
@@ -113,7 +113,7 @@ class LocationSetActivity : AppCompatActivity(), OnMapReadyCallback {
                 call: Call<ResultGetAddress>,
                 t: Throwable
             ) {
-                Log.d("getAddress", "onFailure: $t")
+//                Log.d("getAddress", "onFailure: $t")
                 callback(null)
             }
         })

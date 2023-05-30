@@ -3,16 +3,14 @@ package com.hansung.capstone.recommend
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.board.Posts
 import com.hansung.capstone.databinding.ItemRecommendRecyclerviewBinding
-import com.hansung.capstone.post.PostImageAdapterDecoration
 
-class RecommendAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var recommendList= mutableListOf<UserRecommend>()
+class RecommendAdapter(private val context: Context) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var recommendList = mutableListOf<UserRecommend>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding =
             ItemRecommendRecyclerviewBinding.inflate(
@@ -29,7 +27,6 @@ class RecommendAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         viewHolder.itemView.setOnClickListener {
             val intent = Intent(context, CheckCourseActivity::class.java)
             intent.putExtra("courseId", recommendList[position].courseId)
-            Log.d("getCourseDetail2", recommendList[position].courseId.toString())
             context.startActivity(intent)
         }
     }
@@ -39,15 +36,14 @@ class RecommendAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setInitItems(recommendList: List<UserRecommend>){//초기 화면 세팅
-//    fun setInitItems(){//초기 화면 세팅
+    fun setInitItems(recommendList: List<UserRecommend>) {//초기 화면 세팅
         this.recommendList.clear()
         this.recommendList.addAll(recommendList)
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun submitList(recommendList: List<UserRecommend>){//초기 화면 세팅
+    fun submitList(recommendList: List<UserRecommend>) {//초기 화면 세팅
         this.recommendList.addAll(recommendList)
         notifyDataSetChanged()
     }
@@ -65,7 +61,8 @@ class RecommendAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             binding.heartCount.text = items.numOfFavorite.toString() // 좋아요 카운트
             binding.locationCount.text = items.imageInfoList.size.toString()
             // 어댑터 등록
-            binding.RecommendWaypointsRecyclerView.adapter = RecommendWaypointsAdapter(context,items)
+            binding.RecommendWaypointsRecyclerView.adapter =
+                RecommendWaypointsAdapter(context, items)
         }
     }
 }

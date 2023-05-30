@@ -11,7 +11,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+//import android.util.Log
 import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.inputmethod.EditorInfo
@@ -58,10 +58,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
     var markers: MutableList<Marker> = mutableListOf()
     private var infoWindows: MutableList<InfoWindow> = mutableListOf()
     private lateinit var infoWindowOnly: InfoWindow
-    private lateinit var imm :InputMethodManager
+    private lateinit var imm: InputMethodManager
     val imageViewCheck = MutableLiveData<Boolean>() // 뷰에 표시될 시간
-//        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//    private val itemList = listOf<Place>() // 데이터 리스트 생성
     private val listener = Overlay.OnClickListener { overlay ->
         val marker = overlay as Marker
         val index = markers.indexOf(marker)
@@ -75,7 +73,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
 
     private val listener2 = Overlay.OnClickListener { overlay ->
         val marker = overlay as Marker
-//        val index = markers.indexOf(marker)
         if (marker.infoWindow == null) {
             infoWindowOnly.open(marker)
         } else {
@@ -115,10 +112,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                 Toast.makeText(activity, "지도 사용을 위해 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
             }
         }
-
-//    companion object {
-//        var markers: MutableList<Marker> = mutableListOf()
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -161,14 +154,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
             }
         })
 
-        //
-//        adapter = MapViewPagerAdapter(this@MapFragment)
-//        binding.mapViewPager.adapter = adapter
-////        val itemList = listOf<Place>() // 데이터 리스트 생성
-//        adapter.submitList(itemList) // 어댑터에 데이터 리스트 전달 및 업데이트 요청
-        //
-
-
         // 초기 옵션대로 생성
         val fm = childFragmentManager
         val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
@@ -185,12 +170,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                 imm.hideSoftInputFromWindow(binding.locationSearch.windowToken, 0)
                 binding.autoCompleteRecyclerView.visibility = View.GONE
                 locationSearch(binding.locationSearch.text.toString())
-//                binding.locationSearch.setText("")
                 binding.locationSearch.clearFocus()
                 imageViewCheck.postValue(true)
             } else {
                 binding.locationSearch.requestFocus()
-//                val manager: InputMethodManager = activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(binding.locationSearch, InputMethodManager.SHOW_IMPLICIT)
                 Toast.makeText(activity, "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
@@ -198,12 +181,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
         }
 
         binding.removeString.setOnClickListener {
-//            binding.autoCompleteRecyclerView.visibility = View.VISIBLE
             binding.locationSearch.setText("")
             binding.locationSearch.requestFocus()
             binding.autoCompleteRecyclerView.visibility = View.GONE
-//            val manager: InputMethodManager =
-//                activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(binding.locationSearch, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -216,7 +196,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
             mapState = 1
             binding.locationSearch.clearFocus()
             imm.hideSoftInputFromWindow(binding.locationSearch.windowToken, 0)
-//            binding.locationSearch.clearFocus()
         } else if (mapState == 1) {
             searchBoxLayout.animate()?.translationY(0F)?.duration = 300
             mapState = 0
@@ -244,16 +223,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                                 3  // 이전 아이템과 다음 아이템 함께 보이도록 설정
                             binding.mapViewPager.setPageTransformer(ItemSpacingPageTransformer())
                             adapter = MapViewPagerAdapter(this@MapFragment, body.documents)
-//                            adapter = MapViewPagerAdapter(this@MapFragment)
                             activity?.runOnUiThread {
-//                                adapter.submitList(body.documents)
                                 binding.mapViewPager.adapter = adapter
                             }
                             binding.mapViewPager.registerOnPageChangeCallback(object :
                                 ViewPager2.OnPageChangeCallback() {
                                 override fun onPageSelected(position: Int) {
                                     if (position >= 0 && position < body.documents.size) {
-                                        Log.d("onPageSelected", "$position ${body.documents.size}")
+//                                        Log.d("onPageSelected", "$position ${body.documents.size}")
                                         Utility.moveToMarker(
                                             LatLng(
                                                 body.documents[position].y.toDouble(),
@@ -284,23 +261,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                                     body.documents[i].y.toDouble(),
                                     body.documents[i].x.toDouble()
                                 )
-//                                marker.captionText = body.documents[i].place_name
-//                                marker.setCaptionAligns(Align.Top)
                                 marker.icon = MarkerIcons.BLACK
                                 marker.iconTintColor =
                                     Color.parseColor(resources.getString(R.color.waypointMarker))
                                 markers.add(marker)
                                 marker.onClickListener = listener2
                                 marker.map = nMap
-//                                val infoWindow = InfoWindow()
-//                                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
-//                                    override fun getText(infoWindow: InfoWindow): CharSequence {
-//                                        return infoWindow.marker?.tag as CharSequence? ?: ""
-//                                    }
-//                                }
                                 marker.tag = body.documents[i].place_name
-//                                infoWindowOnly.open(marker)
-//                                infoWindows.add(infoWindow)
                             }
                             infoWindowOnly.open(markers[0])
                         }
@@ -308,7 +275,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                 }
 
                 override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
-                    Log.d("getSearchKeyword:", "onFailure : $t")
+//                    Log.d("getSearchKeyword:", "onFailure : $t")
                 }
             })
 
@@ -329,7 +296,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                     val body = response.body()
                     if (body != null) {
                         if (body.documents.isNotEmpty()) {
-//                            binding.autoCompleteRecyclerView.adapter
                             activity?.runOnUiThread {
                                 binding.autoCompleteRecyclerView.adapter =
                                     AutoCompleteAdapter(this@MapFragment, body.documents)
@@ -339,7 +305,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                 }
 
                 override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
-                    Log.d("getSearchKeyword:", "onFailure : $t")
+//                    Log.d("getSearchKeyword:", "onFailure : $t")
                 }
             })
 
@@ -405,36 +371,29 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
         }
 
         binding.erasePathButton.setOnClickListener {
-//            removeAll()
             eraseDialog(requireContext())
         }
 
         binding.hidePagerButton.setOnClickListener {
-//            if (binding.mapViewPager.visibility == View.GONE) {
             if (!imageViewCheck.value!!) {
-//                binding.hidePagerButton.setImageResource(R.drawable.show_path)
                 val animateShow = AlphaAnimation(0f, 1f)
                 animateShow.duration = 500
                 binding.mapViewPager.startAnimation(animateShow)
-//                binding.mapViewPager.visibility = View.VISIBLE
                 imageViewCheck.postValue(true)
             } else {
-//                binding.hidePagerButton.setImageResource(R.drawable.hide_path)
                 val animateHide = AlphaAnimation(1f, 0f)
                 animateHide.duration = 500
                 binding.mapViewPager.startAnimation(animateHide)
-//                binding.mapViewPager.visibility = View.GONE
                 imageViewCheck.postValue(false)
             }
         }
 
         binding.changeBike.setOnClickListener {
-            if(bikeState == 0) {
+            if (bikeState == 0) {
                 naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)
                 bikeState = 1
                 binding.changeBike.setImageResource(R.drawable.bike_on)
-            }
-            else{
+            } else {
                 naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, false)
                 bikeState = 0
                 binding.changeBike.setImageResource(R.drawable.bike_off)
@@ -520,8 +479,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                 val marker = Marker()
                 marker.position =
                     LatLng(waypoints[i].place_lat!!.toDouble(), waypoints[i].place_lng!!.toDouble())
-//                marker.captionText = waypoints[i].place_name.toString()
-//                marker.setCaptionAligns(Align.Top)
                 marker.isHideCollidedSymbols = true
                 when (i) {
                     0 -> {
@@ -585,9 +542,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
         activity?.runOnUiThread {
             binding.mapViewPager.adapter = adapter
         }
-//        binding.locationSearch.setText("")
-//        binding.locationSearch.clearFocus()
-//        binding.autoCompleteRecyclerView.visibility = View.GONE
         imm.hideSoftInputFromWindow(binding.locationSearch.windowToken, 0)
     }
 
@@ -636,7 +590,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                                 call: Call<ResultSearchDirections>,
                                 t: Throwable
                             ) {
-                                Log.d("결과:", "실패 : $t")
+//                                Log.d("결과:", "실패 : $t")
                             }
                         })
                 }
@@ -660,7 +614,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
         alertDialog.show()
     }
 
-    private fun removeString(){
+    private fun removeString() {
         binding.locationSearch.setText("")
         binding.locationSearch.clearFocus()
         binding.autoCompleteRecyclerView.visibility = View.GONE
@@ -668,11 +622,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
 
     @UiThread
     private fun updateUI(imageViewCheck: Boolean) { // 라이딩 상태에 따른 UI 변경
-        if(imageViewCheck){
+        if (imageViewCheck) {
             binding.mapViewPager.visibility = View.VISIBLE
             binding.hidePagerButton.setImageResource(R.drawable.show_path)
-        }
-        else{
+        } else {
             binding.mapViewPager.visibility = View.GONE
             binding.hidePagerButton.setImageResource(R.drawable.hide_path)
 

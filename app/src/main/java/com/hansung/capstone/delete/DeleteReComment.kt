@@ -1,7 +1,6 @@
 package com.hansung.capstone.delete
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
@@ -13,29 +12,31 @@ import retrofit2.Response
 
 class DeleteReComment {
     val api = CommunityService.create()
-    fun delete(userId:Long, reCommentId:Long){
-        val accessToken= MyApplication.prefs.getString("accessToken", "")
-        api.deleteReComment(accessToken = "Bearer $accessToken",userId, reCommentId)
+    fun delete(userId: Long, reCommentId: Long) {
+        val accessToken = MyApplication.prefs.getString("accessToken", "")
+        api.deleteReComment(accessToken = "Bearer $accessToken", userId, reCommentId)
             .enqueue(object : Callback<ResDeleteReComment> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(
                     call: Call<ResDeleteReComment>,
                     response: Response<ResDeleteReComment>,
-                ) { val body = response.body()
-                    if(response.isSuccessful){
-                        if(body?.code==100) {
+                ) {
+                    val body = response.body()
+                    if (response.isSuccessful) {
+                        if (body?.code == 100) {
                             MainActivity.getInstance()?.setDeletedCommentCount(1)
                             PostDetailActivity.getInstance()?.postComment()
                             PostDetailActivity.getInstance()?.commentSuccess(3)
-                            Log.d("INFO deleteReComment", "$body")
+//                            Log.d("INFO deleteReComment", "$body")
                         }
-                    }else {
+                    } else {
                         // 통신이 실패한 경우
-                        Log.d("ERR deleteReComment", "onResponse 실패" + body?.toString())
+//                        Log.d("ERR deleteReComment", "onResponse 실패" + body?.toString())
                     }
                 }
+
                 override fun onFailure(call: Call<ResDeleteReComment>, t: Throwable) {
-                    Log.d("deleteReComment:", "실패 : $t")
+//                    Log.d("deleteReComment:", "실패 : $t")
                 }
             })
 

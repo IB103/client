@@ -9,7 +9,8 @@ import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ItemPostDetailImagesBinding
 
-class PostDetailImagesAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostDetailImagesAdapter(private val context: Context) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var imageList = listOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -34,7 +35,6 @@ class PostDetailImagesAdapter(private val context: Context) : RecyclerView.Adapt
         fun setImage(image: Int, position: Int) {
             Glide.with(context)
                 .load("${MyApplication.getUrl()}image/${image}") // 불러올 이미지 url
-//                .override(200,200)
                 .placeholder(R.drawable.no_image)
                 .error(R.drawable.no_image)
                 .centerCrop()

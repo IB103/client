@@ -477,6 +477,7 @@ class PostDetailActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
 }
 
 

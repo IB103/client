@@ -4,38 +4,40 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-
 data class ReqModifyPost(
-    var postId:Long,
-    var title:String,
-    var userId:Long,
-    var content:String,
+    var postId: Long,
+    var title: String,
+    var userId: Long,
+    var content: String,
     var imageId: ArrayList<Long?>
 
 )
-data class ReqModifyProfileImage(
-    var userId:Long,
-    var profileImageId:Long
 
-    )
+data class ReqModifyProfileImage(
+    var userId: Long,
+    var profileImageId: Long
+
+)
 
 data class ReqModifyComment(
     @SerializedName("commentId")
     val commentId: Long,
 
     @SerializedName("userId")
-    val  userId: Long,
+    val userId: Long,
     @SerializedName("content")
-    val  content: String
+    val content: String
 )
+
 data class ReqModifyReComment(
     @SerializedName("reCommentId")
     val reCommentId: Long,
     @SerializedName("userId")
-    val  userId: Long,
+    val userId: Long,
     @SerializedName("content")
-    val  content: String
+    val content: String
 )
+
 data class ReqLogin(
     @SerializedName("email")
     val email: String,
@@ -43,44 +45,45 @@ data class ReqLogin(
     @SerializedName("password")
     val password: String
 )
+
 data class ReqRegister(
-@SerializedName("email")
-val email: String,
-@SerializedName("password")
-val password:String,
-@SerializedName("nickname")
-val nickname:String,
-@SerializedName("username")
-val username:String,
-@SerializedName("birthday")
-val birthday:String
+    @SerializedName("email")
+    val email: String,
+    @SerializedName("password")
+    val password: String,
+    @SerializedName("nickname")
+    val nickname: String,
+    @SerializedName("username")
+    val username: String,
+    @SerializedName("birthday")
+    val birthday: String
 
 )
-
 
 data class ReqModifyPW(
     @SerializedName("email")
-    val email:String,
+    val email: String,
     @SerializedName("password")
-    val password:String
+    val password: String
 )
+
 data class ReqModifyNick(
     @SerializedName("email")
-    val email:String,
+    val email: String,
     @SerializedName("nickname")
-    val nickname:String
+    val nickname: String
 )
 
 data class ReqPost(
     @SerializedName("userId")
-    val userId:Long,
+    val userId: Long,
     @SerializedName("title")
-    val title:String,
+    val title: String,
     @SerializedName("category")
-    val category:String,
+    val category: String,
     @SerializedName("content")
-    val content:String
-    )
+    val content: String
+)
 
 data class ReqCoursePost(
     @SerializedName("coordinates")
@@ -90,16 +93,17 @@ data class ReqCoursePost(
     @SerializedName("originToDestination")
     var originToDestination: String,
     @SerializedName("userId")
-    val userId:Long,
+    val userId: Long,
     @SerializedName("category")
-    val category:String,
+    val category: String,
     @SerializedName("title")
-    val title:String,
+    val title: String,
     @SerializedName("content")
-    val content:String,
+    val content: String,
     @SerializedName("imageInfoList")
     val imageInfoList: List<ImageInfo>
 )
+
 data class ReqRidingData(
     @SerializedName("ridingTime")
     var ridingTime: Long,
@@ -108,8 +112,9 @@ data class ReqRidingData(
     @SerializedName("calorie")
     var calorie: Int,
     @SerializedName("userId")
-    var userId:Long,
+    var userId: Long,
 )
+
 //data class ImageInfo(
 //    val coordinate:String,
 //    val placeName:String,
@@ -150,21 +155,22 @@ data class ImageInfo(
 
 data class ReqComment(
     @SerializedName("postId")
-    val postId:Long,
+    val postId: Long,
     @SerializedName("userId")
-    val userId:Long,
+    val userId: Long,
     @SerializedName("content")
-    val content:String
+    val content: String
 
 )
+
 data class ReqReComment(
     @SerializedName("postId")
-    val postId:Long,
+    val postId: Long,
     @SerializedName("commentId")
-    val commentId:Long,
+    val commentId: Long,
     @SerializedName("userId")
-    val userId:Long,
+    val userId: Long,
     @SerializedName("content")
-    val content:String
+    val content: String
 )
 

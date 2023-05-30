@@ -12,7 +12,6 @@ data class AddressMeta(
 data class AddressResult(
     var address: Address,
     var road_address: RoadAddress, // 장소 ID
-//    var address: Address, // 장소명, 업체명
 )
 
 data class Address(
@@ -27,20 +26,4 @@ data class RoadAddress(
     var region_1depth_name: String,
     var region_2depth_name: String,
     var region_3depth_name: String,
-//    var road_name: String,
-//    var underground_yn: String,
-//    var main_building_no: String,
-//    var sub_building_no: String,
-//    var building_name: String,
-//    var zone_no: String,
 )
-
-//data class Address(
-//    var address_name: String,
-//    var region_1depth_name: String,
-//    var region_2depth_name: String,
-//    var region_3depth_name: String,
-//    var mountain_yn: String,
-//    var main_address_no: String,
-//    var sub_address_no: String,
-//)

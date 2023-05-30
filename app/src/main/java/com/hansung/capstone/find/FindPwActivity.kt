@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -36,10 +37,12 @@ class FindPwActivity:AppCompatActivity() {
             val email=MyApplication.prefs.getString("email","")
             binding.getId.setText(email)
         }
-        binding.closeView.setOnClickListener { finish() }
         binding.confirmValue.setOnClickListener {
             confirmValue()
         }
+        setSupportActionBar(binding.CommunityToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        binding.closeView.setOnClickListener { finish() }
         binding.reqEmailSend.setOnClickListener {
         binding.reqEmailSend.isEnabled=false
              sendEmail()
@@ -138,7 +141,6 @@ class FindPwActivity:AppCompatActivity() {
         timer?.cancel()
         val intent = Intent(this, ModifyActivity::class.java)
         startActivityForResult(intent,MODIFY_PW_REQUEST_CODE)
-
     }
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val focusView = currentFocus
@@ -163,4 +165,15 @@ class FindPwActivity:AppCompatActivity() {
         }
         finish()
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
@@ -39,7 +38,6 @@ class CourseViewPagerAdapter(
                 checkCourseActivity.stringToLatLng(imageInfoList[position].coordinate),
                 checkCourseActivity.nMap
             )
-//            checkCourseActivity.binding.courseViewPager.currentItem = position
         }
         viewHolder.binding.imageNum2.text = (position + 1).toString()
         if (imageInfoList[position].placeLink == "") {

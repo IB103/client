@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <androidx.appcompat.widget.Toolbar
@@ -53,7 +54,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/modifyNick"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="닉네임"
             />
 
@@ -85,17 +86,25 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/checkNick"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="중복확인"
-        app:layout_constraintBottom_toBottomOf="@+id/textlayout9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.133"
-        app:layout_constraintStart_toEndOf="@+id/textlayout9"
-        app:layout_constraintTop_toTopOf="@+id/textlayout9" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="2dp"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="3dp"
+        card_view:layout_constraintBottom_toBottomOf="@+id/textlayout9"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toEndOf="@+id/textlayout9"
+        card_view:layout_constraintTop_toTopOf="@+id/textlayout9">
+
+        <Button
+            android:id="@+id/checkNick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/maincolor"
+            android:text="중복확인"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
