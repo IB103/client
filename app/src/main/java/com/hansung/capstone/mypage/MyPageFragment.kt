@@ -3,11 +3,8 @@ package com.hansung.capstone.mypage
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.*
 import android.widget.AdapterView
@@ -27,11 +24,9 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.hansung.capstone.*
 import com.hansung.capstone.board.BoardAdapterDecoration
-import com.hansung.capstone.board.RePModifyProfileImage
 import com.hansung.capstone.databinding.FragmentMypageBinding
 import com.hansung.capstone.linechart.GetRecordData
 import com.hansung.capstone.modify.ModifyMyInfo
-import com.hansung.capstone.retrofit.ReqModifyProfileImage
 import com.hansung.capstone.retrofit.RetrofitService
 import com.hansung.capstone.retrofit.RidingData
 import kotlinx.android.synthetic.main.activity_findpw.view.*
@@ -40,14 +35,8 @@ import kotlinx.android.synthetic.main.view_login.view.*
 import kotlinx.android.synthetic.main.view_profile.*
 import kotlinx.android.synthetic.main.view_profile.view.*
 import okhttp3.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.File
-import java.io.FileOutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 
 class MyPageFragment : Fragment() {
 

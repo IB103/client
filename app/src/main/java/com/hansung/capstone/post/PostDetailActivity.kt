@@ -41,11 +41,11 @@ class PostDetailActivity : AppCompatActivity() {
     companion object {
         var scrapCheck: Int = 0
         var heartCheck: Int = 0
-        var title_m=""
-        var content_m=""
-        var position=0
-        var lastPosition=0
-        var imageList_m= listOf<Int?>()
+        var title_m = ""
+        var content_m = ""
+        var position = 0
+        var lastPosition = 0
+        var imageList_m = listOf<Int?>()
 
         private var instance: PostDetailActivity? = null
         fun getInstance(): PostDetailActivity? {
@@ -57,13 +57,13 @@ class PostDetailActivity : AppCompatActivity() {
     val api = CommunityService.create()
     lateinit var body: ResultGetPostDetail
     private var commentActivity = 0
-    lateinit var resultComment:RecyclerView
+    lateinit var resultComment: RecyclerView
     var noImage = -1
-    var commentId:Int=0
-    var reCommentId:Long=0
-    private var postId:Long=0
-    var id=MyApplication.prefs.getLong("userId",0)
-    private val linearLayoutManager= LinearLayoutManager(this)
+    var commentId: Int = 0
+    var reCommentId: Long = 0
+    private var postId: Long = 0
+    var id = MyApplication.prefs.getLong("userId", 0)
+    private val linearLayoutManager = LinearLayoutManager(this)
     private var moveCheck: Int = 0
 
 
@@ -76,8 +76,8 @@ class PostDetailActivity : AppCompatActivity() {
 
         postId = intent.getLongExtra("postid", 0)
 
-        resultComment=binding.PostDetailComment
-        resultComment.layoutManager=linearLayoutManager
+        resultComment = binding.PostDetailComment
+        resultComment.layoutManager = linearLayoutManager
         moveCheck = intent.getIntExtra("moveCheck", 0)
         binding.imageButton.setOnClickListener {
             if (MyApplication.prefs.getString(
@@ -88,42 +88,36 @@ class PostDetailActivity : AppCompatActivity() {
                 val comment = binding.InsertComment.text.toString()
                 binding.InsertComment.text = null
                 softKeyboardHide()
-                val totalItemCount = (binding.PostDetailComment.adapter as PostCommentsAdapter).itemCount
-                Log.d("LastPosition","$totalItemCount")
-
-
-                when (commentActivity) {
-                    0 -> PostComment(this@PostDetailActivity).postComment(
-                        comment,
-                        postId,
-                        binding
-                    )
-                    1 -> PostReComment(this@PostDetailActivity).post(
-                        comment,
-                        postId,
-                        commentId.toLong(),
-                        binding
-                    )
-                    2 -> ModifyComment().modify(commentId.toLong(), comment)
-                    3 -> ModifyReComment().modify(reCommentId, comment)
-                }
-
+                val totalItemCount =
+                    (binding.PostDetailComment.adapter as PostCommentsAdapter).itemCount
+                Log.d("LastPosition", "$totalItemCount")
 
                 val commentAction = {
-                   // Log.d("checking345","#")
-                    when(commentActivity){
-                        0->{//binding.PostDetailComment.scrollToPosition(14)
-                            PostComment(this@PostDetailActivity).postComment(comment, postId, binding)
-                            Log.d("LastPosition","$lastPosition")
+                    // Log.d("checking345","#")
+                    when (commentActivity) {
+                        0 -> {//binding.PostDetailComment.scrollToPosition(14)
+                            PostComment(this@PostDetailActivity).postComment(
+                                comment,
+                                postId,
+                                binding
+                            )
+                            Log.d("LastPosition", "$lastPosition")
                             Handler().postDelayed(
                                 Runnable { binding.PostDetailComment.scrollToPosition(15) },
                                 200
                             )
-                          }
-                        1->{PostReComment(this@PostDetailActivity).post(comment,postId, commentId.toLong(),binding)
-                            resultComment.scrollToPosition(position)}
-                        2-> ModifyComment().modify(commentId.toLong(),comment)
-                        3-> ModifyReComment().modify(reCommentId,comment)
+                        }
+                        1 -> {
+                            PostReComment(this@PostDetailActivity).post(
+                                comment,
+                                postId,
+                                commentId.toLong(),
+                                binding
+                            )
+                            resultComment.scrollToPosition(position)
+                        }
+                        2 -> ModifyComment().modify(commentId.toLong(), comment)
+                        3 -> ModifyReComment().modify(reCommentId, comment)
 
                     }
                     commentActivity = 0
@@ -184,7 +178,7 @@ class PostDetailActivity : AppCompatActivity() {
 //                            binding.goToCourse.alpha = 0.3f
 //                            binding.goToCourse.isEnabled = false
 //                        } else {
-                            binding.goToCourse.visibility = VISIBLE
+                        binding.goToCourse.visibility = VISIBLE
 //                            binding.goToCourse.alpha = 1f
 //                            binding.goToCourse.isEnabled = true
 //                        }
@@ -244,14 +238,20 @@ class PostDetailActivity : AppCompatActivity() {
                             when (heartCheck) {
                                 0 -> {
                                     MainActivity.getInstance()!!.heartCheck(1)
-                                    Log.d("hearMain2", "${MainActivity.getInstance()?.getHeartCheck()}")
+                                    Log.d(
+                                        "hearMain2",
+                                        "${MainActivity.getInstance()?.getHeartCheck()}"
+                                    )
                                     binding.HeartB.setImageResource(R.drawable.heart_check)
                                     binding.HeartCount.text = "${++heartCount}"
                                     heartCheck = 1
                                 }
                                 else -> {
                                     MainActivity.getInstance()!!.heartCheck(0)
-                                    Log.d("hearMain3", "${MainActivity.getInstance()?.getHeartCheck()}")
+                                    Log.d(
+                                        "hearMain3",
+                                        "${MainActivity.getInstance()?.getHeartCheck()}"
+                                    )
                                     binding.HeartB.setImageResource(R.drawable.heart_no_check)
                                     binding.HeartCount.text = "${--heartCount}"
                                     heartCheck = 0
@@ -291,20 +291,19 @@ class PostDetailActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    if(body.data.courseId.toInt() == 0) {
-                        if(body.data.authorId == id) {
+                    if (body.data.courseId.toInt() == 0) {
+                        if (body.data.authorId == id) {
                             binding.postActivity.visibility = VISIBLE
                             binding.postActivity.alpha = 1f
                             binding.postActivity.isEnabled = true
-                        }
-                        else {
+                        } else {
                             binding.postActivity.visibility = VISIBLE
                             binding.postActivity.alpha = 0.3f
                             binding.postActivity.isEnabled = false
                         }
                     }
                     binding.goToCourse.setOnClickListener {
-                        if(moveCheck == 0) {
+                        if (moveCheck == 0) {
                             val goToCourseIntent =
                                 Intent(this@PostDetailActivity, CheckCourseActivity::class.java)
                             goToCourseIntent.putExtra(
@@ -313,8 +312,7 @@ class PostDetailActivity : AppCompatActivity() {
                             ) // 왜 올때는 롱이고 보낼땐 인트여
                             goToCourseIntent.putExtra("moveCheck", 1)
                             startActivity(goToCourseIntent)
-                        }
-                        else{
+                        } else {
                             finish()
                         }
                     }
@@ -354,14 +352,16 @@ class PostDetailActivity : AppCompatActivity() {
             })
     }
 
-     fun setPosition(int:Int){
-        position=int
+    fun setPosition(int: Int) {
+        position = int
     }
-    fun setLastPosition(int:Int){
-        lastPosition=int
+
+    fun setLastPosition(int: Int) {
+        lastPosition = int
     }
-    private fun deletePost(){
-        val accessToken=MyApplication.prefs.getString("accessToken","")
+
+    private fun deletePost() {
+        val accessToken = MyApplication.prefs.getString("accessToken", "")
 
         //val myFragment = supportFragmentManager.findFragmentById(R.id.boardFragment) as BoardFragment?
         // Activity 클래스 내부
