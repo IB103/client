@@ -6,68 +6,133 @@
     android:layout_height="match_parent"
     tools:context=".map.WaypointsSearchActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/waypoint_search_box"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/element_edit_box"
-            android:hint="@string/query_request"
-            android:inputType="textPersonName"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:imeOptions="actionSearch"
-            android:paddingStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/go_back_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="#00FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/waypoint_search_box"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+            <EditText
+                android:id="@+id/waypoint_search_box"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/element_edit_box"
+                android:ellipsize="end"
+                android:hint="@string/query_request"
+                android:imeOptions="actionSearch"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:paddingStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/search_box_clear"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:background="#00FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/waypoint_search_box"
-            app:layout_constraintEnd_toEndOf="@+id/waypoint_search_box"
-            app:layout_constraintTop_toTopOf="@+id/waypoint_search_box"
-            app:srcCompat="@drawable/ic_baseline_close_24"
-            tools:ignore="SpeakableTextPresentCheck" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/search_box_clear"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:background="#00FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/waypoint_search_box"
+                app:layout_constraintEnd_toEndOf="@+id/waypoint_search_box"
+                app:layout_constraintTop_toTopOf="@+id/waypoint_search_box"
+                app:srcCompat="@drawable/ic_baseline_close_24"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        <ImageButton-->
+        <!--            android:id="@+id/go_back_button"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            android:background="#00FFFFFF"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/waypoint_search_box"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:srcCompat="@drawable/ic_baseline_arrow_back_24" />-->
+    </androidx.appcompat.widget.Toolbar>
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/constraintLayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="50dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
+
+    <!--        <EditText-->
+    <!--            android:id="@+id/waypoint_search_box"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:layout_marginStart="50dp"-->
+    <!--            android:layout_marginTop="8dp"-->
+    <!--            android:layout_marginEnd="8dp"-->
+    <!--            android:layout_marginBottom="8dp"-->
+    <!--            android:background="@drawable/element_edit_box"-->
+    <!--            android:hint="@string/query_request"-->
+    <!--            android:inputType="textPersonName"-->
+    <!--            android:maxLines="1"-->
+    <!--            android:ellipsize="end"-->
+    <!--            android:imeOptions="actionSearch"-->
+    <!--            android:paddingStart="8dp"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--        <ImageButton-->
+    <!--            android:id="@+id/go_back_button"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:background="#00FFFFFF"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toStartOf="@+id/waypoint_search_box"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            app:srcCompat="@drawable/ic_baseline_arrow_back_24" />-->
+
+    <!--        <ImageButton-->
+    <!--            android:id="@+id/search_box_clear"-->
+    <!--            android:layout_width="24dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:layout_marginEnd="8dp"-->
+    <!--            android:background="#00FFFFFF"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@+id/waypoint_search_box"-->
+    <!--            app:layout_constraintEnd_toEndOf="@+id/waypoint_search_box"-->
+    <!--            app:layout_constraintTop_toTopOf="@+id/waypoint_search_box"-->
+    <!--            app:srcCompat="@drawable/ic_baseline_close_24"-->
+    <!--            tools:ignore="SpeakableTextPresentCheck" />-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/waypoint_search_result_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
     <TextView
         android:id="@+id/noResult"
@@ -79,5 +144,5 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

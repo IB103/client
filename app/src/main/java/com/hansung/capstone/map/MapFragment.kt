@@ -23,6 +23,7 @@ import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.location.*
 import com.hansung.capstone.*
@@ -38,6 +39,7 @@ import com.naver.maps.map.MapFragment
 import com.naver.maps.map.overlay.*
 import com.naver.maps.map.util.MarkerIcons
 import kotlinx.android.synthetic.main.fragment_map.*
+import kotlinx.android.synthetic.main.item_user_recommend.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,9 +56,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
     private val pathOverlay = PathOverlay() // 길찾기(경유지) 그리기용
     val pathOverlay2 = PathOverlay() // 길찾기 그리기용
     var markers: MutableList<Marker> = mutableListOf()
-    var infoWindows: MutableList<InfoWindow> = mutableListOf()
+    private var infoWindows: MutableList<InfoWindow> = mutableListOf()
     private lateinit var infoWindowOnly: InfoWindow
     private lateinit var imm :InputMethodManager
+    val imageViewCheck = MutableLiveData<Boolean>() // 뷰에 표시될 시간
 //        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 //    private val itemList = listOf<Place>() // 데이터 리스트 생성
     private val listener = Overlay.OnClickListener { overlay ->
@@ -82,6 +85,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
     }
 
     private var mapState = 0
+    private var bikeState = 0
 
     @SuppressLint("ResourceType")
     private val directionsLauncher =
@@ -127,6 +131,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        imageViewCheck.postValue(false)
+        imageViewCheck.observe(viewLifecycleOwner) {
+            updateUI(it)
+        }
 
         infoWindowOnly = InfoWindow()
         infoWindowOnly.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
@@ -178,6 +187,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
                 locationSearch(binding.locationSearch.text.toString())
 //                binding.locationSearch.setText("")
                 binding.locationSearch.clearFocus()
+                imageViewCheck.postValue(true)
             } else {
                 binding.locationSearch.requestFocus()
 //                val manager: InputMethodManager = activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -219,7 +229,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
         api.getSearchKeyword(
             BuildConfig.KAKAO_REST_API_KEY,
             query
-//            binding.locationSearch.text.toString()
         )
             .enqueue(object : Callback<ResultSearchKeyword> {
                 @SuppressLint("ResourceType")
@@ -401,18 +410,34 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
         }
 
         binding.hidePagerButton.setOnClickListener {
-            if (binding.mapViewPager.visibility == View.GONE) {
-                binding.hidePagerButton.setImageResource(R.drawable.show_path)
+//            if (binding.mapViewPager.visibility == View.GONE) {
+            if (!imageViewCheck.value!!) {
+//                binding.hidePagerButton.setImageResource(R.drawable.show_path)
                 val animateShow = AlphaAnimation(0f, 1f)
                 animateShow.duration = 500
                 binding.mapViewPager.startAnimation(animateShow)
-                binding.mapViewPager.visibility = View.VISIBLE
+//                binding.mapViewPager.visibility = View.VISIBLE
+                imageViewCheck.postValue(true)
             } else {
-                binding.hidePagerButton.setImageResource(R.drawable.hide_path)
+//                binding.hidePagerButton.setImageResource(R.drawable.hide_path)
                 val animateHide = AlphaAnimation(1f, 0f)
                 animateHide.duration = 500
                 binding.mapViewPager.startAnimation(animateHide)
-                binding.mapViewPager.visibility = View.GONE
+//                binding.mapViewPager.visibility = View.GONE
+                imageViewCheck.postValue(false)
+            }
+        }
+
+        binding.changeBike.setOnClickListener {
+            if(bikeState == 0) {
+                naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)
+                bikeState = 1
+                binding.changeBike.setImageResource(R.drawable.bike_on)
+            }
+            else{
+                naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, false)
+                bikeState = 0
+                binding.changeBike.setImageResource(R.drawable.bike_off)
             }
         }
     }
@@ -498,18 +523,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
 //                marker.captionText = waypoints[i].place_name.toString()
 //                marker.setCaptionAligns(Align.Top)
                 marker.isHideCollidedSymbols = true
-                if (i == 0) {
-                    marker.icon = MarkerIcons.BLACK
-                    marker.iconTintColor =
-                        Color.parseColor(resources.getString(R.color.startMarker))
-                } else if(i == waypoints.size - 1){
-                    marker.icon = MarkerIcons.BLACK
-                    marker.iconTintColor =
-                        Color.parseColor(resources.getString(R.color.endMarker))
-                } else {
-                    marker.icon = MarkerIcons.BLACK
-                    marker.iconTintColor =
-                        Color.parseColor(resources.getString(R.color.waypointMarker))
+                when (i) {
+                    0 -> {
+                        marker.icon = MarkerIcons.BLACK
+                        marker.iconTintColor =
+                            Color.parseColor(resources.getString(R.color.startMarker))
+                    }
+                    waypoints.size - 1 -> {
+                        marker.icon = MarkerIcons.BLACK
+                        marker.iconTintColor =
+                            Color.parseColor(resources.getString(R.color.endMarker))
+                    }
+                    else -> {
+                        marker.icon = MarkerIcons.BLACK
+                        marker.iconTintColor =
+                            Color.parseColor(resources.getString(R.color.waypointMarker))
+                    }
                 }
                 marker.onClickListener = listener
                 markers.add(marker)
@@ -622,6 +651,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
             dialog.dismiss()
             removeString()
             removeAll()
+            imageViewCheck.postValue(false)
             Toast.makeText(requireContext(), "검색 정보가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
         }
         alertDialog.setNegativeButton("취소") { dialog, _ ->
@@ -634,6 +664,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, NaverMap.OnMapClickListener 
         binding.locationSearch.setText("")
         binding.locationSearch.clearFocus()
         binding.autoCompleteRecyclerView.visibility = View.GONE
+    }
+
+    @UiThread
+    private fun updateUI(imageViewCheck: Boolean) { // 라이딩 상태에 따른 UI 변경
+        if(imageViewCheck){
+            binding.mapViewPager.visibility = View.VISIBLE
+            binding.hidePagerButton.setImageResource(R.drawable.show_path)
+        }
+        else{
+            binding.mapViewPager.visibility = View.GONE
+            binding.hidePagerButton.setImageResource(R.drawable.hide_path)
+
+        }
+
     }
 }
 

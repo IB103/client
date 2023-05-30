@@ -92,21 +92,45 @@
                 android:layout_height="20dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/locationCount2"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/free_icon_favorite" />
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/heart_check" />
 
             <TextView
                 android:id="@+id/heartCount2"
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:paddingStart="8dp"
+                android:paddingStart="4dp"
                 android:textAlignment="textStart"
                 app:layout_constraintBottom_toBottomOf="@+id/heartImage2"
                 app:layout_constraintStart_toEndOf="@+id/heartImage2"
-                app:layout_constraintTop_toTopOf="@+id/heartImage2" />
+                app:layout_constraintTop_toTopOf="@+id/heartImage2"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/imageView14"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/location_count" />
+
+            <TextView
+                android:id="@+id/locationCount2"
+                android:layout_width="20dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingStart="4dp"
+                android:textAlignment="textStart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView14"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
@@ -132,36 +156,48 @@
             android:id="@+id/gpsButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hideButton"
+            app:layout_constraintTop_toBottomOf="@+id/bikeButton"
             app:srcCompat="@drawable/no_gps" />
 
         <ImageButton
             android:id="@+id/hideButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fullCourseButton"
-            app:srcCompat="@drawable/show_path" />
+            app:srcCompat="@drawable/yes_line" />
 
         <ImageButton
             android:id="@+id/fullCourseButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/full_screen" />
+
+        <ImageButton
+            android:id="@+id/bikeButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hideButton"
+            app:srcCompat="@drawable/bike_off" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

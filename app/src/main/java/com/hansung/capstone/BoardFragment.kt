@@ -44,7 +44,7 @@ class BoardFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateUI(true)
+//        updateUI(true)
         adapter= BoardAdapter()
         resultAllPost = view.findViewById(R.id.resultAllPost)
         resultAllPost.addItemDecoration(BoardAdapterDecoration())
@@ -69,7 +69,7 @@ class BoardFragment : Fragment() {
         binding.totalCategory.setOnClickListener {
            DecorateButton(this@BoardFragment).decoTotalBt()
             category="total"
-            updateUI(false)
+//            updateUI(false)
             page=0
             resultAllPost.scrollToPosition(0)
            init()
@@ -80,7 +80,7 @@ class BoardFragment : Fragment() {
             category="course"
             page=0
             resultAllPost.scrollToPosition(0)
-            updateUI(false)
+//            updateUI(false)
             initCourseData()
 
         }
@@ -88,7 +88,7 @@ class BoardFragment : Fragment() {
             DecorateButton(this@BoardFragment).decoFreeBt()
             category="free"
             page=0
-            updateUI(true)
+//            updateUI(true)
             binding.postB.isEnabled=true
             resultAllPost.scrollToPosition(0)
             initFreeData()
@@ -118,7 +118,6 @@ class BoardFragment : Fragment() {
                 intent.putExtra("loginNeeded",true)
                 startActivity(intent)
             }
-
         }
     }
     private fun init() {
@@ -300,17 +299,19 @@ class BoardFragment : Fragment() {
          }
         MainActivity.getInstance()?.stateCheck(-1)
     }
-    @UiThread
-    private fun updateUI(isEnable: Boolean) {
-        this.enable = isEnable
-        if (enable) {
-            binding.postB.alpha = 1f
-            binding.postB.isClickable = true
-        } else {
-            binding.postB.alpha = 0.3f
-            binding.postB.isClickable = false
-        }
-    }
+//    @UiThread
+//    private fun updateUI(isEnable: Boolean) {
+//        this.enable = isEnable
+//        if (enable) {
+//            binding.postB.visibility = View.VISIBLE
+//            binding.postB.alpha = 1f
+//            binding.postB.isClickable = true
+//        } else {
+////            binding.postB.alpha = 0.3f
+////            binding.postB.isClickable = false
+//            binding.postB.visibility = View.GONE
+//        }
+//    }
 }
 
 

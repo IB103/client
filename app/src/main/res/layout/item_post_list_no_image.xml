@@ -9,16 +9,20 @@
 
     <TextView
         android:id="@+id/BoardTitle"
-        android:layout_width="350dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
         android:ems="10"
+        android:maxLines="1"
         android:singleLine="true"
         android:text="Title"
         android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/BoardProfileImage" />
 
@@ -26,10 +30,12 @@
         android:id="@+id/BoardContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:background="#FFFFFF"
+        android:ellipsize="end"
         android:ems="10"
         android:gravity="start|top"
+        android:maxLines="1"
         android:singleLine="true"
         android:text="content"
         android:textColor="#3E3E3E"
@@ -55,17 +61,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
-        <ImageView
-            android:id="@+id/BoardProfileImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/BoardProfileImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
@@ -83,7 +88,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/BoardContent"

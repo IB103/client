@@ -56,9 +56,16 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
                     context.setPosition(position)
                     context.keyBordShow(1)
                 }
-                binding.delelteComment.isVisible =
-                    items.userNickname==MyApplication.prefs.getString("nickname","")
-                binding.delelteComment.setOnClickListener {
+//                binding.delelteComment.isVisible =
+//                    items.userNickname==MyApplication.prefs.getString("nickname","")
+                if(items.userNickname==MyApplication.prefs.getString("nickname","")){
+                    binding.deleteComment.alpha = 1f
+                    binding.deleteComment.isEnabled = true
+                }else{
+                    binding.deleteComment.alpha = 0.3f
+                    binding.deleteComment.isEnabled = false
+                }
+                binding.deleteComment.setOnClickListener {
                     context.commentId= items.id.toInt()
                     commentId=items.id
                     showDialog()

@@ -69,7 +69,16 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
        // lineChart=binding.chart
         val noImage:Long=-1
-        //if(MyApplication.checkUpdateTime()){
+//        if(MyApplication.prefs.getLong("userId", 0)!=null){
+//         GetRecordData().getRidingData(7){result ->
+//             if (result.isNotEmpty()) {
+//                 this.ridingDataList = result
+////                 ranking(result)
+//               // draw(result)
+//             } else {
+//                 binding.noDataComment.visibility = View.VISIBLE
+//                 binding.noDataImage.visibility = View.VISIBLE
+//             }
 
         if(Token().checkToken()){
             Token().issueNewToken {
@@ -94,8 +103,14 @@ class HomeFragment : Fragment() {
         }
         getWeatherInCurrentLocation()
         binding.goRiding.setOnClickListener {
-            val intent = Intent(activity, RidingActivity::class.java)
-            startActivity(intent)
+            if(MyApplication.prefs.getString("accessToken", "") != ""){
+                val intent = Intent(activity, RidingActivity::class.java)
+                startActivity(intent)
+            }else{
+                val intent = Intent(activity, LoginActivity::class.java)
+                intent.putExtra("loginNeeded",true)
+                startActivity(intent)
+            }
         }
         //        binding.imageView4.setOnClickListener {
 //            val intent = Intent(activity, RidingActivity::class.java)
@@ -116,8 +131,15 @@ class HomeFragment : Fragment() {
         }
 
         binding.makeCourseButton.setOnClickListener {
-            val intent = Intent(activity, MakeCourseActivity::class.java)
-            startActivity(intent)
+            if(MyApplication.prefs.getString("accessToken", "") != ""){
+                val intent = Intent(activity, MakeCourseActivity::class.java)
+                startActivity(intent)
+            }else{
+                val intent = Intent(activity, LoginActivity::class.java)
+                intent.putExtra("loginNeeded",true)
+                startActivity(intent)
+            }
+
         }
     }
 
@@ -246,7 +268,7 @@ private fun requestData(){
            profileImage.setImageResource(R.drawable.user)
         Glide.with(requireActivity())
             .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
-            .override(200, 200)
+//            .override(200, 200)
             .centerCrop()
             .into(profileImage)
     }
@@ -313,6 +335,15 @@ private fun requestData(){
 
     override fun onResume() {
         super.onResume()
+        if(MyApplication.prefs.getString("email","")!=""){
+            binding.tvNick.text=MyApplication.prefs.getString("nickname","")
+           binding.tvEmail.text= MyApplication.prefs.getString("email","")
+            getProfileImage(MyApplication.prefs.getLong("userId",0L),binding.profileImage)
+        }else{
+            binding.tvNick.text="비회원"
+            binding.tvEmail.text= ""
+            binding.profileImage.setImageResource(R.drawable.user)
+        }
       //if(ridingDataList.isNotEmpty())
         //ranking(ridingDataList)
 

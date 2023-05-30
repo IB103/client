@@ -14,28 +14,60 @@
         android:background="@color/white"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
-        <ImageView
-            android:id="@+id/postActivity"
-            android:layout_width="wrap_content"
-            android:visibility="invisible"
-            android:src="@drawable/ic_baseline_more_horiz_24"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
-            android:layout_height="wrap_content"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <ImageButton
+                android:id="@+id/postActivity"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="4dp"
+                android:background="#00FFFFFF"
+                android:scaleType="fitCenter"
+                android:src="@drawable/comment_setting"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/BackToList"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_baseline_arrow_back_24"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+            <ImageButton
+                android:id="@+id/goToCourse"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="4dp"
+                android:background="#00FFFFFF"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/to_course" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <ImageView-->
+<!--            android:id="@+id/postActivity"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:visibility="invisible"-->
+<!--            android:src="@drawable/ic_baseline_more_horiz_24"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:layout_marginEnd="10dp"-->
+<!--            android:layout_height="wrap_content"/>-->
 
-
-
-
+<!--        <ImageButton-->
+<!--            android:id="@+id/imageButton2"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:background="#00FFFFFF"-->
+<!--            android:scaleType="fitCenter"-->
+<!--            app:srcCompat="@drawable/erase" />-->
     </androidx.appcompat.widget.Toolbar>
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/imageButton2"-->
+<!--        android:layout_width="24dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        app:srcCompat="@drawable/erase" />-->
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -51,13 +83,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/PostProfileImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
-                    android:background="@android:color/transparent"
                     android:padding="5dp" />
 
                 <LinearLayout
@@ -89,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:paddingStart="8dp"
+                android:paddingStart="16dp"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -99,7 +130,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:paddingStart="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:textColor="#535353" />
 
             <FrameLayout
@@ -127,22 +159,24 @@
 
                 <ImageView
                     android:id="@+id/HeartB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="4dp"
+                    android:scaleType="fitCenter"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_heart_no_check" />
+                    app:srcCompat="@drawable/heart_no_check" />
 
                 <ImageView
                     android:id="@+id/StarB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/HeartB"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_star_no_check" />
+                    app:srcCompat="@drawable/star_no_check" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

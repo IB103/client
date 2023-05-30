@@ -5,19 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".recommend.RecommendFragment">
-<!--    <androidx.fragment.app.FragmentContainerView-->
-<!--        android:id="@+id/mapView"-->
-<!--        android:name="com.naver.maps.map.MapFragment"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--    <include-->
-<!--        android:id="@+id/fragment_recommend"-->
-<!--        layout="@layout/fragment_recommend_bottom" />-->
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/RecommendToolbar"
@@ -44,13 +31,11 @@
             android:id="@+id/rTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:text="추천 코스"
             android:textColor="@color/maincolor"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="55dp"
-            tools:layout_editor_absoluteY="9dp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -105,16 +90,25 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecommendRecyclerView"
-        android:layout_width="0dp"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/recommendSwipe"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/positionConstraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/positionConstraintLayout">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RecommendRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <TextView
         android:id="@+id/noResult"
         android:layout_width="0dp"

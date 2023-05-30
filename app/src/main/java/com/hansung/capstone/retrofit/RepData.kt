@@ -1,7 +1,9 @@
 package com.hansung.capstone.retrofit
 
 import com.google.gson.annotations.SerializedName
+import com.hansung.capstone.recommend.UserRecommend
 import retrofit2.http.POST
+
 data class RepConfirm(
     @SerializedName("code")
     val code: Int,
@@ -10,8 +12,9 @@ data class RepConfirm(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data:TokenInfo
+    val data: TokenInfo
 )
+
 data class RepLogOut(
     @SerializedName("code")
     val code: Int,
@@ -20,6 +23,7 @@ data class RepLogOut(
     @SerializedName("message")
     val message: String
 )
+
 data class RepSend(
     @SerializedName("code")
     val code: Int,
@@ -28,8 +32,9 @@ data class RepSend(
     @SerializedName("message")
     val message: String,
     @SerializedName("timestamp")
-    val timestamp:String
+    val timestamp: String
 )
+
 data class RepRank(
     @SerializedName("code")
     val code: Int,
@@ -38,8 +43,9 @@ data class RepRank(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data:List<RankData>
+    val data: List<RankData>
 )
+
 data class RankData(
     @SerializedName("profileImageId")
     val profileImageId: Long,
@@ -50,6 +56,7 @@ data class RankData(
     @SerializedName("distanceRank")
     val distanceRank: Int
 )
+
 data class RepGetRecord(
     @SerializedName("code")
     val code: Int,
@@ -58,8 +65,9 @@ data class RepGetRecord(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data:List<RidingData>
+    val data: List<RidingData>
 )
+
 data class RidingData(
     @SerializedName("ridingTime")
     val ridingTime: Long,
@@ -69,7 +77,12 @@ data class RidingData(
     var createdDate: String,
     @SerializedName("calorie")
     val calorie: Int
-    )
+)
+//    val calorie: Long,
+//    val date: Long,
+//    val distance: Long
+//)
+
 data class RepFindId(
     @SerializedName("code")
     val code: Int,
@@ -78,13 +91,15 @@ data class RepFindId(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data:List<String>
+    val data: List<String>
 )
+
 data class Weather(
     @SerializedName("main") val main: Main,
     @SerializedName("weather") val weather: List<WeatherDetail>,
     @SerializedName("name") val cityName: String
 )
+
 data class Main(
     @SerializedName("temp") val temperature: Double,
     @SerializedName("pressure") val pressure: Double,
@@ -103,12 +118,13 @@ data class RepLogin(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data:UserResponse
+    val data: UserResponse
 
 )
+
 data class UserResponse(
     @SerializedName("check")
-    val check:Boolean,
+    val check: Boolean,
     @SerializedName("email")
     val email: String,
     @SerializedName("username")
@@ -118,12 +134,13 @@ data class UserResponse(
     @SerializedName("nickname")
     val nickname: String,
     @SerializedName("userId")
-    val userId:Long,
+    val userId: Long,
     @SerializedName("profileImageId")
     val profileImageId: Long,
     @SerializedName("tokenInfo")
-    val tokenInfo:TokenInfo
+    val tokenInfo: TokenInfo
 )
+
 data class RespondToken(
     @SerializedName("code")
     val code: Int,
@@ -132,14 +149,16 @@ data class RespondToken(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data:TokenInfo
+    val data: TokenInfo
 )
+
 data class TokenInfo(
     @SerializedName("accessToken")
     val accessToken: String,
     @SerializedName("refreshToken")
     val refreshToken: String
 )
+
 data class RepRegister(
     @SerializedName("id")
     val id: Long,
@@ -148,6 +167,7 @@ data class RepRegister(
 
 
 )
+
 data class RepDoubleCheckID(
     @SerializedName("code")
     val code: Int,
@@ -155,6 +175,7 @@ data class RepDoubleCheckID(
     val msg: String
 
 )
+
 data class RepDoubleCheckNickName(
     @SerializedName("code")
     val code: Int,
@@ -162,108 +183,118 @@ data class RepDoubleCheckNickName(
     val msg: String
 
 )
+
 data class RepWriting(
     @SerializedName("code")
     val code: Int,
     @SerializedName("msg")
     val msg: POST
 )
+
 data class RepModifyPW(
     @SerializedName("code")
     val code: Int,
     @SerializedName("success")
     val msg: Boolean,
     @SerializedName("message")
-    val messageval :String,
+    val messageval: String,
     @SerializedName("data")
-    val data:String
+    val data: String
 
 )
+
 data class RepModifyNick(
     @SerializedName("code")
     val code: Int,
     @SerializedName("success")
     val msg: Boolean,
     @SerializedName("message")
-    val messageval :String,
+    val messageval: String,
     @SerializedName("data")
-    val data:String
+    val data: String
 
 )
-data class   RepPost(
+
+data class RepPost(
     @SerializedName("code")
     val code: Int,
     @SerializedName("success")
     val msg: Boolean,
     @SerializedName("message")
-    val messageval :String,
+    val messageval: String,
     @SerializedName("data")
-    val data:PostData
-)data class PostData(
+    val data: PostData
+)
+
+data class PostData(
     @SerializedName("id")
     val id: Int,
     @SerializedName("title")
     val title: String,
     @SerializedName("content")
-    val content :String,
+    val content: String,
     @SerializedName("createDate")
-    val createDate:String,
+    val createDate: String,
     @SerializedName("modifiedDate")
     val modifiedDate: String,
     @SerializedName("authorId")
     val authorId: Int,
     @SerializedName("nickname")
-    val nickname :String,
+    val nickname: String,
     @SerializedName("authorProfileImageId")
-    val authorProfileImageId:Int,
+    val authorProfileImageId: Int,
     @SerializedName("commentList")
     val commentList: List<RepData>,
     @SerializedName("imageId")
     val imageID: List<Int>
 )
+
 data class CommentList(
     @SerializedName("id")
     val id: Int,
     @SerializedName("content")
-    val content :String,
+    val content: String,
     @SerializedName("createDate")
-    val createDate:String,
+    val createDate: String,
     @SerializedName("modifiedDate")
     val modifiedDate: String,
     @SerializedName("userId")
     val userId: Int,
     @SerializedName("userNickname")
-    val userNickname :String,
+    val userNickname: String,
     @SerializedName("userProfileImageId")
     val userProfileImageId: Int
 )
+
 data class RepComment(
     @SerializedName("code")
     val code: Int,
     @SerializedName("success")
     val msg: Boolean,
     @SerializedName("message")
-    val message :String,
+    val message: String,
     @SerializedName("data")
-    val data:PostDataComment
+    val data: PostDataComment
 
-)data class PostDataComment(
+)
+
+data class PostDataComment(
     @SerializedName("id")
     val id: Int,
     @SerializedName("title")
-    val title :String,
+    val title: String,
     @SerializedName("content")
-    val content :String,
+    val content: String,
     @SerializedName("createDate")
-    val createDate:String,
+    val createDate: String,
     @SerializedName("modifiedDate")
     val modifiedDate: String,
     @SerializedName("authorId")
     val authorId: Int,
     @SerializedName("nickname")
-    val nickname :String,
+    val nickname: String,
     @SerializedName("authorProfileImageId")
-    val authorProfileImageId:Int,
+    val authorProfileImageId: Int,
     @SerializedName("commentList")
     val commentList: List<RepData>,
     @SerializedName("imageId")
@@ -271,43 +302,45 @@ data class RepComment(
     @SerializedName("posterVoterId")
     val posterVoterId: List<Int>
 )
+
 data class RepData(
     @SerializedName("id")
     val id: Int,
     @SerializedName("content")
-    val content :String,
+    val content: String,
     @SerializedName("createDate")
-    val createDate:String,
+    val createDate: String,
     @SerializedName("modifiedDate")
     val modifiedDate: String,
     @SerializedName("userId")
     val userId: Int,
     @SerializedName("userNickname")
-    val userNickname :String,
+    val userNickname: String,
     @SerializedName("userProfileImageId")
-    val userProfileImageId:Int,
+    val userProfileImageId: Int,
     @SerializedName("reCommentList")
-    val reCommentList:List<Recomment>,
+    val reCommentList: List<Recomment>,
     @SerializedName("commentVoterId")
-    val commentVoterId:List<Int>
+    val commentVoterId: List<Int>
 )
+
 data class Recomment(
     @SerializedName("id")
     val id: Int,
     @SerializedName("content")
-    val content :String,
+    val content: String,
     @SerializedName("createDate")
-    val createDate:String,
+    val createDate: String,
     @SerializedName("modifiedDate")
     val modifiedDate: String,
     @SerializedName("userId")
     val userId: Int,
     @SerializedName("userNickname")
-    val userNickname :String,
+    val userNickname: String,
     @SerializedName("userProfileImageId")
-    val userProfileImageId:Int,
+    val userProfileImageId: Int,
     @SerializedName("reCommentVoterId")
-    val commentVoterId:List<Int>
+    val commentVoterId: List<Int>
 )
 
 data class RepCoursePost(
@@ -316,7 +349,7 @@ data class RepCoursePost(
     @SerializedName("success")
     val success: Boolean,
     @SerializedName("message")
-    val message :String,
+    val message: String,
 //    @SerializedName("data")
 //    val data :String,
 )
@@ -328,6 +361,16 @@ data class RepRidingData(
     @SerializedName("success")
     val msg: Boolean,
     @SerializedName("message")
-    val message :String,
+    val message: String,
 )
 
+data class RepCourseDetailData(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data: UserRecommend,
+)

@@ -3,7 +3,6 @@ package com.hansung.capstone.recommend
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.location.Location
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
@@ -29,6 +28,8 @@ import android.content.Intent
 import android.graphics.PointF
 import com.hansung.capstone.map.MapboxDirectionAPI
 import com.hansung.capstone.post.PostDetailActivity
+import com.hansung.capstone.retrofit.RepCourseDetailData
+import com.hansung.capstone.retrofit.RetrofitService
 
 
 class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnMapClickListener {
@@ -41,7 +42,7 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
     private lateinit var imageInfoList: List<ImageInfo>
     private var numOfFavorite by Delegates.notNull<Int>()
     private lateinit var adapter: CourseViewPagerAdapter
-    private lateinit var decodeCoordinates: List<LatLng>
+    lateinit var decodeCoordinates: List<LatLng>
     private var markers: MutableList<Marker> = mutableListOf()
     lateinit var pathOverlays: ArrayList<PathOverlay> //
     lateinit var pathOverlaysCheck: ArrayList<Boolean> //
@@ -60,36 +61,17 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
         }
         true
     }
+    private var courseId by Delegates.notNull<Long>()
+    private var moveCheck by Delegates.notNull<Int>()
+    private var bikeState = 0
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // 인텐트 값 읽기
-        val intent = intent
-        @Suppress("DEPRECATION")
-        imageInfoList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            intent.getParcelableArrayListExtra("imageInfoList", ImageInfo::class.java)!!.toList()
-        else
-            intent.getParcelableArrayListExtra<ImageInfo>("imageInfoList")!!.toList()
-        originToDestination = intent.getStringExtra("originToDestination").toString()
-        coordinates = intent.getStringExtra("coordinates").toString()
-        postId = intent.getLongExtra("postId", 0)
-//        Log.d("getUserRecommend3:", "onResponse : $postId")
-        imageId = intent.getLongArrayExtra("imageId")!!.toList()
-        numOfFavorite = intent.getIntExtra("numOfFavorite", 0)
-
-        pathOverlays = ArrayList<PathOverlay>(imageInfoList.size).apply {
-            repeat(imageInfoList.size) {
-                add(PathOverlay())
-            }
-        } // 크기로 초기화
-        pathOverlaysCheck = ArrayList<Boolean>(imageInfoList.size).apply {
-            repeat(imageInfoList.size) {
-                add(false)
-            }
-        }
+        courseId = intent.getLongExtra("courseId", 0)
+        moveCheck = intent.getIntExtra("moveCheck", 0)
 
         // 맵 설정
         val fm = supportFragmentManager
@@ -99,29 +81,30 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
             }
         mapFragment.getMapAsync(this)
 
-        binding.heartCount2.text = numOfFavorite.toString()
-        binding.oToD.text = originToDestination
         binding.courseViewPager.clipToPadding = false // 패딩 영역을 보여주도록 설정
         binding.courseViewPager.offscreenPageLimit = 3  // 이전 아이템과 다음 아이템 함께 보이도록 설정
         binding.courseViewPager.setPageTransformer(ItemSpacingPageTransformer())
-        adapter = CourseViewPagerAdapter(this, imageId, imageInfoList)
-        binding.courseViewPager.adapter = adapter
-
         binding.hideButton.setOnClickListener {
             if (pathOverlayCheck2) {
-                binding.hideButton.setImageResource(R.drawable.hide_path)
+                binding.hideButton.setImageResource(R.drawable.no_line)
                 pathOverlay.map = null
                 pathOverlayCheck2 = false
             } else {
-                binding.hideButton.setImageResource(R.drawable.show_path)
+                binding.hideButton.setImageResource(R.drawable.yes_line)
                 pathOverlay.map = nMap
                 pathOverlayCheck2 = true
             }
         }
         binding.movePostButton.setOnClickListener {
-            val intentToPost = Intent(this, PostDetailActivity::class.java)
-            intentToPost.putExtra("postid", postId)
-            startActivity(intentToPost)
+            if(moveCheck == 0) {
+                val intentToPost = Intent(this, PostDetailActivity::class.java)
+                intentToPost.putExtra("postid", postId)
+                intentToPost.putExtra("moveCheck", 1)
+                startActivity(intentToPost)
+            }
+            else{
+                finish()
+            }
         }
     }
 
@@ -140,6 +123,100 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
 
         naverMap.mapType = NaverMap.MapType.Basic // 맵 타입 Basic
 
+        val api = RetrofitService.create()
+        api.getCourseDetail(courseId.toInt()).enqueue(object : Callback<RepCourseDetailData> {
+            override fun onResponse(
+                call: Call<RepCourseDetailData>,
+                response: Response<RepCourseDetailData>,
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()!!.data
+                    Log.d("getCourseDetail", "onResponse : ${response.body().toString()}")
+                    imageInfoList = data.imageInfoList
+                    originToDestination = data.originToDestination
+                    coordinates = data.coordinates
+                    postId = data.postId
+                    imageId = data.imageId
+                    numOfFavorite = data.numOfFavorite
+
+                    pathOverlays = ArrayList<PathOverlay>(imageInfoList.size).apply {
+                        repeat(imageInfoList.size) {
+                            add(PathOverlay())
+                        }
+                    }
+                    pathOverlaysCheck = ArrayList<Boolean>(imageInfoList.size).apply {
+                        repeat(imageInfoList.size) {
+                            add(false)
+                        }
+                    }
+
+                    binding.heartCount2.text = numOfFavorite.toString()
+                    binding.locationCount2.text = imageInfoList.size.toString()
+                    binding.oToD.text = originToDestination
+                    adapter =
+                        CourseViewPagerAdapter(this@CheckCourseActivity, imageId, imageInfoList)
+                    binding.courseViewPager.adapter = adapter
+
+                    decodeCoordinates = DataConverter.decode(coordinates)
+                    pathOverlay = PathOverlay()
+                    pathOverlay.coords = decodeCoordinates
+                    pathOverlay.outlineWidth = 0
+                    pathOverlay.width = 12
+                    pathOverlay.color =
+                        Color.parseColor(resources.getString(R.color.pathOverlayColor)) // 연두색
+                    pathOverlay.isHideCollidedSymbols = true
+                    pathOverlay.map = naverMap
+
+                    // 마커 추가
+                    for (i in imageInfoList.indices) {
+                        val marker = Marker()
+                        marker.position = stringToLatLng(imageInfoList[i].coordinate)
+                        marker.isHideCollidedSymbols = true
+                        when (i) {
+                            0 -> {
+                                marker.icon = MarkerIcons.BLACK
+                                marker.iconTintColor =
+                                    Color.parseColor(resources.getString(R.color.startMarker))
+                            }
+                            imageInfoList.size - 1 -> {
+                                marker.icon = MarkerIcons.BLACK
+                                marker.iconTintColor =
+                                    Color.parseColor(resources.getString(R.color.endMarker))
+                            }
+                            else -> {
+                                marker.icon = MarkerIcons.BLACK
+                                marker.iconTintColor =
+                                    Color.parseColor(resources.getString(R.color.waypointMarker))
+                            }
+                        }
+                        marker.onClickListener = listener
+                        markers.add(marker)
+                        marker.map = nMap
+                        val infoWindow = InfoWindow()
+                        infoWindow.adapter =
+                            object : InfoWindow.DefaultTextAdapter(this@CheckCourseActivity) {
+                                override fun getText(infoWindow: InfoWindow): CharSequence {
+                                    return infoWindow.marker?.tag as CharSequence? ?: ""
+                                }
+                            }
+                        marker.tag = imageInfoList[i].placeName
+                        infoWindow.open(marker)
+                        infoWindows.add(infoWindow)
+                    }
+                    binding.courseViewPager.registerOnPageChangeCallback(CustomPageChangeCallback())
+
+                    Utility.zoomToSeeWholeTrack(decodeCoordinates, nMap)
+                    binding.fullCourseButton.setOnClickListener {
+                        Utility.zoomToSeeWholeTrack(decodeCoordinates, nMap)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<RepCourseDetailData>, t: Throwable) {
+                Log.d("getCourseDetail:", "onFailure : $t")
+            }
+        })
+
         updateLocationChecking()
         naverMap.onMapClickListener = this
 
@@ -149,60 +226,17 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, false)
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false)
 
-        decodeCoordinates = DataConverter.decode(coordinates)
-        pathOverlay = PathOverlay()
-        pathOverlay.coords = decodeCoordinates
-        pathOverlay.outlineWidth = 0
-        pathOverlay.width = 12
-        pathOverlay.color = Color.parseColor(resources.getString(R.color.pathOverlayColor)) // 연두색
-        pathOverlay.isHideCollidedSymbols = true
-        pathOverlay.map = naverMap
-
-        // 마커 추가
-        for (i in imageInfoList.indices) {
-            val marker = Marker()
-            marker.position = stringToLatLng(imageInfoList[i].coordinate)
-            marker.isHideCollidedSymbols = true
-            when (i) {
-                0 -> {
-                    marker.icon = MarkerIcons.BLACK
-                    marker.iconTintColor =
-                        Color.parseColor(resources.getString(R.color.startMarker))
-                }
-                imageInfoList.size - 1 -> {
-                    marker.icon = MarkerIcons.BLACK
-                    marker.iconTintColor =
-                        Color.parseColor(resources.getString(R.color.endMarker))
-                }
-                else -> {
-                    marker.icon = MarkerIcons.BLACK
-                    marker.iconTintColor =
-                        Color.parseColor(resources.getString(R.color.waypointMarker))
-                }
+        binding.bikeButton.setOnClickListener {
+            if(bikeState == 0) {
+                naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)
+                bikeState = 1
+                binding.bikeButton.setImageResource(R.drawable.bike_on)
             }
-            marker.onClickListener = listener
-            markers.add(marker)
-            marker.map = nMap
-            val infoWindow = InfoWindow()
-            infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
-                override fun getText(infoWindow: InfoWindow): CharSequence {
-                    return infoWindow.marker?.tag as CharSequence? ?: ""
-                }
+            else{
+                naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, false)
+                bikeState = 0
+                binding.bikeButton.setImageResource(R.drawable.bike_off)
             }
-            marker.tag = imageInfoList[i].placeName
-            infoWindow.open(marker)
-            infoWindows.add(infoWindow)
-        }
-        binding.courseViewPager.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                Utility.moveToMarker(stringToLatLng(imageInfoList[position].coordinate), nMap)
-            }
-        })
-
-        Utility.zoomToSeeWholeTrack(decodeCoordinates, nMap)
-        binding.fullCourseButton.setOnClickListener {
-            Utility.zoomToSeeWholeTrack(decodeCoordinates, nMap)
         }
     }
 
@@ -313,12 +347,25 @@ class CheckCourseActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.On
     override fun onMapClick(p0: PointF, p1: LatLng) {
         val courseButtonsLayout = binding.courserButtons
         if (mapState == 0) {
-            courseButtonsLayout.animate()?.translationY(-courseButtonsLayout.height.toFloat())?.duration =
+            courseButtonsLayout.animate()
+                ?.translationY(-courseButtonsLayout.height.toFloat())?.duration =
                 300
             mapState = 1
         } else if (mapState == 1) {
             courseButtonsLayout.animate()?.translationY(0F)?.duration = 300
             mapState = 0
+        }
+    }
+
+    inner class CustomPageChangeCallback : ViewPager2.OnPageChangeCallback() {
+        private var isFirstPageScroll = true
+
+        override fun onPageSelected(position: Int) {
+            if (isFirstPageScroll) {
+                isFirstPageScroll = false
+                return
+            }
+            Utility.moveToMarker(stringToLatLng(imageInfoList[position].coordinate), nMap)
         }
     }
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.hansung.capstone.R
 import com.hansung.capstone.Waypoint
 import com.hansung.capstone.databinding.ItemDirectionsRecyclerviewBinding
 
@@ -47,6 +48,8 @@ class WaypointsAdapter(
             val intent = Intent(directionsActivity, WaypointsSearchActivity::class.java)
             intent.putExtra("position", viewHolder.adapterPosition)
             directionsActivity.directionsSearchLauncher.launch(intent)
+            //
+            directionsActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.none)
         }
         viewHolder.addWaypoint.setOnClickListener {
             addItem(itemCount - 1)

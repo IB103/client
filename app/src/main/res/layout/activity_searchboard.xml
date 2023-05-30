@@ -5,38 +5,57 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.063"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <EditText
-            android:id="@+id/boardSearch"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/boardSearch"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:autofillHints=""
+            android:layout_marginBottom="8dp"
             android:background="@drawable/element_edit_box"
             android:hint="@string/query_request"
             android:imeActionLabel="검색"
             android:imeOptions="actionSearch"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:inputType="text"
-            android:paddingStart="10dp"
+            android:paddingStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
-
+            <ImageButton
+                android:id="@+id/search_box_clear2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:background="#00FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/boardSearch"
+                app:layout_constraintEnd_toEndOf="@+id/boardSearch"
+                app:layout_constraintTop_toTopOf="@+id/boardSearch"
+                app:srcCompat="@drawable/ic_baseline_close_24"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
     <LinearLayout
         android:id="@+id/tabLayout"

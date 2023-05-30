@@ -183,7 +183,7 @@ class BoardAdapter :
                     .placeholder(R.drawable.no_image)
                     .error(R.drawable.no_image)
 //                    .fallback(defaultImage)
-                    .circleCrop()
+                    .centerCrop()
                     .into(binding.BoardProfileImage)
             }else binding.BoardProfileImage.setImageResource(R.drawable.user)
             itemView.setOnClickListener {
@@ -252,7 +252,7 @@ class BoardAdapter :
 //                    .override(100, 100)
                     .placeholder(R.drawable.no_image)
                     .error(R.drawable.no_image)
-                    .circleCrop()
+                    .centerCrop()
                     .into(binding.BoardProfileImage)
             }else binding.BoardProfileImage.setImageResource(R.drawable.user)
             itemView.setOnClickListener {

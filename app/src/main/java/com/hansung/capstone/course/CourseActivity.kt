@@ -12,6 +12,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -68,6 +69,7 @@ class CourseActivity : AppCompatActivity() {
     private var region: String? = null
     private lateinit var api: KakaoSearchAPI
     private lateinit var courseImageAdapter: CourseImageAdapter
+    var modeSet:Int = 0
 
     @SuppressLint("Recycle")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -88,6 +90,7 @@ class CourseActivity : AppCompatActivity() {
         coordinates = DataConverter.decode(encodedPath)
         Log.d("coordinates", "$coordinates")
         snapshotPath = intent.getStringExtra("snapshotPath")!!
+        modeSet = intent.getIntExtra("modeSet",0)
 
 
         // 지도 스냅샷 출력
@@ -137,7 +140,7 @@ class CourseActivity : AppCompatActivity() {
                                     it
                                 )
                             }
-                        imageList[position!!] = filePart!!
+                        imageList[position!!] = filePart
                         Log.d("CourseActivityImageList", imageList.toString())
                     }
                 }
@@ -164,87 +167,112 @@ class CourseActivity : AppCompatActivity() {
                         originToDestination = "$origin → $destination"
                         // 글 등록 버튼 클릭
                         binding.writeButton.setOnClickListener {
+                            Log.d("CourseActivityImageList", imageList.toString())
                             if (binding.editTitle.text.toString().isEmpty()) {
                                 Toast.makeText(this, "제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
                             } else if (checkWaypoints(waypoints)) {
                                 Toast.makeText(this, "장소 이름을 등록해주세요.", Toast.LENGTH_SHORT).show()
+                            } else if (imageList.any { it == null }) {
+                                Toast.makeText(this, "모든 장소에 이미지를 등록해주세요.", Toast.LENGTH_SHORT)
+                                    .show()
                             } else if (binding.editWriting.text.toString().isEmpty()) {
                                 Toast.makeText(this, "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
                             } else {
-                                imageInfoMutableList = mutableListOf()
-                                for (i in waypoints) {
-                                    Log.d("waypoints", "$i")
-                                    val placeUrl = i.place_url ?: "" // url 없으면 빈 문자열
-                                    imageInfoMutableList.add(
-                                        ImageInfo(
-                                            "${i.place_lat!!},${i.place_lng!!}",
-                                            i.place_name!!,
-                                            placeUrl
+//                                Log.d("CourseActivityImageList", "성공!")
+//                                CoroutineScope(Dispatchers.Main).launch {
+                                    binding.progressCourse.visibility = View.VISIBLE
+                                    imageInfoMutableList = mutableListOf()
+                                    for (i in waypoints) {
+                                        Log.d("waypoints", "$i")
+                                        val placeUrl = i.place_url ?: "" // url 없으면 빈 문자열
+                                        imageInfoMutableList.add(
+                                            ImageInfo(
+                                                "${i.place_lat!!},${i.place_lng!!}",
+                                                i.place_name!!,
+                                                placeUrl
+                                            )
                                         )
+                                    }
+                                    val imageInfoList: List<ImageInfo> = imageInfoMutableList
+                                    val title = binding.editTitle.text.toString()
+                                    val content = binding.editWriting.text.toString()
+                                    val userId = MyApplication.prefs.getLong("userId", 0)
+                                    Log.d("writeButtonClick", "$imageInfoList")
+                                    Log.d("writeButtonClick", "$imageList")
+                                    Log.d(
+                                        "writeButtonClick",
+                                        "$encodedPath $region $originToDestination $userId $title $content $imageInfoList"
                                     )
-                                }
-                                val imageInfoList: List<ImageInfo> = imageInfoMutableList
-                                val title = binding.editTitle.text.toString()
-                                val content = binding.editWriting.text.toString()
-                                val userId = MyApplication.prefs.getLong("userId", 0)
-                                Log.d("writeButtonClick", "$imageInfoList")
-                                Log.d("writeButtonClick", "$imageList")
-                                Log.d(
-                                    "writeButtonClick",
-                                    "$encodedPath $region $originToDestination $userId $title $content $imageInfoList"
-                                )
-                                val postReqCoursePost = ReqCoursePost(
-                                    encodedPath,
-                                    region!!,
-                                    originToDestination!!,
-                                    userId,
-                                    category = "COURSE",
-                                    title,
-                                    content,
-                                    imageInfoList
-                                )
-                                val service = RetrofitService.create()
-                                service.coursePostCreate(
-                                    requestDTO = postReqCoursePost,
-                                    imageList,
-                                    thumbnail
-                                )
-                                    .enqueue(object :
-                                        Callback<RepCoursePost> {
-                                        override fun onResponse(
-                                            call: Call<RepCoursePost>,
-                                            response: Response<RepCoursePost>
-                                        ) {
-                                            if (response.isSuccessful) {
-                                                val result = response.body()
-                                                Log.d(
-                                                    "coursePostCreate######################################",
-                                                    "onResponse: $result"
-                                                )
-                                            } else {
-                                                Log.d(
-                                                    "coursePostCreate######################################",
-                                                    "onResponse: error"
-                                                )
+                                    val postReqCoursePost = ReqCoursePost(
+                                        encodedPath,
+                                        region!!,
+                                        originToDestination!!,
+                                        userId,
+                                        category = "COURSE",
+                                        title,
+                                        content,
+                                        imageInfoList
+                                    )
+                                    val service = RetrofitService.create()
+                                    service.coursePostCreate(
+                                        requestDTO = postReqCoursePost,
+                                        imageList,
+                                        thumbnail
+                                    )
+                                        .enqueue(object :
+                                            Callback<RepCoursePost> {
+                                            override fun onResponse(
+                                                call: Call<RepCoursePost>,
+                                                response: Response<RepCoursePost>
+                                            ) {
+                                                if (response.isSuccessful) {
+                                                    val result = response.body()
+                                                    Log.d(
+                                                        "coursePostCreate######################################",
+                                                        "onResponse: $result"
+                                                    )
+                                                    binding.progressCourse.visibility = View.GONE
+                                                    Toast.makeText(this@CourseActivity, "코스 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                                    // 게시판으로 이동하는 함수 필요
+                                                    val moveToBoardFragment =
+                                                        Intent(
+                                                            this@CourseActivity,
+                                                            MainActivity::class.java
+                                                        )
+                                                    moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                                    moveToBoardFragment.putExtra(
+                                                        OPEN_BOARD_FRAGMENT,
+                                                        3
+                                                    )
+                                                    startActivity(moveToBoardFragment)
+                                                    finish()
+                                                } else {
+                                                    Log.d(
+                                                        "coursePostCreate######################################",
+                                                        "onResponse: error"
+                                                    )
+                                                    Toast.makeText(this@CourseActivity, "코스 등록 실패", Toast.LENGTH_SHORT).show()
+                                                }
                                             }
-                                        }
 
-                                        override fun onFailure(
-                                            call: Call<RepCoursePost>,
-                                            t: Throwable
-                                        ) {
-                                            Log.d("coursePostCreate", "onFailure")
-                                        }
-                                    })
-                                // 게시판으로 이동하는 함수 필요
-                                val moveToBoardFragment =
-                                    Intent(this@CourseActivity, MainActivity::class.java)
-                                moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                moveToBoardFragment.putExtra(OPEN_BOARD_FRAGMENT, 3)
-                                startActivity(moveToBoardFragment)
-                                finish()
+                                            override fun onFailure(
+                                                call: Call<RepCoursePost>,
+                                                t: Throwable
+                                            ) {
+                                                Log.d("coursePostCreate", "onFailure")
+                                                Toast.makeText(this@CourseActivity, "코스 등록 실패", Toast.LENGTH_SHORT).show()
+                                            }
+                                        })
+//                                // 게시판으로 이동하는 함수 필요
+//                                val moveToBoardFragment =
+//                                    Intent(this@CourseActivity, MainActivity::class.java)
+//                                moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+//                                moveToBoardFragment.putExtra(OPEN_BOARD_FRAGMENT, 3)
+//                                startActivity(moveToBoardFragment)
+//                                finish()
+                                }
                             }
-                        }
+//                        }
                     } else {
                         Log.d("getAddress", "Failed to get destination address")
                     }

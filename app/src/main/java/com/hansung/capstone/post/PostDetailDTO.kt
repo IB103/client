@@ -14,6 +14,7 @@ data class Post(
     var createdDate: String,
     var modifiedDate: String,
     var authorId: Long,//Int = 0,
+    var courseId: Long,
     var nickname: String,
     var authorProfileImageId: Long,
     var commentList: List<Comments>,

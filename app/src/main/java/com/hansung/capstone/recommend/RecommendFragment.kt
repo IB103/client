@@ -25,6 +25,7 @@ import com.hansung.capstone.retrofit.Permissions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.properties.Delegates
 
 class RecommendFragment : Fragment() {
     lateinit var binding: FragmentRecommendBinding
@@ -33,6 +34,10 @@ class RecommendFragment : Fragment() {
     private var fusedLocationClient: FusedLocationProviderClient? = null // 사용자 위치 얻기
     private lateinit var placeName: String
     private lateinit var intent: Intent
+    private lateinit var globalAddress: String
+    val api = RecommendService.create()
+    private var page by Delegates.notNull<Int>()
+    private var totalPage by Delegates.notNull<Int>()
 
     // 권한 요청 후 처리용 Launcher
     private var requestLocationPermissionLauncher: ActivityResultLauncher<Array<String>> =
@@ -52,7 +57,76 @@ class RecommendFragment : Fragment() {
                 placeName = result.data?.getStringExtra("setLocation").toString()
                 activity?.runOnUiThread {
                     binding.setLocationText.text = placeName
-                    readRecommend(placeName)
+                    globalAddress = placeName
+                    page = 0
+                    api.getUserRecommend(globalAddress, page)
+                        .enqueue(object : Callback<UserRecommendDTO> {
+                            override fun onResponse(
+                                call: Call<UserRecommendDTO>,
+                                response: Response<UserRecommendDTO>
+                            ) {
+                                val body = response.body()
+                                if (body!!.data.isNotEmpty()) {
+                                    binding.RecommendRecyclerView.visibility = View.VISIBLE
+                                    binding.noResult.visibility = View.GONE
+                                    totalPage = body.totalPage
+                                    adapter.setInitItems(body.data)
+                                } else {
+                                    binding.RecommendRecyclerView.visibility = View.GONE
+                                    binding.noResult.visibility = View.VISIBLE
+                                }
+                                binding.recommendSwipe.setOnRefreshListener {
+                                    page = 0
+                                    api.getUserRecommend(globalAddress, page)
+                                        .enqueue(object : Callback<UserRecommendDTO> {
+                                            override fun onResponse(
+                                                call: Call<UserRecommendDTO>,
+                                                response: Response<UserRecommendDTO>
+                                            ) {
+                                                val refBody = response.body()
+                                                if (refBody!!.data.isNotEmpty()) {
+                                                    binding.RecommendRecyclerView.visibility =
+                                                        View.VISIBLE
+                                                    binding.noResult.visibility = View.GONE
+                                                    totalPage = body.totalPage
+                                                    adapter.setInitItems(refBody.data)
+                                                } else {
+                                                    binding.RecommendRecyclerView.visibility =
+                                                        View.GONE
+                                                    binding.noResult.visibility = View.VISIBLE
+                                                }
+                                            }
+
+                                            override fun onFailure(
+                                                call: Call<UserRecommendDTO>,
+                                                t: Throwable
+                                            ) {
+                                                Log.d("getUserRecommend:", "onFailure : $t")
+                                            }
+                                        })
+                                    binding.recommendSwipe.isRefreshing = false
+                                }
+                                recyclerView.addOnScrollListener(object :
+                                    RecyclerView.OnScrollListener() {
+                                    override fun onScrolled(
+                                        recyclerView: RecyclerView,
+                                        dx: Int,
+                                        dy: Int
+                                    ) {
+                                        super.onScrolled(recyclerView, dx, dy)
+                                        if (!recyclerView.canScrollVertically(1) && page < totalPage - 1) {
+                                            readRecommend(globalAddress, ++page)
+                                        }
+                                    }
+                                })
+
+
+                            }
+
+                            override fun onFailure(call: Call<UserRecommendDTO>, t: Throwable) {
+                                Log.d("getUserRecommend:", "onFailure : $t")
+                            }
+                        })
                 }
             }
         }
@@ -72,14 +146,10 @@ class RecommendFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        // 초기화
         recyclerView = binding.RecommendRecyclerView
-
         adapter = RecommendAdapter(requireContext())
         recyclerView.adapter = adapter
-
-        val itemList = listOf<UserRecommend>() // 데이터 리스트 생성
-        adapter.submitList(itemList) // 어댑터에 데이터 리스트 전달 및 업데이트 요청
 
         binding.setLocationButton.setOnClickListener {
             locationSetLauncher.launch(intent)
@@ -99,12 +169,86 @@ class RecommendFragment : Fragment() {
                         intent = Intent(requireContext(), LocationSetActivity::class.java)
                         intent.putExtra("prePosition", "${location.latitude},${location.longitude}")
                         searchAddress(location.latitude, location.longitude) { address ->
-//                                binding.setLocationText.text = address
                             if (address != null) {
                                 binding.setLocationText.text = address
-                                readRecommend(address)
+                                globalAddress = address
+                                page = 0
+                                api.getUserRecommend(globalAddress, page)
+                                    .enqueue(object : Callback<UserRecommendDTO> {
+                                        override fun onResponse(
+                                            call: Call<UserRecommendDTO>,
+                                            response: Response<UserRecommendDTO>
+                                        ) {
+                                            val body = response.body()
+                                            if (body!!.data.isNotEmpty()) {
+                                                binding.RecommendRecyclerView.visibility =
+                                                    View.VISIBLE
+                                                binding.noResult.visibility = View.GONE
+                                                totalPage = body.totalPage
+                                                adapter.setInitItems(body.data)
+                                            } else {
+                                                binding.RecommendRecyclerView.visibility = View.GONE
+                                                binding.noResult.visibility = View.VISIBLE
+                                            }
+                                            binding.recommendSwipe.setOnRefreshListener {
+                                                page = 0
+                                                api.getUserRecommend(globalAddress, page)
+                                                    .enqueue(object : Callback<UserRecommendDTO> {
+                                                        override fun onResponse(
+                                                            call: Call<UserRecommendDTO>,
+                                                            response: Response<UserRecommendDTO>
+                                                        ) {
+                                                            val body2 = response.body()
+                                                            if (body2!!.data.isNotEmpty()) {
+                                                                binding.RecommendRecyclerView.visibility =
+                                                                    View.VISIBLE
+                                                                binding.noResult.visibility =
+                                                                    View.GONE
+                                                                totalPage = body2.totalPage
+                                                                adapter.setInitItems(body2.data)
+                                                            } else {
+                                                                binding.RecommendRecyclerView.visibility =
+                                                                    View.GONE
+                                                                binding.noResult.visibility =
+                                                                    View.VISIBLE
+                                                            }
+                                                        }
+
+                                                        override fun onFailure(
+                                                            call: Call<UserRecommendDTO>,
+                                                            t: Throwable
+                                                        ) {
+                                                            Log.d("getUserRecommend:", "실패 : $t")
+                                                        }
+                                                    })
+                                                binding.recommendSwipe.isRefreshing = false
+                                            }
+                                            recyclerView.addOnScrollListener(object :
+                                                RecyclerView.OnScrollListener() {
+                                                override fun onScrolled(
+                                                    recyclerView: RecyclerView,
+                                                    dx: Int,
+                                                    dy: Int
+                                                ) {
+                                                    super.onScrolled(recyclerView, dx, dy)
+                                                    if (!recyclerView.canScrollVertically(1) && page < totalPage - 1) {
+                                                        readRecommend(globalAddress, ++page)
+                                                    }
+                                                }
+                                            })
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<UserRecommendDTO>,
+                                            t: Throwable
+                                        ) {
+                                            Log.d("getUserRecommend:", "실패 : $t")
+                                        }
+                                    })
                             } else {
-                                binding.setLocationText.text = ""
+                                binding.setLocationText.text = "위치 설정 오류"
+                                binding.RecommendRecyclerView.visibility = View.GONE
+                                binding.noResult.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -134,14 +278,12 @@ class RecommendFragment : Fragment() {
             ) {
                 val body = response.body()
                 if (body != null) {
-                    Log.d("getAddress", "onResponse: $body")
                     if (body.documents.isNotEmpty()) {
                         val resultAddress =
                             "${body.documents[0].address.region_1depth_name} ${body.documents[0].address.region_2depth_name}"
                         callback(resultAddress)
                     } else {
-                        val resultAddress = "위치 정보가 없습니다."
-                        callback(resultAddress)
+                        callback(null)
                     }
                 } else {
                     callback(null)
@@ -158,26 +300,19 @@ class RecommendFragment : Fragment() {
         })
     }
 
-    private fun readRecommend(address: String) {
-        Log.d("getUserRecommend", "기준 지역 $address")
-        val api = RecommendService.create()
-        api.getUserRecommend(address, 0)
+    // 스크롤 시 다음 페이지 추가
+    private fun readRecommend(address: String, page: Int) {
+        api.getUserRecommend(address, page)
             .enqueue(object : Callback<UserRecommendDTO> {
                 override fun onResponse(
                     call: Call<UserRecommendDTO>,
                     response: Response<UserRecommendDTO>,
                 ) {
-                    Log.d("getUserRecommend:", "onResponse : ${response.body().toString()}")
                     val body = response.body()
                     if (body!!.data.isNotEmpty()) {
-                        binding.RecommendRecyclerView.visibility = View.VISIBLE
-                        binding.noResult.visibility = View.GONE
-                        activity?.runOnUiThread {
-                            body.let { adapter.submitList(body.data) }
+                        adapter.run {
+                            submitList((body.data))
                         }
-                    } else {
-                        binding.RecommendRecyclerView.visibility = View.GONE
-                        binding.noResult.visibility = View.VISIBLE
                     }
                 }
 

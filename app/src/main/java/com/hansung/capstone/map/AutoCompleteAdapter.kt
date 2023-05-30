@@ -43,6 +43,7 @@ class AutoCompleteAdapter( val mapFragment: MapFragment,
                 mapFragment.binding.locationSearch.setText(placeName)
                 mapFragment.binding.locationSearch.clearFocus()
                 mapFragment.binding.autoCompleteRecyclerView.visibility = View.GONE
+                mapFragment.imageViewCheck.postValue(true)
 //                val cursorPosition = placeName.length
 //                mapFragment.binding.locationSearch.setSelection(cursorPosition)
             }

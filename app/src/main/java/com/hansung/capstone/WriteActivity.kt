@@ -135,6 +135,7 @@ class WriteActivity : AppCompatActivity() {
        binding.writebutton.isEnabled = input1.isNotEmpty() && input2.isNotEmpty()
     }
     private fun createPost(userId: Long, title: String, content: String) {
+        binding.progressWrite.visibility = View.VISIBLE
         val postReqPost = ReqPost(userId, title, category = "FREE", content)
         val accessToken= MyApplication.prefs.getString("accessToken", "")
         service.postCreate(accessToken = "Bearer $accessToken",requestDTO = postReqPost, imageList).enqueue(object : Callback<RepPost> {
@@ -146,6 +147,7 @@ class WriteActivity : AppCompatActivity() {
                         if (result?.code == 100) {
                             Log.d("게시글 작성", "성공: $title")
                             MainActivity.getInstance()?.stateCheck(1)
+                            binding.progressWrite.visibility = View.GONE
                             //MainActivity.getInstance()?.writeCheck(true)
                             finish()
                         } else {
@@ -163,6 +165,7 @@ class WriteActivity : AppCompatActivity() {
         })
     }
     private fun modify(title:String,user_id:Long,content:String) {
+        binding.progressWrite.visibility = View.VISIBLE
         val postId=MainActivity.getInstance()?.getChangedPost()
         val putModifyPost=ReqModifyPost(postId!!.id,title,user_id,content,imageIdList)
 
@@ -174,6 +177,7 @@ class WriteActivity : AppCompatActivity() {
                             Log.d("게시글 수정", "성공: $title")
                             MainActivity.getInstance()?.setModifyCheck(false)
                             MainActivity.getInstance()?.stateCheck(2)
+                        binding.progressWrite.visibility = View.GONE
                             finish()
                         }
 

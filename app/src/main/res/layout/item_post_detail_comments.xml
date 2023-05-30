@@ -7,24 +7,14 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/CommentProfileImage"
-        android:layout_width="38dp"
-        android:layout_height="34dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:src="@android:drawable/sym_def_app_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <ImageView
-        android:id="@+id/recommentBt"
-        android:layout_width="30dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_baseline_chat_bubble_outline_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/CommentUserName"
         android:layout_width="wrap_content"
@@ -53,9 +43,11 @@
         android:id="@+id/CommentCreatedDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:text="작성 시간"
         android:textColor="#6A6A6A"
+        app:layout_constraintBottom_toTopOf="@+id/PostDetailReComment"
         app:layout_constraintStart_toStartOf="@+id/CommentContent"
         app:layout_constraintTop_toBottomOf="@+id/CommentContent" />
 
@@ -63,23 +55,44 @@
         android:id="@+id/PostDetailReComment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CommentCreatedDate" />
 
-    <ImageView
-        android:id="@+id/delelteComment"
-        android:layout_width="32dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="5dp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/recommentBt"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_more_horiz_24"
-        tools:ignore="MissingConstraints" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/recommentBt"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/re_comment"
+            tools:layout_editor_absoluteX="278dp"
+            tools:layout_editor_absoluteY="4dp" />
+
+        <LinearLayout
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+
+        <ImageView
+            android:id="@+id/deleteComment"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            app:srcCompat="@drawable/comment_setting"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="317dp"
+            tools:layout_editor_absoluteY="2dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,6 +51,13 @@ class SearchBoardActivity:AppCompatActivity() {
             if (searchMode == 0) search(searchContext) else searchNickname(searchContext)
             swipe.isRefreshing = false
         }
+        binding.searchBoxClear2.setOnClickListener {
+            binding.boardSearch.text.clear()
+            binding.boardSearch.clearFocus()
+            binding.boardSearch.requestFocus()
+            val imm3 = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm3.showSoftInput(binding.boardSearch, InputMethodManager.SHOW_IMPLICIT)
+        }
         binding.boardSearch.setOnEditorActionListener { _, id, _ ->
             page=0
             if ((id == EditorInfo.IME_ACTION_SEARCH) && (binding.boardSearch.text.toString()

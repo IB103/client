@@ -21,10 +21,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:layout_marginEnd="8dp"
-        android:text="코스 이름"
-        android:maxLines="1"
+        android:layout_marginEnd="6dp"
         android:ellipsize="end"
+        android:maxLines="1"
+        android:text="코스 이름"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -53,26 +53,51 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RecommendWaypointsRecyclerView">
 
+        <TextView
+            android:id="@+id/locationCount"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:textAlignment="textStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/locationImage"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
-            android:id="@+id/heartImage"
+            android:id="@+id/locationImage"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/free_icon_favorite" />
+            app:srcCompat="@drawable/location_count" />
+
+        <ImageView
+            android:id="@+id/heartImage"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/heartCount"
+            app:layout_constraintStart_toEndOf="@+id/locationCount"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/heart_check" />
 
         <TextView
             android:id="@+id/heartCount"
-            android:layout_width="30dp"
+            android:layout_width="20dp"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingStart="8dp"
+            android:paddingStart="4dp"
             android:textAlignment="textStart"
             app:layout_constraintBottom_toBottomOf="@+id/heartImage"
             app:layout_constraintStart_toEndOf="@+id/heartImage"
-            app:layout_constraintTop_toTopOf="@+id/heartImage" />
+            app:layout_constraintTop_toTopOf="@+id/heartImage"
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

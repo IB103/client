@@ -16,6 +16,7 @@ data class UserRecommend(
     var originToDestination: String,
     var postId: Long,
     var thumbnailId: Long,
+    var courseId: Long,
     var imageId: List<Long>,
     var imageInfoList: List<ImageInfo>,
     var numOfFavorite: Int

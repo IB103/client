@@ -3,6 +3,7 @@ package com.hansung.capstone.recommend
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -30,12 +31,14 @@ class RecommendWaypointsAdapter(private val context: Context, private var userRe
         viewHolder.waypointNum.text = (position+1).toString()
         viewHolder.itemView.setOnClickListener {
             val intent = Intent(context, CheckCourseActivity::class.java)
-            intent.putParcelableArrayListExtra("imageInfoList", ArrayList(userRecommend.imageInfoList))
-            intent.putExtra("originToDestination", userRecommend.originToDestination)
-            intent.putExtra("coordinates", userRecommend.coordinates)
-            intent.putExtra("postId", userRecommend.postId)
-            intent.putExtra("imageId", userRecommend.imageId.toLongArray())
-            intent.putExtra("numOfFavorite", userRecommend.numOfFavorite)
+//            intent.putParcelableArrayListExtra("imageInfoList", ArrayList(userRecommend.imageInfoList))
+//            intent.putExtra("originToDestination", userRecommend.originToDestination)
+//            intent.putExtra("coordinates", userRecommend.coordinates)
+//            intent.putExtra("postId", userRecommend.postId)
+//            intent.putExtra("imageId", userRecommend.imageId.toLongArray())
+//            intent.putExtra("numOfFavorite", userRecommend.numOfFavorite)
+            intent.putExtra("courseId", userRecommend.courseId)
+            Log.d("getCourseDetail2", userRecommend.courseId.toString())
             context.startActivity(intent)
         }
     }

@@ -19,13 +19,15 @@ import com.hansung.capstone.map.MapboxDirectionAPI
 import com.hansung.capstone.map.ResultSearchDirections
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
-import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.MarkerIcons
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+//import com.naver.maps.map.overlay.InfoWindow
+
+
 
 class MakeCourseActivity : AppCompatActivity(), OnMapReadyCallback {
     private val binding by lazy { ActivityMakeCourseBinding.inflate(layoutInflater) } // 뷰 바인딩
@@ -62,6 +64,7 @@ class MakeCourseActivity : AppCompatActivity(), OnMapReadyCallback {
                         intent.putParcelableArrayListExtra("waypoints", ArrayList(waypoints))
                         intent.putExtra("coordinates", coordinates)
                         intent.putExtra("snapshotPath", snapshotPath)
+                        intent.putExtra("modeSet",2)
                         startActivity(intent)
                     }
                 } else
@@ -194,14 +197,14 @@ class MakeCourseActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
                 marker.map = nMap
-                val infoWindow = InfoWindow()
-                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
-                    override fun getText(infoWindow: InfoWindow): CharSequence {
-                        return infoWindow.marker?.tag as CharSequence? ?: ""
-                    }
-                }
-                marker.tag = waypoints[m].place_name.toString()
-                infoWindow.open(marker)
+//                val infoWindow = InfoWindow()
+//                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
+//                    override fun getText(infoWindow: InfoWindow): CharSequence {
+//                        return infoWindow.marker?.tag as CharSequence? ?: ""
+//                    }
+//                }
+//                marker.tag = waypoints[m].place_name.toString()
+//                infoWindow.open(marker)
                 markers.add(marker)
             }
         }

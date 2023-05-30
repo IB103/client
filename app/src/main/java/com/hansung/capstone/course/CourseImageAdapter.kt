@@ -1,15 +1,21 @@
 package com.hansung.capstone.course
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.text.InputType
+import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.hansung.capstone.CustomDialog
 import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ItemCourseImagesBinding
 import com.hansung.capstone.Waypoint
@@ -38,18 +44,25 @@ class CourseImageAdapter(
         viewHolder.binding.courseImage.setOnClickListener {
             courseActivity.openGallery(viewHolder, position)
         }
-        viewHolder.binding.coursePlaceName.setOnClickListener {
-            openCustomDialog(
-                viewHolder.binding.coursePlaceName.text.toString(),
-                position,
-                courseActivity,
-                this
-            )
-        }
-        viewHolder.binding.searchButton.setOnClickListener {
-            val intent = Intent(courseActivity, WaypointsSearchActivity::class.java)
-            intent.putExtra("position", viewHolder.adapterPosition)
-            courseActivity.searchLauncher.launch(intent)
+        when (courseActivity.modeSet) {
+            1 -> {
+                viewHolder.binding.coursePlaceName.setOnClickListener {
+                    courseDialog(
+                        courseActivity,
+                        viewHolder.binding.coursePlaceName.text.toString(),
+                        position,
+                        this
+                    )
+                }
+                viewHolder.binding.searchButton.setOnClickListener {
+                    val intent = Intent(courseActivity, WaypointsSearchActivity::class.java)
+                    intent.putExtra("position", viewHolder.adapterPosition)
+                    courseActivity.searchLauncher.launch(intent)
+                }
+            }
+            2 -> {
+                viewHolder.binding.searchButton.visibility = View.GONE
+            }
         }
     }
 
@@ -73,8 +86,8 @@ class CourseImageAdapter(
         }
     }
 
-    private fun updateItem(position: Int, placeName: String) {
-        val updatedItem = waypoints[position].copy(place_name = placeName)
+    private fun updateItemByInput(position: Int, placeName: String) {
+        val updatedItem = waypoints[position].copy(place_name = placeName, place_url = "")
         waypoints[position] = updatedItem
         notifyItemChanged(position, updatedItem)
     }
@@ -85,34 +98,67 @@ class CourseImageAdapter(
         notifyItemChanged(position, updatedItem)
     }
 
-    private fun openCustomDialog(
+    private fun courseDialog(
+        context: Context,
         preName: String,
         pos: Int,
-        courseActivity: CourseActivity,
         adapter: CourseImageAdapter
     ) {
-        val customDialog = CustomDialog(courseActivity)
+        val alertDialog = AlertDialog.Builder(context)
+            .setMessage("장소명 등록")
 
-        val searchBox = customDialog.findViewById<EditText>(R.id.placeName) // 다이얼로그 내 EditText 찾기
-        val enrollButton = customDialog.findViewById<Button>(R.id.enrollButton)
-        val cancelButton = customDialog.findViewById<Button>(R.id.cancelButton)
-
+        val editText = EditText(context)
+        alertDialog.setView(editText)
         if (preName.isNotEmpty())
-            searchBox.setText(preName)
-        searchBox.requestFocus()
+            editText.setText(preName)
+        editText.setBackgroundResource(R.drawable.element_edit_box2)
+        editText.hint = "장소명을 입력해주세요."
+        editText.inputType = InputType.TYPE_CLASS_TEXT
+        val textSizeInSp = 16f
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeInSp)
+        editText.setPadding(
+            convertDpToPx(8),
+            0,
+            convertDpToPx(8),
+            0
+        )
+        if (preName.isNotEmpty())
+            editText.setText(preName)
 
-        customDialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        val container = FrameLayout(context)
+        val layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            convertDpToPx(50)
+        )
+        val horizontalMarginInDp = 16
+        val verticalMarginInDp = 0
+        layoutParams.setMargins(
+            convertDpToPx(horizontalMarginInDp),
+            convertDpToPx(verticalMarginInDp),
+            convertDpToPx(horizontalMarginInDp),
+            convertDpToPx(verticalMarginInDp)
+        )
+        container.addView(editText, layoutParams)
 
-        customDialog.show()
+        alertDialog.setView(container)
 
-        enrollButton.setOnClickListener {
-            customDialog.dismiss()
-            adapter.updateItem(pos, searchBox.text.toString())
+        alertDialog.setPositiveButton("등록") { dialog, _ ->
+            dialog.dismiss()
+            adapter.updateItemByInput(pos, editText.text.toString())
+        }
+        alertDialog.setNegativeButton("취소") { dialog, _ ->
+            dialog.dismiss()
         }
 
-        cancelButton?.setOnClickListener {
-            customDialog.dismiss()
-        }
+        editText.requestFocus()
+        val window = alertDialog.show().window
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+    }
+
+    private fun convertDpToPx(dp: Int): Int {
+        val scale = Resources.getSystem().displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
     }
 
 }

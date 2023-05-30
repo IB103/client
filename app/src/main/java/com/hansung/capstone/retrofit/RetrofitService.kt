@@ -162,6 +162,11 @@ interface RetrofitService {
         @Body reqRidingData: ReqRidingData
     ): Call<RepRidingData>
 
+    @GET("/api/user-course/detail")
+    fun getCourseDetail(
+        @Query("courseId") courseId: Int
+    ): Call<RepCourseDetailData>
+
     companion object{
         fun create() : RetrofitService {
             return Retrofit.Builder()

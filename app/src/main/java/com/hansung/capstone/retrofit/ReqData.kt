@@ -120,7 +120,7 @@ data class ReqRidingData(
     var ridingTime: Long,
     @SerializedName("ridingDistance")
     var ridingDistance: Float,
-    @SerializedName("originToDestination")
+    @SerializedName("calorie")
     var calorie: Int,
     @SerializedName("userId")
     var userId:Long,

@@ -6,19 +6,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.hansung.capstone.*
 import com.hansung.capstone.databinding.ItemCourseViewpagerBinding
-import com.hansung.capstone.recommend.UserRecommend
 import com.naver.maps.geometry.LatLng
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: List<Place>, ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//class MapViewPagerAdapter(val mapFragment: MapFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//    private var placeList: List<Place> = emptyList()
+class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: List<Place> ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding =
@@ -27,17 +23,6 @@ class MapViewPagerAdapter(val mapFragment: MapFragment, private val placeList: L
                 parent,
                 false
             )
-//        mapFragment.binding.mapViewPager.registerOnPageChangeCallback(object :
-//            ViewPager2.OnPageChangeCallback() {
-//            override fun onPageSelected(position: Int) {
-//                Log.d("onPageSelected",placeList.toString())
-//                Utility.moveToMarker(LatLng(placeList[position].y.toDouble(),placeList[position].x.toDouble()), mapFragment.nMap)
-//                for(i in MapFragment.markers.indices){
-//                    MapFragment.markers[i].map = mapFragment.nMap
-//                }
-//                mapFragment.pathOverlay2.map = null
-//            }
-//        })
         return MapViewPagerHolder(binding)
     }
 

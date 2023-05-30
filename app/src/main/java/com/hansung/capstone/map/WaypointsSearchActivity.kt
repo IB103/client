@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.hansung.capstone.BuildConfig
+import com.hansung.capstone.R
 import com.hansung.capstone.databinding.ActivityWaypointSearchBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,6 +23,9 @@ class WaypointsSearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar2)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = ""
 
         binding.waypointSearchBox.requestFocus()
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -60,9 +65,9 @@ class WaypointsSearchActivity : AppCompatActivity() {
             imm3.showSoftInput(binding.waypointSearchBox, InputMethodManager.SHOW_IMPLICIT)
         }
 
-        binding.goBackButton.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
+//        binding.goBackButton.setOnClickListener {
+//            onBackPressedDispatcher.onBackPressed()
+//        }
     }
 
     private fun locationSearch(text: String) {
@@ -70,7 +75,8 @@ class WaypointsSearchActivity : AppCompatActivity() {
         val api = KakaoSearchAPI.create()
         api.getSearchKeyword(
             BuildConfig.KAKAO_REST_API_KEY,
-            text
+            text,
+            15
         )
             .enqueue(object : Callback<ResultSearchKeyword> {
                 override fun onResponse(
@@ -101,5 +107,21 @@ class WaypointsSearchActivity : AppCompatActivity() {
                 }
             })
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                overridePendingTransition(0, R.anim.slide_out_right)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0, R.anim.slide_out_right)
     }
 }

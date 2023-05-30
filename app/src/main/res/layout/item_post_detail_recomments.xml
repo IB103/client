@@ -4,21 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="5dp">
+    android:paddingBottom="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_subdirectory_arrow_right_24" />
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_baseline_subdirectory_arrow_right_24" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,7 +33,6 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@android:drawable/sym_def_app_icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,6 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="댓글 내용"
                 android:textColor="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -64,25 +66,26 @@
                 android:id="@+id/reCommentCreatedDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:text="작성 시간"
                 android:textColor="#6A6A6A"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/reCommentContent"
                 app:layout_constraintTop_toBottomOf="@+id/reCommentContent" />
 
-            <ImageView
-                android:id="@+id/delelteReComment"
-                android:layout_width="32dp"
-                android:layout_height="37dp"
-                android:layout_marginTop="5dp"
-            android:visibility="invisible"
-                android:layout_marginEnd="21dp"
+            <ImageButton
+                android:id="@+id/deleteReComment"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="#00FFFFFF"
+                android:scaleType="fitCenter"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_more_horiz_24"
-                tools:ignore="MissingConstraints" />
+                app:srcCompat="@drawable/comment_setting" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

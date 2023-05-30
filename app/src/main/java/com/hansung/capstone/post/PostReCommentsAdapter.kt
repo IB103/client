@@ -46,9 +46,17 @@ class PostReCommentsAdapter(private val comment: Comments,private val context: P
             val createdDate = MyApplication.convertDate(items.createdDate).format(
                 DateTimeFormatter.ofPattern("MM/dd HH:mm"))
             binding.reCommentCreatedDate.text = createdDate
-            binding.delelteReComment.isVisible =
-                items.userNickname==MyApplication.prefs.getString("nickname","")
-            binding.delelteReComment.setOnClickListener {
+//            binding.delelteReComment.isVisible =
+//                items.userNickname==MyApplication.prefs.getString("nickname","")
+            if(items.userNickname==MyApplication.prefs.getString("nickname","")){
+                binding.deleteReComment.alpha = 1f
+                binding.deleteReComment.isEnabled = true
+            }
+            else{
+                binding.deleteReComment.alpha = 0.3f
+                binding.deleteReComment.isEnabled = false
+            }
+            binding.deleteReComment.setOnClickListener {
                 context.reCommentId= items.id
                 reCommentId=items.id
                 showDialog()

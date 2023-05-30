@@ -6,13 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.MenuItem
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -22,6 +22,7 @@ import com.hansung.capstone.board.ResultRespond
 import com.hansung.capstone.databinding.ActivityPostDetailBinding
 import com.hansung.capstone.modify.ModifyComment
 import com.hansung.capstone.modify.ModifyReComment
+import com.hansung.capstone.recommend.CheckCourseActivity
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.item_post_detail_comments.*
 import kotlinx.android.synthetic.main.item_post_detail_comments.view.*
@@ -38,18 +39,20 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     companion object {
-        var scrapCheck:Int=0
+        var scrapCheck: Int = 0
         var heartCheck: Int = 0
         var title_m=""
         var content_m=""
         var position=0
         var lastPosition=0
         var imageList_m= listOf<Int?>()
+
         private var instance: PostDetailActivity? = null
         fun getInstance(): PostDetailActivity? {
             return instance
         }
     }
+
     private val binding by lazy { ActivityPostDetailBinding.inflate(layoutInflater) }
     val api = CommunityService.create()
     lateinit var body: ResultGetPostDetail
@@ -61,19 +64,50 @@ class PostDetailActivity : AppCompatActivity() {
     private var postId:Long=0
     var id=MyApplication.prefs.getLong("userId",0)
     private val linearLayoutManager= LinearLayoutManager(this)
+    private var moveCheck: Int = 0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        binding.PostToolbar.title = ""
+        setSupportActionBar(binding.PostToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         postId = intent.getLongExtra("postid", 0)
+
         resultComment=binding.PostDetailComment
         resultComment.layoutManager=linearLayoutManager
+        moveCheck = intent.getIntExtra("moveCheck", 0)
         binding.imageButton.setOnClickListener {
-            if (MyApplication.prefs.getString("accessToken", "") != ""&&binding.InsertComment.text!=null) {
+            if (MyApplication.prefs.getString(
+                    "accessToken",
+                    ""
+                ) != "" && binding.InsertComment.text != null
+            ) {
                 val comment = binding.InsertComment.text.toString()
                 binding.InsertComment.text = null
                 softKeyboardHide()
                 val totalItemCount = (binding.PostDetailComment.adapter as PostCommentsAdapter).itemCount
                 Log.d("LastPosition","$totalItemCount")
+
+
+                when (commentActivity) {
+                    0 -> PostComment(this@PostDetailActivity).postComment(
+                        comment,
+                        postId,
+                        binding
+                    )
+                    1 -> PostReComment(this@PostDetailActivity).post(
+                        comment,
+                        postId,
+                        commentId.toLong(),
+                        binding
+                    )
+                    2 -> ModifyComment().modify(commentId.toLong(), comment)
+                    3 -> ModifyReComment().modify(reCommentId, comment)
+                }
+
 
                 val commentAction = {
                    // Log.d("checking345","#")
@@ -90,18 +124,19 @@ class PostDetailActivity : AppCompatActivity() {
                             resultComment.scrollToPosition(position)}
                         2-> ModifyComment().modify(commentId.toLong(),comment)
                         3-> ModifyReComment().modify(reCommentId,comment)
+
                     }
-                    commentActivity=0
+                    commentActivity = 0
                 }
                 if (Token().checkToken()) {
                     Token().issueNewToken(commentAction)
-                }else{
+                } else {
                     commentAction()
                 }
             } else {
                 softKeyboardHide()
                 val intent = Intent(this, LoginActivity::class.java)
-                intent.putExtra("loginNeeded",true)
+                intent.putExtra("loginNeeded", true)
                 startActivity(intent)
             }
 
@@ -120,9 +155,9 @@ class PostDetailActivity : AppCompatActivity() {
                 ) {
                     val body = response.body()
                     binding.PostTitle.text = body?.data?.title
-                    title_m= body?.data?.title.toString()
+                    title_m = body?.data?.title.toString()
                     binding.PostContent.text = body?.data?.content
-                    content_m=body?.data?.content.toString()
+                    content_m = body?.data?.content.toString()
                     binding.PostDetailUserName.text = body?.data?.nickname
 
                     val convertedDate =
@@ -132,37 +167,46 @@ class PostDetailActivity : AppCompatActivity() {
                     binding.PostDetailDate.text = createdDate
                     var count = 0
 
-                    Log.d("getPostDetails",body.toString())
+                    Log.d("getPostDetails", body.toString())
                     for (i in body?.data?.commentList!!) {
                         count += i.reCommentList.size
                     }
                     for (i in 0 until body.data.commentList.size) {
-                        val j:Long=-1
-                        if(body.data.commentList[i].userId!=j)
+                        val j: Long = -1
+                        if (body.data.commentList[i].userId != j)
                             ++count
                     }
-                   // count += body.data.commentList.size
+                    // count += body.data.commentList.size
                     //var userId=MyApplication.prefs.getInt("userId",0)
-                    if(body.data.authorId==id){
-                        binding.postActivity.isVisible=true}
-                        binding.postActivity.setOnClickListener {
+                    if (body.data.courseId.toInt() != 0) {
+//                        if (moveCheck == 1) {
+//                            binding.goToCourse.visibility = VISIBLE
+//                            binding.goToCourse.alpha = 0.3f
+//                            binding.goToCourse.isEnabled = false
+//                        } else {
+                            binding.goToCourse.visibility = VISIBLE
+//                            binding.goToCourse.alpha = 1f
+//                            binding.goToCourse.isEnabled = true
+//                        }
+                    }
+                    binding.postActivity.setOnClickListener {
                         showDialog()
                     }
                     binding.CommentCount.text = count.toString()
                     var heartCount = body.data.postVoterId.size
-                    var scrapCount=body.data.postScraperId.size
+                    var scrapCount = body.data.postScraperId.size
                     binding.HeartCount.text = heartCount.toString()
-                    binding.StarCount.text=scrapCount.toString()
-                    binding.BackToList.setOnClickListener {
-                        finish()
-                    }
+                    binding.StarCount.text = scrapCount.toString()
+//                    binding.BackToList.setOnClickListener {
+//                        finish()
+//                    }
 
 
                     scrapCheck = if (body.data.postScraperId.contains(id)) {
-                        binding.StarB.setImageResource(R.drawable.ic_star_check)
+                        binding.StarB.setImageResource(R.drawable.star_check)
                         1
                     } else {
-                        binding.StarB.setImageResource(R.drawable.ic_star_no_check)
+                        binding.StarB.setImageResource(R.drawable.star_no_check)
                         0
                     }
 //                    heartCheck = if (body.data.postScraperId.contains(user_Id.toLong())) {
@@ -175,10 +219,10 @@ class PostDetailActivity : AppCompatActivity() {
                     // 좋아요 버튼
 //                    buttonCheck = if (body.data.postVoterId.contains(user_Id.toLong())) {
                     heartCheck = if (body.data.postVoterId.contains(id)) {
-                        binding.HeartB.setImageResource(R.drawable.ic_heart_check)
+                        binding.HeartB.setImageResource(R.drawable.heart_check)
                         1
                     } else {
-                        binding.HeartB.setImageResource(R.drawable.ic_heart_no_check)
+                        binding.HeartB.setImageResource(R.drawable.heart_no_check)
                         0
                     }
                     binding.HeartB.setOnClickListener {
@@ -199,17 +243,16 @@ class PostDetailActivity : AppCompatActivity() {
                         runOnUiThread {
                             when (heartCheck) {
                                 0 -> {
-
                                     MainActivity.getInstance()!!.heartCheck(1)
                                     Log.d("hearMain2", "${MainActivity.getInstance()?.getHeartCheck()}")
-                                    binding.HeartB.setImageResource(R.drawable.ic_heart_check)
+                                    binding.HeartB.setImageResource(R.drawable.heart_check)
                                     binding.HeartCount.text = "${++heartCount}"
                                     heartCheck = 1
                                 }
                                 else -> {
                                     MainActivity.getInstance()!!.heartCheck(0)
                                     Log.d("hearMain3", "${MainActivity.getInstance()?.getHeartCheck()}")
-                                    binding.HeartB.setImageResource(R.drawable.ic_heart_no_check)
+                                    binding.HeartB.setImageResource(R.drawable.heart_no_check)
                                     binding.HeartCount.text = "${--heartCount}"
                                     heartCheck = 0
                                 }
@@ -228,6 +271,7 @@ class PostDetailActivity : AppCompatActivity() {
 //                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
                                     }
                                 }
+
                                 override fun onFailure(call: Call<ResultRespond>, t: Throwable) {
                                     Log.d("checkScrap:", "실패 : $t")
                                 }
@@ -235,23 +279,52 @@ class PostDetailActivity : AppCompatActivity() {
                         runOnUiThread {
                             when (scrapCheck) {
                                 0 -> {
-                                    binding.StarB.setImageResource(R.drawable.ic_star_check)
+                                    binding.StarB.setImageResource(R.drawable.star_check)
                                     binding.StarCount.text = "${++scrapCount}"
                                     scrapCheck = 1
                                 }
                                 else -> {
-                                    binding.StarB.setImageResource(R.drawable.ic_star_no_check)
+                                    binding.StarB.setImageResource(R.drawable.star_no_check)
                                     binding.StarCount.text = "${--scrapCount}"
                                     scrapCheck = 0
                                 }
                             }
                         }
                     }
+                    if(body.data.courseId.toInt() == 0) {
+                        if(body.data.authorId == id) {
+                            binding.postActivity.visibility = VISIBLE
+                            binding.postActivity.alpha = 1f
+                            binding.postActivity.isEnabled = true
+                        }
+                        else {
+                            binding.postActivity.visibility = VISIBLE
+                            binding.postActivity.alpha = 0.3f
+                            binding.postActivity.isEnabled = false
+                        }
+                    }
+                    binding.goToCourse.setOnClickListener {
+                        if(moveCheck == 0) {
+                            val goToCourseIntent =
+                                Intent(this@PostDetailActivity, CheckCourseActivity::class.java)
+                            goToCourseIntent.putExtra(
+                                "courseId",
+                                body.data.courseId
+                            ) // 왜 올때는 롱이고 보낼땐 인트여
+                            goToCourseIntent.putExtra("moveCheck", 1)
+                            startActivity(goToCourseIntent)
+                        }
+                        else{
+                            finish()
+                        }
+                    }
                     if (body.data.authorProfileImageId != noImage.toLong()) {
                         Glide.with(this@PostDetailActivity)
                             .load("${MyApplication.getUrl()}profile-image/${body.data.authorProfileImageId}") // 불러올 이미지 url
-                            .override(100, 100)
-                            .circleCrop()
+//                            .override(100, 100)
+                            .placeholder(R.drawable.no_image)
+                            .error(R.drawable.no_image)
+                            .centerCrop()
                             .into(binding.PostProfileImage)
                     } else binding.PostProfileImage.setImageResource(R.drawable.user)
                     // 이미지 등록
@@ -260,12 +333,12 @@ class PostDetailActivity : AppCompatActivity() {
                             binding.ImageLayout.visibility = VISIBLE
                             val postImagesAdapter = PostDetailImagesAdapter(this@PostDetailActivity)
                             postImagesAdapter.imageList = body.data.imageId
-                            imageList_m=body.data.imageId
+                            imageList_m = body.data.imageId
                             binding.postImageRecyclerView.adapter = postImagesAdapter
                             postImageRecyclerView.addItemDecoration(
                                 PostImageAdapterDecoration()
                             )
-                        }else imageList_m= emptyList()
+                        } else imageList_m = emptyList()
                         binding.PostDetailComment.adapter =
                             PostCommentsAdapter(body, this@PostDetailActivity)
                         (binding.PostDetailComment.adapter as PostCommentsAdapter).notifyDataSetChanged()
@@ -274,11 +347,13 @@ class PostDetailActivity : AppCompatActivity() {
                         )
                     }
                 }
+
                 override fun onFailure(call: Call<ResultGetPostDetail>, t: Throwable) {
                     Log.d("getPostDetail:", "실패 : $t")
                 }
             })
     }
+
      fun setPosition(int:Int){
         position=int
     }
@@ -287,17 +362,19 @@ class PostDetailActivity : AppCompatActivity() {
     }
     private fun deletePost(){
         val accessToken=MyApplication.prefs.getString("accessToken","")
+
         //val myFragment = supportFragmentManager.findFragmentById(R.id.boardFragment) as BoardFragment?
         // Activity 클래스 내부
-        api.deletePost(accessToken = "Bearer $accessToken",id, postId)
+        api.deletePost(accessToken = "Bearer $accessToken", id, postId)
             .enqueue(object : Callback<ResDelete> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(
                     call: Call<ResDelete>,
                     response: Response<ResDelete>,
-                ) { val body = response.body()
-                    if(response.isSuccessful){
-                        if(body?.code==100) {
+                ) {
+                    val body = response.body()
+                    if (response.isSuccessful) {
+                        if (body?.code == 100) {
                             Log.d("INFO deletePost", "글삭제 성공 $body")
                             MainActivity.getInstance()?.stateCheck(0)
                             // MainActivity.getInstance()?.deleteCheck(true)
@@ -305,7 +382,7 @@ class PostDetailActivity : AppCompatActivity() {
                             //BoardFragment().initData()
                             finish()
                         }
-                    }else {
+                    } else {
                         //deletePostCheck=false
                         // 통신이 실패한 경우
                         Log.d("ERR deletePost", "onResponse 실패" + body?.toString())
@@ -313,6 +390,7 @@ class PostDetailActivity : AppCompatActivity() {
                     }
 
                 }
+
                 override fun onFailure(call: Call<ResDelete>, t: Throwable) {
                     //deletePostCheck=false
                     Log.d("deletePost:", "실패 : $t")
@@ -320,23 +398,26 @@ class PostDetailActivity : AppCompatActivity() {
             })
     }
 
-     fun commentSuccess(int: Int){
-         when(int){
-             1-> Toast.makeText(this,"댓글 작성이 완료되었습니다.",Toast.LENGTH_SHORT).show()
-             2-> Toast.makeText(this,"댓글 수정이 완료되었습니다.",Toast.LENGTH_SHORT).show()
-             3-> Toast.makeText(this,"댓글 삭제가 완료되었습니다.",Toast.LENGTH_SHORT).show()
-         }
+    fun commentSuccess(int: Int) {
+        when (int) {
+            1 -> Toast.makeText(this, "댓글 작성이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            2 -> Toast.makeText(this, "댓글 수정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            3 -> Toast.makeText(this, "댓글 삭제가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+        }
 
     }
+
     private fun softKeyboardHide() {
         binding.InsertComment.clearFocus()
         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.ime())
     }
-    fun postComment(){
+
+    fun postComment() {
         PostComment(this@PostDetailActivity).postComments(postId, binding)
     }
-    fun keyBordShow(int:Int) {
-        commentActivity=int
+
+    fun keyBordShow(int: Int) {
+        commentActivity = int
         binding.InsertComment.clearFocus()
         binding.InsertComment.requestFocus()
         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.ime())
@@ -349,15 +430,15 @@ class PostDetailActivity : AppCompatActivity() {
         intent.putExtra("position", position)
         startActivity(intent)
     }
-    fun showDialog(){
-        val dataArr=arrayOf("삭제하기","수정하기")
-        val builder: AlertDialog.Builder= AlertDialog.Builder(this@PostDetailActivity)
+
+    fun showDialog() {
+        val dataArr = arrayOf("삭제하기", "수정하기")
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this@PostDetailActivity)
         builder.setTitle("글 활동")
-        val listener= DialogInterface.OnClickListener { _, which ->
-            if(dataArr[which]=="삭제하기"){
+        val listener = DialogInterface.OnClickListener { _, which ->
+            if (dataArr[which] == "삭제하기") {
                 deletePost()
-            }
-            else if(dataArr[which]=="수정하기"){
+            } else if (dataArr[which] == "수정하기") {
                 MainActivity.getInstance()?.setModifyCheck(true)
                 MainActivity.getInstance()?.setModifyInform(title_m, content_m, imageList_m)
                 val intent = Intent(this, WriteActivity::class.java)
@@ -366,9 +447,19 @@ class PostDetailActivity : AppCompatActivity() {
             }
 
         }
-        builder.setItems(dataArr,listener)
-        builder.setNegativeButton("취소",null)
+        builder.setItems(dataArr, listener)
+        builder.setNegativeButton("취소", null)
         builder.show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 
