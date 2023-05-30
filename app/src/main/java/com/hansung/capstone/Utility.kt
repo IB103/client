@@ -9,6 +9,7 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.TimeUnit
 
 object Utility {
     fun saveSnapshot(context: Context, bitmap: Bitmap): String {
@@ -44,4 +45,30 @@ object Utility {
             .animate(CameraAnimation.Fly,1000)
         naverMap.moveCamera(cameraUpdate)
     }
+
+    fun convertMsList(ms: MutableList<Long>): MutableList<String> {
+        val tmp:MutableList<String> = mutableListOf()
+        for(i in 0 until ms.size){
+            var originalMs = ms[i]
+            val hours = TimeUnit.MILLISECONDS.toHours(originalMs)
+            originalMs -= TimeUnit.HOURS.toMillis(hours)
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(originalMs)
+            originalMs -= TimeUnit.MINUTES.toMillis(minutes)
+            tmp.add(i,"${if (minutes < 10) "0" else ""}$hours"+"H"+
+                    "${if (minutes < 10) "0" else ""}$minutes"+"M")
+        }
+        return tmp
+    }
+    fun convertMs(ms: Long): String {
+        var originalMs = ms
+        val hours = TimeUnit.MILLISECONDS.toHours(originalMs)
+        originalMs -= TimeUnit.HOURS.toMillis(hours)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(originalMs)
+        originalMs -= TimeUnit.MINUTES.toMillis(minutes)
+
+        return "${if (minutes < 10) "0" else ""}$hours" +"H"+
+                "${if (minutes < 10) "0" else ""}$minutes" +"M"
+
+    }
+
 }

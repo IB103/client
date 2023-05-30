@@ -33,29 +33,28 @@ class ModifyNickActivity:AppCompatActivity(){
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.checkNick.setOnClickListener {
             val nickname = binding.modifyNick.text.toString()
-            CheckNick().doubleCheckNick(nickname, binding.commentNick, binding.changeBt)
+                    CheckNick().doubleCheckNick(nickname, binding.commentNick, binding.changeBt)
         }
+
 //        binding.checkPW.setOnClickListener {
 //            val pw = binding.modifyPW.text.toString()
 //            ModifyPW().modifyPW(pw)
 //        }
         binding.changeBt.setOnClickListener {
             val nickname = binding.modifyNick.text.toString()
-            val modifyNick={modifyNick(nickname)}
             if (Token().checkToken()) {
-                Token().issueNewToken(modifyNick)
+                Token().issueNewToken{modifyNick(nickname)}
             }else{
-                modifyNick
+                modifyNick(nickname)
             }
-
         }
-
     }
 
     private fun modifyNick(nick: String){
         val email= MyApplication.prefs.getString("email","")
         val putReqModifyNick = ReqModifyNick(email, nick)
-        service.modifyNick(putReqModifyNick)
+        val accessToken= MyApplication.prefs.getString("accessToken","")
+        service.modifyNick(accessToken = "Bearer $accessToken",putReqModifyNick)
             .enqueue(object : Callback<RepModifyNick> {
                 @SuppressLint("Range", "ResourceAsColor")
                 override fun onResponse(

@@ -5,19 +5,13 @@ import android.content.Context
 import com.kakao.sdk.common.KakaoSdk
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class MyApplication : Application() {
 
     init {
         instance = this
     }
-
-//    val retrofit: Retrofit by lazy {
-//        Retrofit.Builder()
-//            .baseUrl("https://api.example.com/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//    }
 
     companion object {
         lateinit var prefs: Preference
@@ -37,9 +31,15 @@ class MyApplication : Application() {
 
         // LocalDateTime 변환
         fun convertDate(date: String): LocalDateTime {
-            val subDate = date.substring(0 until 19)
+            val subDate = date.substring(0 until minOf(date.length, 19))
             val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
             return LocalDateTime.parse(subDate, pattern)
+        }
+        fun checkUpdateTime():Boolean{
+            val calendar = Calendar.getInstance()
+            val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+
+            return currentHour == 7
         }
     }
 

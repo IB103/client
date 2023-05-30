@@ -18,8 +18,9 @@ class PostComment(private val context: PostDetailActivity) {
     val api = CommunityService.create()
     fun postComment(str: String, postId: Long,binding:ActivityPostDetailBinding) {
         val userId = MyApplication.prefs.getLong("userId", 0)
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
         val postReqComment = ReqComment(postId, userId, str)
-        service.postComment(postReqComment).enqueue(object : Callback<RepComment> {
+        service.postComment(accessToken = "Bearer $accessToken",postReqComment).enqueue(object : Callback<RepComment> {
             @SuppressLint("Range", "ResourceAsColor")
             override fun onResponse(call: Call<RepComment>, response: Response<RepComment>) {
                 if (response.isSuccessful) {

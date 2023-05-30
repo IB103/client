@@ -15,6 +15,11 @@ interface CommunityService {
         @Query("titleOrContent") titleOrContent: String,
         @Query("page") page: Int
     ): Call<ResultGetPosts>
+    @GET("/api/community/post/list/nickname")
+    fun searchNickname(
+        @Query("nickname") nickname: String,
+        @Query("page") page: Int
+    ): Call<ResultGetPosts>
     @GET("api/community/post/list/all")
     fun getAllPost(
         @Query("page") query: Int,

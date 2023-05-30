@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.CommunityService
+import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.board.*
 import com.hansung.capstone.databinding.ActivityMystoryBinding
@@ -18,6 +19,7 @@ class MyStory: AppCompatActivity() {
     private lateinit var resultAllPost: RecyclerView
     lateinit var binding: ActivityMystoryBinding
     var body:ResultGetPosts?=null
+    var totalPage=1
     val api = CommunityService.create()
     var adapter= BoardAdapter()
     val nickname= MyApplication.prefs.getString("nickname","")
@@ -61,7 +63,7 @@ class MyStory: AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 // 스크롤 끝까지 도달 새로운 데이터 로드
-                if (!recyclerView.canScrollVertically(1)){//&&page<body!!.totalPage) {
+                if (!recyclerView.canScrollVertically(1)&&page<totalPage-1){//) {
                    getAllPost(page++)
                 }
             }
@@ -75,6 +77,7 @@ class MyStory: AppCompatActivity() {
                 ) {
                     Log.d("getPostMyStory:", "성공 : ${response.body().toString()}")
                     val body = response.body()
+                    totalPage=body!!.totalPage
                     adapter.setInitItems(body!!.data as ArrayList<Posts>)
 
                 }
@@ -94,6 +97,7 @@ class MyStory: AppCompatActivity() {
                 ) {
                     Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                     body = response.body()
+                    totalPage=body!!.totalPage
                    adapter.moreItems(body!!.data as ArrayList<Posts>)
                 }
 
@@ -113,5 +117,16 @@ class MyStory: AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+    override fun onResume() {
+        super.onResume()
+        if(MainActivity.getInstance()?.getCommentCount()!=0|| MainActivity.getInstance()?.getDeletedCommentCount()!=0
+        ){
 
+            adapter.commentChanged(MainActivity.getInstance()!!.getChangedPost())
+        }else if(  MainActivity.getInstance()?.getHeartCheck()!=-1){
+            Log.d("check#1","1")
+            adapter.heartChanged(MainActivity.getInstance()!!.getChangedPost())
+        }
+        MainActivity.getInstance()?.stateCheck(-1)
+    }
 }

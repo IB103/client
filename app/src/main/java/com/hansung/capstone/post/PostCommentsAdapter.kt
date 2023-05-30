@@ -21,9 +21,12 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var noImage=-1
     var commentId:Long=0
+    var totalComments=0
     var userId=MyApplication.prefs.getLong("userId",0)
     var accessToken=MyApplication.prefs.getString("accessToken","")
     override fun getItemCount(): Int {
+        totalComments=resultDetailPost.data.commentList.count()
+
         return resultDetailPost.data.commentList.count()
     }
 
@@ -35,12 +38,12 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewHolder = holder as PostCommentsHolder
-        viewHolder.bind(resultDetailPost.data.commentList[position])
+        viewHolder.bind(resultDetailPost.data.commentList[position],position=position)
     }
 
     inner class PostCommentsHolder(private val binding: ItemPostDetailCommentsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: Comments) {
+        fun bind(items: Comments,position: Int) {
             if(items.userId.toInt()==-1){
                 binding.CommentContent.text="삭제된 댓글입니다."
                 binding.recommentBt.isVisible=false
@@ -50,6 +53,7 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
             }else {
                 binding.recommentBt.setOnClickListener {
                     context.commentId = items.id.toInt()
+                    context.setPosition(position)
                     context.keyBordShow(1)
                 }
                 binding.delelteComment.isVisible =
@@ -76,10 +80,12 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
                 } else binding.CommentProfileImage.setImageResource(R.drawable.user)
             }
             if(items.reCommentList.isNotEmpty()) {
+                totalComments+=items.reCommentList.size
                 binding.PostDetailReComment.adapter = PostReCommentsAdapter(items,context)
             }
             else
                 binding.PostDetailReComment.visibility= View.GONE
+            context.setLastPosition(totalComments)
         }
     }
     private fun showDialog(){
@@ -90,10 +96,10 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
             if(dataArr[which]==dataArr[0]){
                 if (Token().checkToken()) {
                     Token().issueNewToken{
-                        DeleteComment().delete(accessToken,userId,commentId)
+                        DeleteComment().delete(userId,commentId)
                     }
                 } else {
-                    DeleteComment().delete(accessToken,userId,commentId)
+                    DeleteComment().delete(userId,commentId)
                 }
             }
             else if(dataArr[which]==dataArr[1])

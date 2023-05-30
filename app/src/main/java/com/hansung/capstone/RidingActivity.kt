@@ -285,7 +285,6 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
             // 칼로리 수정
             RidingService.kcalLiveData.postValue(RidingUtility.calculateKcal(it).toInt())
         }
-
         // LiveData 거리를 observe
         RidingService.distanceLiveData.observe(this) {
             binding.printDistance.text = "%.2f".format(it)

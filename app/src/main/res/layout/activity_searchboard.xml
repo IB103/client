@@ -22,7 +22,6 @@
             android:id="@+id/boardSearch"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-
             android:layout_marginEnd="8dp"
             android:autofillHints=""
             android:background="@drawable/element_edit_box"
@@ -36,19 +35,87 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+
     </androidx.appcompat.widget.Toolbar>
+    <LinearLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:orientation="horizontal">
+
+     <androidx.appcompat.widget.AppCompatTextView
+     android:layout_width="match_parent"
+         android:id="@+id/searchTitleContent"
+     android:text="제목/내용"
+         android:textSize="14sp"
+         android:textStyle="bold"
+         android:textColor="@color/maincolor"
+         android:padding="5dp"
+         android:textAlignment="center"
+         android:layout_weight="1"
+        android:layout_height="wrap_content"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/searchAuthor"
+            android:layout_width="match_parent"
+            android:text="작성자"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray2"
+            android:padding="5dp"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+
+
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/noResultImage"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="80dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:srcCompat="@drawable/noresult"
-        android:visibility="invisible"/>
+        app:srcCompat="@drawable/noresult" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/tabLayout">
+        <View
+            android:id="@+id/searchTitleContentView"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/maincolor"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="@+id/tabLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchAuthor" />
+        <View
+            android:id="@+id/searchAuthorView"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:textColor="@color/gray2"
+
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="@+id/tabLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchAuthor" />
+    </LinearLayout>
     <TextView
         android:id="@+id/noResultComment"
         android:layout_width="wrap_content"
@@ -62,19 +129,16 @@
         app:layout_constraintTop_toBottomOf="@+id/noResultImage" />
 
 
-
-
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/BoardSwipe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/resultAllPost"

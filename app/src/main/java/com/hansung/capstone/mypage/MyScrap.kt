@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.CommunityService
+import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.board.*
 import com.hansung.capstone.databinding.ActivityMyscrapBinding
@@ -19,6 +20,7 @@ class MyScrap: AppCompatActivity() {
     lateinit var binding: ActivityMyscrapBinding
     val api = CommunityService.create()
     var body:ResultGetPosts?=null
+    var totalPage=1
     var adapter= BoardAdapter()
     private val id= MyApplication.prefs.getLong("userId",0)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +62,7 @@ class MyScrap: AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 // 스크롤 끝까지 도달 새로운 데이터 로드
-                if (!recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(1)&&page<totalPage-1) {
                    getAllPost(++page)
                 }
             }
@@ -73,6 +75,7 @@ class MyScrap: AppCompatActivity() {
                 ) {
                     Log.d("getPostMyScrap:", "성공 : ${response.body().toString()}")
                     val body = response.body()
+                    totalPage=body!!.totalPage
                     adapter.setInitItems((body!!.data as ArrayList<Posts>))
                 }
                 override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
@@ -100,6 +103,7 @@ class MyScrap: AppCompatActivity() {
                 ) {
                     Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                     body = response.body()
+                    totalPage=body!!.totalPage
                     if(body?.data!!.isNotEmpty()){
                         adapter.run{
                             moreItems((body!!.data as ArrayList<Posts>))
@@ -115,4 +119,16 @@ class MyScrap: AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(MainActivity.getInstance()?.getCommentCount()!=0|| MainActivity.getInstance()?.getDeletedCommentCount()!=0
+        ){
+
+            adapter.commentChanged(MainActivity.getInstance()!!.getChangedPost())
+        }else if(  MainActivity.getInstance()?.getHeartCheck()!=-1){
+            Log.d("check#1","1")
+            adapter.heartChanged(MainActivity.getInstance()!!.getChangedPost())
+        }
+        MainActivity.getInstance()?.stateCheck(-1)
+    }
 }

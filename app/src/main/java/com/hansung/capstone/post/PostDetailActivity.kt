@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View.VISIBLE
 import android.widget.Toast
@@ -12,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hansung.capstone.*
 import com.hansung.capstone.board.ResDelete
@@ -39,6 +42,8 @@ class PostDetailActivity : AppCompatActivity() {
         var heartCheck: Int = 0
         var title_m=""
         var content_m=""
+        var position=0
+        var lastPosition=0
         var imageList_m= listOf<Int?>()
         private var instance: PostDetailActivity? = null
         fun getInstance(): PostDetailActivity? {
@@ -49,25 +54,40 @@ class PostDetailActivity : AppCompatActivity() {
     val api = CommunityService.create()
     lateinit var body: ResultGetPostDetail
     private var commentActivity = 0
+    lateinit var resultComment:RecyclerView
     var noImage = -1
     var commentId:Int=0
     var reCommentId:Long=0
     private var postId:Long=0
     var id=MyApplication.prefs.getLong("userId",0)
-
+    private val linearLayoutManager= LinearLayoutManager(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         postId = intent.getLongExtra("postid", 0)
+        resultComment=binding.PostDetailComment
+        resultComment.layoutManager=linearLayoutManager
         binding.imageButton.setOnClickListener {
             if (MyApplication.prefs.getString("accessToken", "") != ""&&binding.InsertComment.text!=null) {
                 val comment = binding.InsertComment.text.toString()
                 binding.InsertComment.text = null
                 softKeyboardHide()
+                val totalItemCount = (binding.PostDetailComment.adapter as PostCommentsAdapter).itemCount
+                Log.d("LastPosition","$totalItemCount")
+
                 val commentAction = {
+                   // Log.d("checking345","#")
                     when(commentActivity){
-                        0->PostComment(this@PostDetailActivity).postComment(comment, postId, binding)
-                        1->PostReComment(this@PostDetailActivity).post(comment,postId, commentId.toLong(),binding)
+                        0->{//binding.PostDetailComment.scrollToPosition(14)
+                            PostComment(this@PostDetailActivity).postComment(comment, postId, binding)
+                            Log.d("LastPosition","$lastPosition")
+                            Handler().postDelayed(
+                                Runnable { binding.PostDetailComment.scrollToPosition(15) },
+                                200
+                            )
+                          }
+                        1->{PostReComment(this@PostDetailActivity).post(comment,postId, commentId.toLong(),binding)
+                            resultComment.scrollToPosition(position)}
                         2-> ModifyComment().modify(commentId.toLong(),comment)
                         3-> ModifyReComment().modify(reCommentId,comment)
                     }
@@ -79,12 +99,14 @@ class PostDetailActivity : AppCompatActivity() {
                     commentAction()
                 }
             } else {
+                softKeyboardHide()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.putExtra("loginNeeded",true)
                 startActivity(intent)
             }
 
         }
+
         getPostDetails(postId)
     }
 
@@ -177,13 +199,16 @@ class PostDetailActivity : AppCompatActivity() {
                         runOnUiThread {
                             when (heartCheck) {
                                 0 -> {
-                                    MainActivity.getInstance()!!.hearCheck(1)
+
+                                    MainActivity.getInstance()!!.heartCheck(1)
+                                    Log.d("hearMain2", "${MainActivity.getInstance()?.getHeartCheck()}")
                                     binding.HeartB.setImageResource(R.drawable.ic_heart_check)
                                     binding.HeartCount.text = "${++heartCount}"
                                     heartCheck = 1
                                 }
                                 else -> {
-                                    MainActivity.getInstance()!!.hearCheck(0)
+                                    MainActivity.getInstance()!!.heartCheck(0)
+                                    Log.d("hearMain3", "${MainActivity.getInstance()?.getHeartCheck()}")
                                     binding.HeartB.setImageResource(R.drawable.ic_heart_no_check)
                                     binding.HeartCount.text = "${--heartCount}"
                                     heartCheck = 0
@@ -254,7 +279,12 @@ class PostDetailActivity : AppCompatActivity() {
                 }
             })
     }
-
+     fun setPosition(int:Int){
+        position=int
+    }
+    fun setLastPosition(int:Int){
+        lastPosition=int
+    }
     private fun deletePost(){
         val accessToken=MyApplication.prefs.getString("accessToken","")
         //val myFragment = supportFragmentManager.findFragmentById(R.id.boardFragment) as BoardFragment?

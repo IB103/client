@@ -13,7 +13,8 @@ import retrofit2.Response
 
 class DeleteComment {
     val api = CommunityService.create()
-    fun delete(accessToken:String, userId:Long, commentId:Long){
+    fun delete(userId:Long, commentId:Long){
+        val accessToken=MyApplication.prefs.getString("accessToken","")
         api.deleteComment(accessToken = "Bearer $accessToken",userId, commentId)
             .enqueue(object : Callback<ResDelete> {
                 @SuppressLint("SetTextI18n")

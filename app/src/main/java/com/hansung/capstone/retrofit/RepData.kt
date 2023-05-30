@@ -12,6 +12,14 @@ data class RepConfirm(
     @SerializedName("data")
     val data:TokenInfo
 )
+data class RepLogOut(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String
+)
 data class RepSend(
     @SerializedName("code")
     val code: Int,
@@ -21,6 +29,26 @@ data class RepSend(
     val message: String,
     @SerializedName("timestamp")
     val timestamp:String
+)
+data class RepRank(
+    @SerializedName("code")
+    val code: Int,
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data:List<RankData>
+)
+data class RankData(
+    @SerializedName("profileImageId")
+    val profileImageId: Long,
+    @SerializedName("userNickname")
+    val userNickname: String,
+    @SerializedName("totalDistance")
+    val totalDistance: Float,
+    @SerializedName("distanceRank")
+    val distanceRank: Int
 )
 data class RepGetRecord(
     @SerializedName("code")
@@ -37,10 +65,11 @@ data class RidingData(
     val ridingTime: Long,
     @SerializedName("ridingDistance")
     val ridingDistance: Float,
+    @SerializedName("createdDate")
+    var createdDate: String,
     @SerializedName("calorie")
-    val calorie: Long,
-    val date: Long,
-    val distance: Long)
+    val calorie: Int
+    )
 data class RepFindId(
     @SerializedName("code")
     val code: Int,

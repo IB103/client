@@ -8,6 +8,16 @@
     tools:context=".home.HomeFragment">
 
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/CommunityToolbar">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/CommunityToolbar"
         android:layout_width="match_parent"
@@ -26,20 +36,20 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/imageView5"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:src="@drawable/logoment" />
+
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:src="@drawable/bike" />
-
-
 
 
         </LinearLayout>
@@ -73,7 +83,7 @@
     <RelativeLayout
         android:id="@+id/weather_tip_tv"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="75dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/element_post_list"
         android:padding="8dp"
@@ -87,8 +97,11 @@
             android:layout_height="48dp"
             android:layout_alignParentStart="true"
 
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
 
 
         <TextView
@@ -123,7 +136,9 @@
         android:layout_width="0dp"
         android:layout_height="104dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/element_post_list"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -216,7 +231,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/element_post_list"
-        android:padding="16dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -263,42 +278,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="나의 기록 순위"
+            android:text="거리 기록 순위"
             android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageView7"
-            app:layout_constraintStart_toEndOf="@+id/imageView7"
-            app:layout_constraintTop_toTopOf="@+id/imageView7" />
+            app:layout_constraintStart_toEndOf="@+id/imageView7" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rankLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:flow_horizontalAlign="center"
+            app:flow_verticalAlign="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView7">
+            app:layout_constraintTop_toBottomOf="@+id/textView8">
 
-
-            <TextView
-                android:id="@+id/first_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="-"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/rank1Image"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/user"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView8"
                 app:layout_constraintStart_toEndOf="@+id/imageView8"
-                app:layout_constraintTop_toTopOf="@+id/imageView8" />
+                app:layout_constraintTop_toTopOf="@+id/imageView8"
+                tools:ignore="MissingClass" />
 
             <TextView
-                android:id="@+id/first_two"
+                android:id="@+id/first_Nick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="-"
-                app:layout_constraintBottom_toBottomOf="@+id/first_one"
-                app:layout_constraintStart_toEndOf="@+id/first_one"
-                app:layout_constraintTop_toTopOf="@+id/first_one" />
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/rank1Image"
+                app:layout_constraintStart_toEndOf="@+id/rank1Image"
+                app:layout_constraintTop_toTopOf="@+id/rank1Image" />
+
+            <TextView
+                android:id="@+id/first_Distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:text="-"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/first_Nick"
+                app:layout_constraintStart_toEndOf="@+id/first_Nick"
+                app:layout_constraintTop_toTopOf="@+id/first_Nick" />
 
             <ImageView
                 android:id="@+id/imageView8"
@@ -307,7 +336,8 @@
                 android:layout_marginStart="16dp"
                 android:src="@drawable/first"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/imageView7" />
+                app:layout_constraintTop_toTopOf="@id/imageView7"
+                tools:ignore="NotSibling" />
 
             <ImageView
                 android:id="@+id/imageView9"
@@ -319,25 +349,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/view5" />
 
-            <TextView
-                android:id="@+id/second_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="-"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/rank2Image"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/user"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView9"
                 app:layout_constraintStart_toEndOf="@+id/imageView9"
-                app:layout_constraintTop_toTopOf="@+id/imageView9" />
+                app:layout_constraintTop_toTopOf="@+id/imageView9"
+                tools:ignore="MissingClass" />
 
             <TextView
-                android:id="@+id/second_two"
+                android:id="@+id/second_Nick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="-"
-                app:layout_constraintBottom_toBottomOf="@+id/second_one"
-                app:layout_constraintStart_toEndOf="@+id/second_one"
-                app:layout_constraintTop_toTopOf="@+id/second_one" />
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/rank2Image"
+                app:layout_constraintStart_toEndOf="@+id/rank2Image"
+                app:layout_constraintTop_toTopOf="@+id/rank2Image" />
+
+            <TextView
+                android:id="@+id/second_Distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:text="-"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/second_Nick"
+                app:layout_constraintStart_toEndOf="@+id/second_Nick"
+                app:layout_constraintTop_toTopOf="@+id/second_Nick" />
 
             <View
                 android:id="@+id/view5"
@@ -361,25 +404,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view6" />
 
-            <TextView
-                android:id="@+id/third_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="-"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/rank3Image"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/user"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView11"
                 app:layout_constraintStart_toEndOf="@+id/imageView11"
-                app:layout_constraintTop_toTopOf="@+id/imageView11" />
+                app:layout_constraintTop_toTopOf="@+id/imageView11"
+                tools:ignore="MissingClass" />
 
             <TextView
-                android:id="@+id/third_two"
+                android:id="@+id/third_Nick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="-"
-                app:layout_constraintBottom_toBottomOf="@+id/third_one"
-                app:layout_constraintStart_toEndOf="@+id/third_one"
-                app:layout_constraintTop_toTopOf="@+id/third_one" />
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/rank3Image"
+                app:layout_constraintStart_toEndOf="@+id/rank3Image"
+                app:layout_constraintTop_toTopOf="@+id/rank3Image" />
+
+            <TextView
+                android:id="@+id/third_Distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:text="-"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/third_Nick"
+                app:layout_constraintStart_toEndOf="@+id/third_Nick"
+                app:layout_constraintTop_toTopOf="@+id/third_Nick" />
 
             <View
                 android:id="@+id/view6"
@@ -393,6 +449,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView9" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="* 매일 오전 7시에서 오전 8시 사이에 업데이트 됩니다."
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

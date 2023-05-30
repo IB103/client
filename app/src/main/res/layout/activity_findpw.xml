@@ -16,7 +16,7 @@
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="비밀번호 찾기"
+    android:text="이메일 인증하기"
     android:textAlignment="center"
     android:textSize="20sp"
     android:textColor="@color/maincolor"
@@ -133,6 +133,5 @@
         android:textColor="#DF1212"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/textInputLayout2"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayout2"
-        app:layout_constraintTop_toTopOf="@+id/textInputLayout2" />
+        app:layout_constraintStart_toEndOf="@+id/textInputLayout2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

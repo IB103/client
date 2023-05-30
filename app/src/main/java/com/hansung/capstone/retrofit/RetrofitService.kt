@@ -14,18 +14,28 @@ import retrofit2.http.*
 
 
 interface RetrofitService {
-
+    @POST("/api/users/logout")
+    fun logOut(
+        @Header("Authorization")accessToken:String
+    ): Call<RepLogOut>
+    @GET("/api/users/riding/rank")
+    fun getRank(
+        @Header("Authorization") accessToken:String
+    ): Call<RepRank>
     @GET("/api/users/riding/record-history")
     fun getRecord(
+        @Header("Authorization")accessToken:String,
         @Query("userId") userId: Long,
         @Query("period") period: Long
     ): Call<RepGetRecord>
     @POST("/api/email/send")
     fun send(
+        @Header("Authorization")accessToken:String,
         @Query("email") email: String
     ):Call<String>
     @POST("/api/email/confirm")
     fun confirm(
+        @Header("Authorization")accessToken:String,
         @Query("email") email: String,
         @Query("code") code: String
     ):Call<RepConfirm>
@@ -43,6 +53,7 @@ interface RetrofitService {
     @Multipart
     @PUT("api/users/set-profile-image")
     fun modifyProfileImage(
+        @Header("Authorization") accessToken:String,
         @Part("requestDTO") requestDTO: ReqModifyProfileImage,
         @Part imageList: MultipartBody.Part
     ):Call<RePModifyProfileImage>
@@ -56,7 +67,7 @@ interface RetrofitService {
     @Multipart
     @PUT("/api/community/post/modify")
     fun modifyPost(
-        //@Header("Authorization")accessToken:String,
+        @Header("Authorization")accessToken:String,
         @Part("requestDTO") requestDTO: ReqModifyPost,
         @Part imageList: List<MultipartBody.Part>
     ):Call<ModifyPost>
@@ -91,11 +102,13 @@ interface RetrofitService {
 
     @PUT("/api/users/modifyPW")
     fun modifyPW(
+        @Header("Authorization") accessToken:String,
         @Body reqModifyPW: ReqModifyPW
     ): Call<RepModifyPW>
     @Headers("accept: application/json", "content-type: application/json")
     @PUT("/api/users/modifyNick")
     fun modifyNick(
+        @Header("Authorization") accessToken:String,
         @Body reqModifyNick: ReqModifyNick
     ): Call<RepModifyNick>
 
@@ -107,6 +120,7 @@ interface RetrofitService {
     @Multipart
     @POST("/api/community/post/create")
     fun postCreate(
+        @Header("Authorization")accessToken:String,
         @Part("requestDTO") requestDTO:ReqPost,
         @Part imageList: List<MultipartBody.Part>
     ): Call<RepPost>
@@ -114,6 +128,7 @@ interface RetrofitService {
     @Headers("accept: application/json", "content-type: application/json")
     @POST("/api/community/comment/create")
     fun postComment(
+        @Header("Authorization")accessToken:String,
         @Body reqComment: ReqComment
     ): Call<RepComment>
 
@@ -130,6 +145,7 @@ interface RetrofitService {
     @Headers("accept: application/json", "content-type: application/json")
     @POST("/api/community/recomment/create")
     fun postReComment(
+        @Header("Authorization")accessToken:String,
         @Body reqReComment: ReqReComment
     ): Call<RepComment>
 

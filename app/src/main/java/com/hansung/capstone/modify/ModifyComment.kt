@@ -17,8 +17,7 @@ class ModifyComment {
         val userId=MyApplication.prefs.getLong("userId",0)
         val accessToken:String=MyApplication.prefs.getString("accessToken","")
         val putReqModifyComment = ReqModifyComment(commentId,userId, content)
-        this.service.modifyComment(accessToken = "Bearer " +
-                accessToken,putReqModifyComment)
+        this.service.modifyComment(accessToken = "Bearer $accessToken",putReqModifyComment)
             .enqueue(object : Callback<Posts> {
                 override fun onResponse(
                     call: Call<Posts>,

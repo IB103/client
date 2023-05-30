@@ -59,7 +59,8 @@ data class Posts(
     var postType : Int,
     var commentChanged:Boolean,
     var heartChanged:Boolean,
-    var commentCount:Int
+    var commentCount:Int,
+    var heartCount:Int
 )
 data class Comments(
     var id : Long,

@@ -13,10 +13,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.MyApplication
+import com.hansung.capstone.Token
 import com.hansung.capstone.databinding.ActivityFindpwBinding
 import com.hansung.capstone.modify.ModifyActivity
 import com.hansung.capstone.retrofit.RepConfirm
 import com.hansung.capstone.retrofit.RetrofitService
+import kotlinx.android.synthetic.main.activity_findpw.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,26 +32,13 @@ class FindPwActivity:AppCompatActivity() {
         setContentView(binding.root)
         binding.closeView.setOnClickListener { finish() }
         binding.reqEmailSend.setOnClickListener {
-            val email=binding.getId.text.toString()
-            service.send(email).enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        setTime()
-                        binding.confirmValue.isEnabled=true
-
-                    } else {
-                        val errorBody = response.errorBody()
-
-                        println("Failed to send email. Error: $errorBody")
-                    }
+        binding.reqEmailSend.isEnabled=false
+            if(Token().checkToken()){
+                Token().issueNewToken {
+                    sendEmail()
                 }
+            }else sendEmail()
 
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    // Handle the network request failure here
-                    println("Failed to send email. Exception: ${t.message}")
-                }
-            })
 
 
 
@@ -83,6 +72,32 @@ class FindPwActivity:AppCompatActivity() {
         }
 
     }
+    private fun sendEmail(){
+        val email=binding.getId.text.toString()
+
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+
+        service.send(accessToken = "Bearer $accessToken",email).enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    binding.reqEmailSend.isEnabled=true
+                    setTime()
+                    binding.confirmValue.isEnabled=true
+
+                } else {
+                    val errorBody = response.errorBody()
+
+                    println("Failed to send email. Error: $errorBody")
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                // Handle the network request failure here
+                println("Failed to send email. Exception: ${t.message}")
+            }
+        })
+    }
     private var timer: CountDownTimer? = null // 타이머 객체를 클래스 변수로 선언
     private fun setTime() {
         Toast.makeText(this, "이메일을 확인해주세요.", Toast.LENGTH_SHORT).show()
@@ -102,12 +117,21 @@ class FindPwActivity:AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         timer?.cancel()
+        timer?.onFinish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        timer?.cancel()
+        timer?.onFinish()
     }
     private fun comment(){ Toast.makeText(this,"인증번호를 재발급 받으세요",Toast.LENGTH_SHORT).show()}
-    fun reqConfirm(view: View){
+    private fun confirmValue(){
         val email=binding.getId.text.toString()
         val value=binding.getValue.text.toString()
-        service.confirm(email,value).enqueue(object : Callback<RepConfirm> {
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+
+        service.confirm(accessToken = "Bearer $accessToken",email,value).enqueue(object : Callback<RepConfirm> {
             @SuppressLint("Range", "ResourceAsColor", "SuspiciousIndentation")
             override fun onResponse(
                 call: Call<RepConfirm>,
@@ -115,14 +139,15 @@ class FindPwActivity:AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     val result: RepConfirm = response.body()!!
-                        if (response.code() == 200) {//수정
-                            Log.d("INFO", "인증 성공$result")
-                            MyApplication.prefs.setString("accessToken","${result.data.accessToken}")
-                            MyApplication.prefs.setString("refreshToken","${result.data.refreshToken}")
-                            startActivity()
-                        }
+                    if (response.code() == 200) {//수정
+                        Log.d("INFO", "인증 성공$result")
+                        MyApplication.prefs.setString("accessToken","${result.data.accessToken}")
+                        MyApplication.prefs.setString("refreshToken","${result.data.refreshToken}")
+                        startActivity()
+                    }
                 } else {
                     // 통신이 실패한 경우
+                    mismatchComment()
                     Log.d("ERR 인증 받기", "onResponse 실패")
                 }
             }
@@ -132,7 +157,20 @@ class FindPwActivity:AppCompatActivity() {
             }
         })
     }
+    private fun mismatchComment(){
+        Toast.makeText(this,"인증번호를 다시 확인해주세요.",Toast.LENGTH_SHORT).show()
+    }
+    fun reqConfirm(view: View){
+
+        if(Token().checkToken()){
+            Token().issueNewToken {
+                confirmValue()
+            }
+        }else confirmValue()
+
+    }
     private fun startActivity(){
+        timer?.cancel()
         val intent = Intent(this, ModifyActivity::class.java)
         startActivityForResult(intent,MODIFYPW_REQUEST_CODE)
 

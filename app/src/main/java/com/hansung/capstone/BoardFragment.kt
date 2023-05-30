@@ -97,8 +97,7 @@ class BoardFragment : Fragment() {
         resultAllPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1)&&page<body!!.totalPage) {
-
+                if (!recyclerView.canScrollVertically(1)&&page<body!!.totalPage-1) {
                         when(category){
                             "total"->getAllPost(++page)
                             "free"->getAllFreePost(++page)
@@ -298,7 +297,6 @@ class BoardFragment : Fragment() {
          }else if(  MainActivity.getInstance()?.getHeartCheck()!=-1){
              Log.d("check#1","1")
              adapter.heartChanged(MainActivity.getInstance()!!.getChangedPost())
-             MainActivity.getInstance()!!.hearCheck(-1)
          }
         MainActivity.getInstance()?.stateCheck(-1)
     }

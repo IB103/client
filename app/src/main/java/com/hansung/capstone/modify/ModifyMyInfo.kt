@@ -20,8 +20,7 @@ import com.hansung.capstone.*
 import com.hansung.capstone.board.RePModifyProfileImage
 import com.hansung.capstone.databinding.ActivityModifymyinfoBinding
 import com.hansung.capstone.find.FindPwActivity
-import com.hansung.capstone.retrofit.ReqModifyProfileImage
-import com.hansung.capstone.retrofit.RetrofitService
+import com.hansung.capstone.retrofit.*
 import kotlinx.android.synthetic.main.view_profile.view.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -53,9 +52,10 @@ class ModifyMyInfo:AppCompatActivity() {
             val intent= Intent(this, FindPwActivity::class.java)
             startActivityForResult(intent, MODIFYPWACT_REQUEST_CODE)
         }
-        binding. logoutBt.setOnClickListener {    MyApplication.prefs.remove()
-           finish() }
-        binding.modiftNickActivity.setOnClickListener {
+        binding. logoutBt.setOnClickListener {   logOut()
+            MyApplication.prefs.remove()
+         }
+        binding.modifyNickActivity.setOnClickListener {
             val intent= Intent(this,ModifyNickActivity::class.java)
             startActivityForResult(intent, MODIFY_REQUEST_CODE)
         }
@@ -78,6 +78,30 @@ class ModifyMyInfo:AppCompatActivity() {
                 }
             }
         }
+    }
+    private fun requestLogOut(){
+        val accessToken= MyApplication.prefs.getString("accessToken","")
+        api.logOut(accessToken = "Bearer $accessToken").enqueue(object:Callback<RepLogOut>{
+            override fun onResponse(call: Call<RepLogOut>, response: Response<RepLogOut>) {
+                if(response.code()==200){
+                    val result: RepLogOut =response.body()!!
+                    Log.d("result","$result")
+                    finish()
+                    // setData(result.data)
+                }
+            }
+            override fun onFailure(call: Call<RepLogOut>, t: Throwable) {
+                Log.d("fail","${t.message}")
+
+            }
+        })
+    }
+    private  fun logOut(){
+        if (Token().checkToken()) {
+            Token().issueNewToken {
+               requestLogOut()
+            }
+        }else requestLogOut()
     }
     private fun info(){
 
@@ -138,7 +162,8 @@ class ModifyMyInfo:AppCompatActivity() {
         val userId=MyApplication.prefs.getLong("userId",0)
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
         val putModifyProfileImage= ReqModifyProfileImage(userId, profileImageId = profileImageId)
-        api.modifyProfileImage(putModifyProfileImage,image).enqueue(object :
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+        api.modifyProfileImage(accessToken = "Bearer $accessToken",putModifyProfileImage,image).enqueue(object :
             Callback<RePModifyProfileImage> {
             override fun onResponse(call: Call<RePModifyProfileImage>, response: Response<RePModifyProfileImage>) {
                 if (response.isSuccessful) {

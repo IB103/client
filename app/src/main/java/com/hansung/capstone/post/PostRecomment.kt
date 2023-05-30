@@ -21,10 +21,10 @@ class PostReComment(private val context: PostDetailActivity) {
     val api = CommunityService.create()
    // var count= MyApplication.prefs.getInt("commentCount",0)
     fun post(str: String, postId: Long,commentId:Long,binding: ActivityPostDetailBinding) {
-
+       val accessToken= MyApplication.prefs.getString("accessToken", "")
         val userId = MyApplication.prefs.getLong("userId", 0)
         val postReqReComment = ReqReComment(postId, commentId,userId, str)
-        service.postReComment(postReqReComment).enqueue(object : Callback<RepComment> {
+        service.postReComment(accessToken = "Bearer $accessToken",postReqReComment).enqueue(object : Callback<RepComment> {
             @SuppressLint("Range", "ResourceAsColor")
             override fun onResponse(call: Call<RepComment>, response: Response<RepComment>) {
                 if (response.isSuccessful) {
@@ -33,9 +33,6 @@ class PostReComment(private val context: PostDetailActivity) {
                         if (result?.code == 100) {
                             Log.d("INFO comment", "success $result")
                             MainActivity.getInstance()?.setCommentCount(1)
-                            //MyApplication.prefs.setInt("commentCount",++count)
-                            //MainActivity.getInstance()?.setChangedPostCheck(true)
-                            //PostDetailActivity().activityType=0
                             context.commentSuccess(1)
                             postReComment(postId,binding)
                         } else {
@@ -45,7 +42,6 @@ class PostReComment(private val context: PostDetailActivity) {
                 } else {
                     // 통신이 실패한 경우
                     Log.d("ERR comment", "onResponse 실패" + result?.toString())
-                    //PostDetailActivity().activityType=0
                 }
             }
             override fun onFailure(call: Call<RepComment>, t: Throwable) {

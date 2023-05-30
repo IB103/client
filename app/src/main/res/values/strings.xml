@@ -4,4 +4,14 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_up">계정이 없으신가요? <b><u>가입하기</u></b></string>
     <string name="query_request">검색어를 입력해주세요.</string>
+    <string-array name="select_x">
+        <item>일주일</item>
+        <item>한달</item>
+    </string-array>
+    <string-array name="select_y">
+        <item>거리</item>
+        <item>시간</item>
+        <item>칼로리</item>
+    </string-array>
+
 </resources>

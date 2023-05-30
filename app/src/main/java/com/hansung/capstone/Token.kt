@@ -7,6 +7,7 @@ import com.hansung.capstone.retrofit.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
 
 class Token {
 
@@ -17,6 +18,7 @@ class Token {
         MyApplication.prefs.setLong("tokenTime",currentTime)
     }
     fun checkToken():Boolean{
+Log.d("checkingtoken","${MyApplication.prefs.getString("accessToken","")}")
         val tokenTime=MyApplication.prefs.getLong("tokenTime",0)
         val expirationTime = tokenTime + expiresIn
         val isExpired = expirationTime < System.currentTimeMillis()
@@ -25,6 +27,7 @@ class Token {
         }
         return false
     }
+
     fun issueNewToken(callback: (() -> Unit)?):String {
         val currentTime = System.currentTimeMillis()
         service.reissue(

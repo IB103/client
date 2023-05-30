@@ -152,7 +152,7 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/modiftNickActivity"
+            android:id="@+id/modifyNickActivity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -180,7 +180,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/light_gray"
-            app:layout_constraintBottom_toBottomOf="@+id/modiftNickActivity"
+            app:layout_constraintBottom_toBottomOf="@+id/modifyNickActivity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -196,7 +196,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/modiftNickActivity"
+            app:layout_constraintTop_toBottomOf="@+id/modifyNickActivity"
             tools:ignore="MissingConstraints" />
 
         <ImageView

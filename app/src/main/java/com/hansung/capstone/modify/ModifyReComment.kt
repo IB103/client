@@ -13,7 +13,6 @@ import retrofit2.Response
 
 
 class ModifyReComment {
-
     var service = RetrofitService.create()
     fun  modify(reCommentId:Long, content:String){
         val userId= MyApplication.prefs.getLong("userId",0)

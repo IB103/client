@@ -1,14 +1,18 @@
 package com.hansung.capstone
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.tabs.TabLayout
 import com.hansung.capstone.board.BoardAdapter
 import com.hansung.capstone.board.BoardAdapterDecoration
 import com.hansung.capstone.board.Posts
@@ -22,11 +26,14 @@ class SearchBoardActivity:AppCompatActivity() {
     companion object{
         private var adapter= BoardAdapter()
         private var page=0
-        private var totalPage=0
     }
     private lateinit var resultAllPost: RecyclerView
     private val service=CommunityService.create()
+    private var searchMode=0
+    var totalPage=0
+
     private val binding by lazy{ ActivitySearchboardBinding.inflate(layoutInflater) }
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //overridePendingTransition(R.anim.slide_in_right, 0)
@@ -41,7 +48,7 @@ class SearchBoardActivity:AppCompatActivity() {
         val swipe =binding.BoardSwipe
         swipe.setOnRefreshListener {
             page=0
-            search(searchContext)
+            if (searchMode == 0) search(searchContext) else searchNickname(searchContext)
             swipe.isRefreshing = false
         }
         binding.boardSearch.setOnEditorActionListener { _, id, _ ->
@@ -52,7 +59,8 @@ class SearchBoardActivity:AppCompatActivity() {
                 searchContext=binding.boardSearch.text.toString()
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(binding.boardSearch.windowToken, 0)
-               search(searchContext)
+                if (searchMode == 0) search(searchContext) else searchNickname(searchContext)
+
             } else {
                 binding.boardSearch.requestFocus()
                 val manager: InputMethodManager =
@@ -62,34 +70,61 @@ class SearchBoardActivity:AppCompatActivity() {
             }
             true
         }
+     binding.searchAuthor.setOnClickListener {
+         page=0
+         searchMode=1
+         searchNickname(searchContext)
+         binding.searchAuthor.setTextColor(Color.parseColor("#87D5AA"))
+         binding.searchAuthorView.setBackgroundColor(Color.parseColor("#87D5AA"))
+         binding.searchTitleContent.setTextColor(Color.parseColor("#A4A4A4"))
+         binding.searchTitleContentView.setBackgroundColor(Color.parseColor("#A4A4A4"))
+     }
+        binding.searchTitleContent.setOnClickListener {
+            page=0
+            searchMode=0
+            search(searchContext)
+            binding.searchAuthor.setTextColor(Color.parseColor("#A4A4A4"))
+            binding.searchAuthorView.setBackgroundColor(Color.parseColor("#A4A4A4"))
+            binding.searchTitleContent.setTextColor(Color.parseColor("#87D5AA"))
+            binding.searchTitleContentView.setBackgroundColor(Color.parseColor("#87D5AA"))
+        }
+
+
+
         resultAllPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                // 스크롤 끝까지 도달 새로운 데이터 로드
-                if (!recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(1)&&page<totalPage-1) {
                     page++
-                    search(searchContext)
+                    if (searchMode == 0) search(searchContext) else searchNickname(searchContext)
                 }
             }
+
+
         })
     }
 
     private fun search(str:String){
+        Log.d("checking3!","${page}")
         service.searchBoard(str,page).enqueue(object : Callback<ResultGetPosts> {
             override fun onResponse(
                 call: Call<ResultGetPosts>,
-                response: Response<ResultGetPosts>,
+                response: Response<ResultGetPosts>
             ) {if(response.isSuccessful){
                 Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                 val resultGetPosts:ResultGetPosts= response.body()!!
+                totalPage=resultGetPosts.totalPage
                 if(resultGetPosts.data?.isNotEmpty()!!){
-                adapter.setInitItems((resultGetPosts.data as ArrayList<Posts>))
+                    binding.noResultComment.visibility= View.GONE
+                    binding.noResultImage.visibility= View.GONE
+                    if(page==0)
+                        adapter.setInitItems((resultGetPosts.data as ArrayList<Posts>))
+                    else adapter.moreItems((resultGetPosts.data as ArrayList<Posts>))
+                }else{
+                    adapter.removeAll()
+                    binding.noResultComment.visibility= View.VISIBLE
+                    binding.noResultImage.visibility= View.VISIBLE
                 }
-                //                else{
-//                    adapter.removeAll()
-//                    comment()
-//                }
-
             }
             }
             override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
@@ -97,6 +132,36 @@ class SearchBoardActivity:AppCompatActivity() {
             }
         })
     }
+    private fun searchNickname(str:String){
+        Log.d("checking4!","${page}")
+        service.searchNickname(str,page).enqueue(object : Callback<ResultGetPosts> {
+            override fun onResponse(
+                call: Call<ResultGetPosts>,
+                response: Response<ResultGetPosts>
+            ) {if(response.isSuccessful){
+                Log.d("searchNickname:", "성공 : ${response.body().toString()}")
+                val resultGetPosts:ResultGetPosts= response.body()!!
+                totalPage=resultGetPosts.totalPage
+                if(resultGetPosts.data?.isNotEmpty()!!){
+                    binding.noResultComment.visibility= View.GONE
+                    binding.noResultImage.visibility= View.GONE
+                    if(page==0)
+                        adapter.setInitItems((resultGetPosts.data as ArrayList<Posts>))
+                    else adapter.moreItems((resultGetPosts.data as ArrayList<Posts>))
+                }
+            }else {
+
+                adapter.removeAll()
+                binding.noResultComment.visibility= View.VISIBLE
+                binding.noResultImage.visibility= View.VISIBLE}
+            }
+            override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
+                Log.d("getAllPost:", "실패 : $t")
+            }
+        })
+
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -115,5 +180,17 @@ class SearchBoardActivity:AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(0, R.anim.slide_out_right)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(MainActivity.getInstance()?.getCommentCount()!=0||MainActivity.getInstance()?.getDeletedCommentCount()!=0
+        ){
+            adapter.commentChanged(MainActivity.getInstance()!!.getChangedPost())
+        }else if(  MainActivity.getInstance()?.getHeartCheck()!=-1){
+            Log.d("check#1","1")
+            adapter.heartChanged(MainActivity.getInstance()!!.getChangedPost())
+        }
+        MainActivity.getInstance()?.stateCheck(-1)
     }
 }

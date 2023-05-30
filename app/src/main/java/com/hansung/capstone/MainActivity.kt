@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        var hearCheck=-1
+        var heartCheck=-1
         var showPost:Posts?=null
         var commentCount=0
         var deleteCount=0
@@ -167,11 +167,11 @@ class MainActivity : AppCompatActivity() {
     fun getStateCheck():Int{
         return stateCheck
     }
-    fun hearCheck(int:Int){
-        hearCheck=int
+    fun heartCheck(int:Int){
+        heartCheck=int
     }
     fun getHeartCheck():Int{
-        return hearCheck
+        return heartCheck
     }
     fun setModifyCheck(boolean: Boolean){
         modifyCheck=boolean

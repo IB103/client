@@ -9,7 +9,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -17,18 +16,11 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.DefaultValueFormatter
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.hansung.capstone.*
 import com.hansung.capstone.databinding.FragmentHomeBinding
 import com.hansung.capstone.linechart.GetRecordData
 import com.hansung.capstone.mypage.MyPageFragment
+import com.hansung.capstone.retrofit.RankData
 import com.hansung.capstone.retrofit.RetrofitService
 import com.hansung.capstone.retrofit.RidingData
 import com.hansung.capstone.retrofit.Weather
@@ -39,7 +31,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.math.roundToInt
-import kotlin.math.roundToLong
 
 
 class HomeFragment : Fragment() {
@@ -50,7 +41,7 @@ class HomeFragment : Fragment() {
         const val WEATHER_REQUEST: Int = 102
     }
 
-    private var ridingDataList: List<RidingData> = emptyList()
+    private var ridingDataList:MutableList<RankData> = mutableListOf()
     private lateinit var weatherState: TextView
     private lateinit var temperature: TextView
     private lateinit var weatherIcon: ImageView
@@ -78,20 +69,15 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
        // lineChart=binding.chart
         val noImage:Long=-1
-        if(MyApplication.prefs.getLong("userId", 0)!=null){
-         GetRecordData().getRidingData(7){result ->
-             if (result.isNotEmpty()) {
-                 this.ridingDataList = result
-                 ranking(result)
-               // draw(result)
-             } else {
-                 binding.noDataComment.visibility=View.VISIBLE
-                 binding.noDataImage.visibility=View.VISIBLE
+        //if(MyApplication.checkUpdateTime()){
 
-                // binding.chart.visibility=View.GONE
-             }
-         }
-        }
+        if(Token().checkToken()){
+            Token().issueNewToken {
+                requestData()
+            }
+        }else requestData()
+
+        //}
 
 //        val navController: NavController = Navigation.findNavController(view)
 
@@ -117,11 +103,8 @@ class HomeFragment : Fragment() {
             binding.tvNick.text = MyApplication.prefs.getString("nickname", "")
         binding.tvEmail.text =
             MyApplication.prefs.getString("email", "")
-            if (MyApplication.prefs.getLong("profileImageId", 0) == noImage) {
-                binding.profileImage.setImageResource(R.drawable.user)
-            } else {
-                getProfileImage()
-            }
+           getProfileImage(MyApplication.prefs.getLong("profileImageId", 0),binding.profileImage)
+
         }
         binding.profileBox.setOnClickListener {
 
@@ -221,31 +204,46 @@ class HomeFragment : Fragment() {
 //        false
 //    }
 //}
-   private fun ranking(data:List<RidingData>){
-    val size=data.size
-    val sortedList = data.sortedBy { it.ridingDistance }
-    val reversedList=sortedList.reversed()
-    val textView = requireActivity().findViewById<TextView>(R.id.first_one)
+private fun requestData(){
+    GetRecordData().getRankData { result ->
+        if (result.isNotEmpty()) {
+            binding.noDataComment.visibility=View.GONE
+            //binding.noDataImage.visibility=View.GONE
+            binding.rankLayout.visibility=View.VISIBLE
+            this.ridingDataList = result
+            ranking(result)
+            // draw(result)
+        } else {
+            binding.noDataComment.visibility=View.VISIBLE
+            // binding.noDataImage.visibility=View.VISIBLE
+            binding.rankLayout.visibility=View.GONE
+            // binding.chart.visibility=View.GONE
+        }
+    }
+}
+   private fun ranking(data:MutableList<RankData>){
+        val size = data.size
+       Log.d("size","$size")
+        binding.firstDistance.text = String.format("%.2f", data[0].totalDistance) + "km"
+        binding.firstNick.text = data[0].userNickname
+        getProfileImage(data[0].profileImageId,binding.rank1Image)
+        if (size >= 2) {
+            binding.secondDistance.text = String.format("%.2f", data[1].totalDistance) + "km"
+            binding.secondNick.text = data[1].userNickname
+            getProfileImage(data[1].profileImageId,binding.rank2Image)
+        }
 
-   textView.text=String.format("%.2f",reversedList[0].ridingDistance )+"km"
-    binding.firstTwo.text=reversedList[0].ridingTime.toString()
-
-
-    if(size==2){
-        binding.secondOne.text=String.format("%.2f",reversedList[1].ridingDistance )+"km"
-        binding.secondTwo.text=reversedList[1].ridingTime.toString()
-    }else if(size==3){
-        binding.secondOne.text=String.format("%.2f",reversedList[1].ridingDistance )+"km"
-        binding.secondTwo.text=reversedList[1].ridingTime.toString()
-        binding.thirdOne.text=String.format("%.2f",reversedList[2].ridingDistance)+"km"
-         binding.thirdTwo.text=reversedList[2].ridingTime.toString()
+        if (size >= 3) {
+            binding.thirdDistance.text = String.format("%.2f", data[2].totalDistance) + "km"
+            binding.thirdNick.text = data[2].userNickname
+            getProfileImage(data[2].profileImageId,binding.rank3Image)
     }
 
-
-
-   }
-    private fun getProfileImage() {
-        val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
+}
+    private fun getProfileImage(profileImageId:Long,profileImage:ImageView) {
+        val noImage:Long=-1
+       if (profileImageId== noImage)
+           profileImage.setImageResource(R.drawable.user)
         Glide.with(requireActivity())
             .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
             .override(200, 200)
@@ -317,6 +315,7 @@ class HomeFragment : Fragment() {
         super.onResume()
       //if(ridingDataList.isNotEmpty())
         //ranking(ridingDataList)
+
         if(MyApplication.prefs.getString("latitude","")!="")
             doWeather()
         getWeatherInCurrentLocation()

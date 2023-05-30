@@ -78,13 +78,11 @@ class BoardAdapter :
     }
 
     fun commentChanged(changedItem:Posts){
-
         val position=this.resultGetPosts.indexOf(changedItem)
         this.resultGetPosts[position]!!.commentChanged=true
         notifyItemChanged(position)
     }
     fun heartChanged(changedItem:Posts){
-        Log.d("check#","2")
         val position=this.resultGetPosts.indexOf(changedItem)
         this.resultGetPosts[position]!!.heartChanged=true
         notifyItemChanged(position)
@@ -110,9 +108,12 @@ class BoardAdapter :
     @SuppressLint("NotifyDataSetChanged")
     fun moreItems(resultGetPosts: ArrayList<Posts>){//다음 페이지 요청
         this.resultGetPosts.addAll(resultGetPosts)
+        Log.d("moreItems","${this.resultGetPosts.size}")
         notifyDataSetChanged()
 
     }
+
+
     inner class BoardHolderType1(private val binding: ItemPostListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(items: Posts,position: Int) {
@@ -125,14 +126,31 @@ class BoardAdapter :
             binding.BoardContent.text = items.content
             binding.BoardDate.text = createdDate.toString()
             binding.ImageCount.text = items.imageId.size.toString()
-            if(items.heartChanged){
-
-                val d = Log.d("check#", "3")
-                val size = items.postVoterId.size+1
-                binding.HeartCount.text = size.toString()
-                resultGetPosts[position]!!.heartChanged=false
-            }else binding.HeartCount.text = items.postVoterId.size.toString()
-
+            if (items.heartChanged) {
+                if (items.postVoterId.contains(MyApplication.prefs.getLong("userId", 0))) {
+                    // 내가 이미 좋아요를 누른 글
+                    if (MainActivity.getInstance()?.getHeartCheck() == 1) {
+                        // 좋아요를 눌렀을 때
+                        items.heartCount = items.postVoterId.size
+                    } else if (MainActivity.getInstance()?.getHeartCheck() == 0) {
+                        // 좋아요를 취소했을 때
+                        items.heartCount = items.postVoterId.size - 1
+                    }
+                } else {
+                    // 내가 좋아요를 누른 기록이 없는 글
+                    if (MainActivity.getInstance()?.getHeartCheck() == 1) {
+                        // 좋아요를 눌렀을 때
+                        items.heartCount = items.postVoterId.size + 1
+                    } else {
+                        // 좋아요를 취소했을 때
+                        items.heartCount = items.postVoterId.size
+                    }
+                }
+                binding.HeartCount.text = items.heartCount.toString()
+                MainActivity.getInstance()?.heartCheck(-1)
+            } else {
+                binding.HeartCount.text = items.postVoterId.size.toString()
+            }
             for (i in items.commentList) {
                 count += i.reCommentList.size
             }
@@ -142,15 +160,15 @@ class BoardAdapter :
                     ++count
             }
             if(items.commentChanged){
-
-                count+= MainActivity.getInstance()!!.getCommentCount()
-                count-=  MainActivity.getInstance()!!.getDeletedCommentCount()
-                //MainActivity.getInstance()!!.setCommentCount(-1)
-                //MainActivity.getInstance()!!.setDeletedCommentCount(-1)
-                resultGetPosts[position]!!.commentCount=count
-                resultGetPosts[position]!!.commentChanged=false
-            }
-            binding.CommentCount.text = count.toString()
+                val counting= MainActivity.getInstance()?.getCommentCount()!! - MainActivity.getInstance()?.getDeletedCommentCount()!!
+                if(items.commentCount==0)
+                    items.commentCount=count+counting
+                else
+                    items.commentCount+=counting
+                binding.CommentCount.text = items.commentCount.toString()
+                MainActivity.getInstance()!!.setCommentCount(-1)
+                MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+            }else binding.CommentCount.text = count.toString()
             Glide.with(context!!)
                 .load("${MyApplication.getUrl()}image/${items.imageId[0]}") // 불러올 이미지 url
 //                .override(100, 100)
@@ -183,36 +201,51 @@ class BoardAdapter :
             binding.BoardTitle.text = items.title
             binding.BoardContent.text = items.content
             binding.BoardDate.text = createdDate.toString()
-            if(items.heartChanged){
-                var size: Int =0
-                if(MainActivity.getInstance()!!.getHeartCheck()==1)
-                    size = items.postVoterId.size+1
-                else if(MainActivity.getInstance()!!.getHeartCheck()==0)
-                    size= items.postVoterId.size-1
-                binding.HeartCount.text = size.toString()
-                resultGetPosts[position]!!.heartChanged=false
-            }else binding.HeartCount.text = items.postVoterId.size.toString()
+            if (items.heartChanged) {
+                if (items.postVoterId.contains(MyApplication.prefs.getLong("userId", 0))) {
+                    // 내가 이미 좋아요를 누른 글
+                    if (MainActivity.getInstance()?.getHeartCheck() == 1) {
+                        // 좋아요를 눌렀을 때
+                        items.heartCount = items.postVoterId.size
+                    } else if (MainActivity.getInstance()?.getHeartCheck() == 0) {
+                        // 좋아요를 취소했을 때
+                        items.heartCount = items.postVoterId.size - 1
+                    }
+                } else {
+                    // 내가 좋아요를 누른 기록이 없는 글
+                    if (MainActivity.getInstance()?.getHeartCheck() == 1) {
+                        // 좋아요를 눌렀을 때
+                        items.heartCount = items.postVoterId.size + 1
+                    } else {
+                        // 좋아요를 취소했을 때
+                        items.heartCount = items.postVoterId.size
+                    }
+                }
+                binding.HeartCount.text = items.heartCount.toString()
+                MainActivity.getInstance()?.heartCheck(-1)
+            } else {
+                binding.HeartCount.text = items.postVoterId.size.toString()
+            }
+
             for (i in items.commentList) {
                 count += i.reCommentList.size
             }
-            if(items.commentChanged){
-                count+= MainActivity.getInstance()!!.getCommentCount()//추가한 댓글 더하기
-                count-=  MainActivity.getInstance()!!.getDeletedCommentCount()
-//                if(deleteCount!=0){//삭제한 댓글 카운트
-//                    count-=deleteCount
-//                }
-               // MainActivity.getInstance()!!.setCommentCount(-1)
-                //MainActivity.getInstance()!!.setDeletedCommentCount(-1)
-                resultGetPosts[position]!!.commentChanged=false
-            }
-
 
             for (i in 0 until items.commentList.size ) {
                 val j:Long=-1
                 if(items.commentList[i].userId!=j)
                     ++count
             }
-            binding.CommentCount.text = count.toString()
+            if(items.commentChanged){
+                val counting= MainActivity.getInstance()?.getCommentCount()!! - MainActivity.getInstance()?.getDeletedCommentCount()!!
+                if(items.commentCount==0)
+                    items.commentCount=count+counting
+                else
+                    items.commentCount+=counting
+                binding.CommentCount.text = items.commentCount.toString()
+                MainActivity.getInstance()!!.setCommentCount(-1)
+                MainActivity.getInstance()!!.setDeletedCommentCount(-1)
+            }else binding.CommentCount.text = count.toString()
             if(items.authorProfileImageId!= noImage.toLong()){
                 Glide.with(context!!)
                     .load("${MyApplication.getUrl()}profile-image/${items.authorProfileImageId}") // 불러올 이미지 url

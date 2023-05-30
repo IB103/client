@@ -136,7 +136,8 @@ class WriteActivity : AppCompatActivity() {
     }
     private fun createPost(userId: Long, title: String, content: String) {
         val postReqPost = ReqPost(userId, title, category = "FREE", content)
-        service.postCreate(requestDTO = postReqPost, imageList).enqueue(object : Callback<RepPost> {
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+        service.postCreate(accessToken = "Bearer $accessToken",requestDTO = postReqPost, imageList).enqueue(object : Callback<RepPost> {
             override fun onResponse(call: Call<RepPost>, response: Response<RepPost>) {
                 if (response.isSuccessful) {
                     Log.d("req", "OK")
@@ -164,18 +165,16 @@ class WriteActivity : AppCompatActivity() {
     private fun modify(title:String,user_id:Long,content:String) {
         val postId=MainActivity.getInstance()?.getChangedPost()
         val putModifyPost=ReqModifyPost(postId!!.id,title,user_id,content,imageIdList)
-        service.modifyPost(requestDTO = putModifyPost,imageList).enqueue(object : Callback<ModifyPost> {
+
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+        service.modifyPost(accessToken = "Bearer $accessToken",requestDTO = putModifyPost,imageList).enqueue(object : Callback<ModifyPost> {
             //  @SuppressLint("Range")
             override fun onResponse(call: Call<ModifyPost>, response: Response<ModifyPost>) {
                     if (response.isSuccessful) {
-                       // if (result?.code == 100) {
                             Log.d("게시글 수정", "성공: $title")
                             MainActivity.getInstance()?.setModifyCheck(false)
                             MainActivity.getInstance()?.stateCheck(2)
                             finish()
-                       // }
-                     //    else {
-                          //  Log.d("ERR 게시글 수정", "실패: " + result?.toString())
                         }
 
                  else {

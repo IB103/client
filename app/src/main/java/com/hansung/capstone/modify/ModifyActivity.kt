@@ -13,6 +13,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.MyApplication
+import com.hansung.capstone.Token
 import com.hansung.capstone.databinding.ActivityModifypwBinding
 import com.hansung.capstone.retrofit.RepModifyPW
 import com.hansung.capstone.retrofit.ReqModifyPW
@@ -28,6 +29,13 @@ class ModifyActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.closeView.setOnClickListener { finish() }
+        binding.modifyPw.setOnClickListener {
+            if(Token().checkToken()){
+                Token().issueNewToken {
+                    modifyPw()
+                }
+            }else modifyPw()
+        }
         binding.getLastPw.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 if (binding.getFirstPw.text.toString() == binding.getLastPw.text.toString()
@@ -57,11 +65,12 @@ class ModifyActivity:AppCompatActivity() {
             }
         })
     }
-    fun modifyPw(view: View){
+    private fun modifyPw(){
         val pw=binding.getLastPw.text.toString()
         val email= MyApplication.prefs.getString("email","")
         val postReqModifyPW = ReqModifyPW(email, pw)
-        service.modifyPW(postReqModifyPW).enqueue(object : Callback<RepModifyPW> {
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+        service.modifyPW(accessToken = "Bearer $accessToken",postReqModifyPW).enqueue(object : Callback<RepModifyPW> {
             @SuppressLint("Range", "ResourceAsColor")
             override fun onResponse(
                 call: Call<RepModifyPW>,

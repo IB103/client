@@ -11,7 +11,9 @@ import com.bumptech.glide.Glide
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
 import com.hansung.capstone.R
+import com.hansung.capstone.Token
 import com.hansung.capstone.databinding.ItemPostDetailRecommentsBinding
+import com.hansung.capstone.delete.DeleteComment
 import com.hansung.capstone.delete.DeleteReComment
 import java.time.format.DateTimeFormatter
 
@@ -77,7 +79,13 @@ class PostReCommentsAdapter(private val comment: Comments,private val context: P
         builder.setTitle("댓글 활동")
         val listener= DialogInterface.OnClickListener { _, which ->
             if(dataArr[which]==dataArr[0]){
-                DeleteReComment().delete(accessToken, userId, reCommentId)
+                if (Token().checkToken()) {
+                    Token().issueNewToken{
+                        DeleteReComment().delete(userId,reCommentId)
+                    }
+                } else {
+                    DeleteReComment().delete(userId,reCommentId)
+                }
             }
             else if(dataArr[which]==dataArr[1]){
                 context.keyBordShow(3)
