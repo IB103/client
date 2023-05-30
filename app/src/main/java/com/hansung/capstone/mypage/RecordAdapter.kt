@@ -1,16 +1,9 @@
 package com.hansung.capstone.mypage
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.hansung.capstone.MainActivity
-import com.hansung.capstone.MyApplication
-import com.hansung.capstone.R
-import com.hansung.capstone.board.noImage
-import com.hansung.capstone.databinding.ItemPostListBinding
 import com.hansung.capstone.databinding.ItemPostRecordBinding
 import com.hansung.capstone.retrofit.RidingData
 import java.time.format.DateTimeFormatter
@@ -31,7 +24,7 @@ class RecordAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as RecordAdapter.RecordHolder).bind(record[position]!!,position)
+        (holder as RecordAdapter.RecordHolder).bind(record[position])
     }
     fun addData(data:MutableList<RidingData>){
         this.record.clear()
@@ -45,7 +38,7 @@ class RecordAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class RecordHolder(private val binding: ItemPostRecordBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: RidingData, position: Int) {
+        fun bind(items: RidingData) {
             val convertedDate = items.createdDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
             binding.ridingDiestance.text = String.format("%.1fkm",items.ridingDistance )
             binding.createdDate.text=convertedDate

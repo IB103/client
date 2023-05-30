@@ -64,10 +64,10 @@ class BoardAdapter :
        // if(resultGetPosts[position].id!=-100){
             when (resultGetPosts[position]!!.imageId.size) {
                 0 -> {
-                    (holder as BoardHolderType2).bind(resultGetPosts[position]!!,position)
+                    (holder as BoardHolderType2).bind(resultGetPosts[position]!!)
                 }
                 else -> {
-                    (holder as BoardHolderType1).bind(resultGetPosts[position]!!,position)
+                    (holder as BoardHolderType1).bind(resultGetPosts[position]!!)
                 }
 
             }
@@ -99,6 +99,7 @@ class BoardAdapter :
         this.resultGetPosts.addAll(resultGetPosts)
         notifyDataSetChanged()
     }
+    @SuppressLint("NotifyDataSetChanged")
     fun removeAll(){//초기 화면 세팅
         this.resultGetPosts.clear()
         notifyDataSetChanged()
@@ -116,7 +117,7 @@ class BoardAdapter :
 
     inner class BoardHolderType1(private val binding: ItemPostListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: Posts,position: Int) {
+        fun bind(items: Posts) {
             items.commentList
             var count = 0
             val convertedDate = MyApplication.convertDate(items.createdDate)
@@ -128,21 +129,16 @@ class BoardAdapter :
             binding.ImageCount.text = items.imageId.size.toString()
             if (items.heartChanged) {
                 if (items.postVoterId.contains(MyApplication.prefs.getLong("userId", 0))) {
-                    // 내가 이미 좋아요를 누른 글
+
                     if (MainActivity.getInstance()?.getHeartCheck() == 1) {
-                        // 좋아요를 눌렀을 때
                         items.heartCount = items.postVoterId.size
                     } else if (MainActivity.getInstance()?.getHeartCheck() == 0) {
-                        // 좋아요를 취소했을 때
                         items.heartCount = items.postVoterId.size - 1
                     }
                 } else {
-                    // 내가 좋아요를 누른 기록이 없는 글
                     if (MainActivity.getInstance()?.getHeartCheck() == 1) {
-                        // 좋아요를 눌렀을 때
                         items.heartCount = items.postVoterId.size + 1
                     } else {
-                        // 좋아요를 취소했을 때
                         items.heartCount = items.postVoterId.size
                     }
                 }
@@ -193,7 +189,7 @@ class BoardAdapter :
     }
     inner class BoardHolderType2(private val binding: ItemPostListNoImageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: Posts,position: Int) {
+        fun bind(items: Posts) {
            var count=0
             val convertedDate = MyApplication.convertDate(items.createdDate)
             val createdDate = convertedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
@@ -203,21 +199,15 @@ class BoardAdapter :
             binding.BoardDate.text = createdDate.toString()
             if (items.heartChanged) {
                 if (items.postVoterId.contains(MyApplication.prefs.getLong("userId", 0))) {
-                    // 내가 이미 좋아요를 누른 글
                     if (MainActivity.getInstance()?.getHeartCheck() == 1) {
-                        // 좋아요를 눌렀을 때
                         items.heartCount = items.postVoterId.size
                     } else if (MainActivity.getInstance()?.getHeartCheck() == 0) {
-                        // 좋아요를 취소했을 때
                         items.heartCount = items.postVoterId.size - 1
                     }
                 } else {
-                    // 내가 좋아요를 누른 기록이 없는 글
                     if (MainActivity.getInstance()?.getHeartCheck() == 1) {
-                        // 좋아요를 눌렀을 때
                         items.heartCount = items.postVoterId.size + 1
                     } else {
-                        // 좋아요를 취소했을 때
                         items.heartCount = items.postVoterId.size
                     }
                 }

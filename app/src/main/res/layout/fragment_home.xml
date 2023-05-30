@@ -80,7 +80,7 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/weather_tip_tv"
         android:layout_width="match_parent"
         android:layout_height="75dp"
@@ -92,6 +92,17 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <ImageView
+            android:id="@+id/ridingImage"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
             android:id="@+id/weather_ic"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -99,37 +110,43 @@
 
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/temperature_tv"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/weather_ic"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/weather_ic"
             android:textAlignment="center"
             android:textSize="25sp"
-            app:layout_constraintStart_toStartOf="@id/weather_ic"
+            app:layout_constraintBottom_toBottomOf="@+id/weather_ic"
+            app:layout_constraintStart_toEndOf="@+id/weather_ic"
+            app:layout_constraintTop_toTopOf="@+id/weather_ic"
             tools:text="00" />
 
         <TextView
             android:id="@+id/weather_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/temperature_tv"
             android:layout_alignBottom="@+id/temperature_tv"
-            android:layout_marginStart="12dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/temperature_tv"
-            app:layout_constraintStart_toStartOf="@id/temperature_tv"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/temperature_tv"
+            app:layout_constraintStart_toEndOf="@+id/temperature_tv"
+            app:layout_constraintTop_toTopOf="@+id/temperature_tv"
             tools:text="Sunny" />
 
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profileBox"
@@ -301,7 +318,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/user"
+
                 app:layout_constraintBottom_toBottomOf="@+id/imageView8"
                 app:layout_constraintStart_toEndOf="@+id/imageView8"
                 app:layout_constraintTop_toTopOf="@+id/imageView8"
@@ -309,10 +326,10 @@
 
             <TextView
                 android:id="@+id/first_Nick"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="-"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/rank1Image"
                 app:layout_constraintStart_toEndOf="@+id/rank1Image"
@@ -320,10 +337,10 @@
 
             <TextView
                 android:id="@+id/first_Distance"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
-                android:text="-"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/first_Nick"
                 app:layout_constraintStart_toEndOf="@+id/first_Nick"
@@ -354,7 +371,6 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/user"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView9"
                 app:layout_constraintStart_toEndOf="@+id/imageView9"
                 app:layout_constraintTop_toTopOf="@+id/imageView9"
@@ -362,10 +378,10 @@
 
             <TextView
                 android:id="@+id/second_Nick"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="-"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/rank2Image"
                 app:layout_constraintStart_toEndOf="@+id/rank2Image"
@@ -373,10 +389,10 @@
 
             <TextView
                 android:id="@+id/second_Distance"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
-                android:text="-"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/second_Nick"
                 app:layout_constraintStart_toEndOf="@+id/second_Nick"
@@ -409,7 +425,6 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/user"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView11"
                 app:layout_constraintStart_toEndOf="@+id/imageView11"
                 app:layout_constraintTop_toTopOf="@+id/imageView11"
@@ -417,10 +432,10 @@
 
             <TextView
                 android:id="@+id/third_Nick"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="-"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/rank3Image"
                 app:layout_constraintStart_toEndOf="@+id/rank3Image"
@@ -428,10 +443,10 @@
 
             <TextView
                 android:id="@+id/third_Distance"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
-                android:text="-"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/third_Nick"
                 app:layout_constraintStart_toEndOf="@+id/third_Nick"

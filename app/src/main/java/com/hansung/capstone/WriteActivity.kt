@@ -117,12 +117,15 @@ class WriteActivity : AppCompatActivity() {
             val content = binding.editWriting.text.toString()
             val userId=MyApplication.prefs.getLong("userId",0)
             if (Token().checkToken()) {
+
                 Token().issueNewToken {
+                    println("만료")
                     if (MainActivity.getInstance()?.getModifyCheck()!!)
                         modify(title, userId, content)
                     else createPost(userId, title, content)
                 }
             }else{
+                println("만료안됨")
             if (MainActivity.getInstance()?.getModifyCheck()!!)
                 modify(title, userId, content)
             else createPost(userId, title, content)}
@@ -138,10 +141,11 @@ class WriteActivity : AppCompatActivity() {
         binding.progressWrite.visibility = View.VISIBLE
         val postReqPost = ReqPost(userId, title, category = "FREE", content)
         val accessToken= MyApplication.prefs.getString("accessToken", "")
+        println("토큰 $accessToken")
         service.postCreate(accessToken = "Bearer $accessToken",requestDTO = postReqPost, imageList).enqueue(object : Callback<RepPost> {
             override fun onResponse(call: Call<RepPost>, response: Response<RepPost>) {
                 if (response.isSuccessful) {
-                    Log.d("req", "OK")
+                    Log.d("checkingWriting", "$response")
                     val result: RepPost? = response.body()
                     if (response.code() == 201) {
                         if (result?.code == 100) {
@@ -151,11 +155,11 @@ class WriteActivity : AppCompatActivity() {
                             //MainActivity.getInstance()?.writeCheck(true)
                             finish()
                         } else {
-                            Log.d("ERR", "실패: " + result?.toString())
+                            Log.d("ERR", "실패: $response" )
                         }
                     }
                 } else {
-                    Log.d("ERR", "onResponse 실패")
+                    Log.d("ERR", "onResponse 실패 $response")
                 }
             }
 
@@ -265,7 +269,6 @@ class WriteActivity : AppCompatActivity() {
                     RequestBody.create(MediaType.parse(contentResolver.getType(photoUri)!!), file)
                 filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
                 imageList.add(filePart!!)
-
         }
     }
     @SuppressLint("CheckResult")

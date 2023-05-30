@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import com.hansung.capstone.MyApplication
 import com.hansung.capstone.retrofit.RepDoubleCheckNickName
 import com.hansung.capstone.retrofit.RetrofitService
 import retrofit2.Call

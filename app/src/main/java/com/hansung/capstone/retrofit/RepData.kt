@@ -2,7 +2,7 @@ package com.hansung.capstone.retrofit
 
 import com.google.gson.annotations.SerializedName
 import com.hansung.capstone.recommend.UserRecommend
-import retrofit2.http.POST
+
 
 data class RepConfirm(
     @SerializedName("code")
@@ -24,16 +24,7 @@ data class RepLogOut(
     val message: String
 )
 
-data class RepSend(
-    @SerializedName("code")
-    val code: Int,
-    @SerializedName("success")
-    val success: Boolean,
-    @SerializedName("message")
-    val message: String,
-    @SerializedName("timestamp")
-    val timestamp: String
-)
+
 
 data class RepRank(
     @SerializedName("code")
@@ -110,7 +101,7 @@ data class WeatherDetail(
     @SerializedName("description") val description: String
 )
 
-data class RepLogin(
+data class RepUser(
     @SerializedName("code")
     val code: Int,
     @SerializedName("success")
@@ -119,7 +110,6 @@ data class RepLogin(
     val message: String,
     @SerializedName("data")
     val data: UserResponse
-
 )
 
 data class UserResponse(
@@ -184,12 +174,7 @@ data class RepDoubleCheckNickName(
 
 )
 
-data class RepWriting(
-    @SerializedName("code")
-    val code: Int,
-    @SerializedName("msg")
-    val msg: POST
-)
+
 
 data class RepModifyPW(
     @SerializedName("code")
@@ -249,22 +234,6 @@ data class PostData(
     val imageID: List<Int>
 )
 
-data class CommentList(
-    @SerializedName("id")
-    val id: Int,
-    @SerializedName("content")
-    val content: String,
-    @SerializedName("createDate")
-    val createDate: String,
-    @SerializedName("modifiedDate")
-    val modifiedDate: String,
-    @SerializedName("userId")
-    val userId: Int,
-    @SerializedName("userNickname")
-    val userNickname: String,
-    @SerializedName("userProfileImageId")
-    val userProfileImageId: Int
-)
 
 data class RepComment(
     @SerializedName("code")

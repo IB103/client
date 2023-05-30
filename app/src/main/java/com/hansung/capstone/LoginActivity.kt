@@ -2,7 +2,6 @@ package com.hansung.capstone
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -14,13 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.hansung.capstone.databinding.ActivityLoginBinding
 import com.hansung.capstone.find.FindIdActivity
 import com.hansung.capstone.find.FindPwActivity
-import com.hansung.capstone.mypage.MyPageFragment
-import com.hansung.capstone.retrofit.RepLogin
+import com.hansung.capstone.retrofit.RepUser
 import com.hansung.capstone.retrofit.ReqLogin
 import com.hansung.capstone.retrofit.RetrofitService
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.AuthErrorCause
-import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,8 +23,7 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
     var token=Token()
-    private var kakaoEmail: String? = null
-    private var kakaoNickname: String? = null
+
     var service = RetrofitService.create()
     private var loginNeeded:Boolean=false
 
@@ -61,14 +55,13 @@ class LoginActivity : AppCompatActivity() {
             val pw = binding.pwtext.text.toString()
             Log.d("Email", email)
             Log.d("Pw", pw)
-            //////////////////////////////
             val postReqLogin = ReqLogin(email, pw)
-            service.login(postReqLogin).enqueue(object : Callback<RepLogin> {
+            service.login(postReqLogin).enqueue(object : Callback<RepUser> {
                 @SuppressLint("Range")
-                override fun onResponse(call: Call<RepLogin>, response: Response<RepLogin>) {
+                override fun onResponse(call: Call<RepUser>, response: Response<RepUser>) {
                     if (response.isSuccessful) {
                         Log.d("req", "OK")
-                        val result: RepLogin? = response.body()
+                        val result: RepUser? = response.body()
                         if (response.code() == 200) {
                             if (result?.code == 100) {
                                 Log.d("로그인", "성공:$result")
@@ -98,12 +91,11 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         Log.d("ERR", "onResponse 실패")
                         Toast.makeText(this@LoginActivity,"아이디 또는 비밀번호를\n 다시 확인해주세요.",Toast.LENGTH_SHORT).show()
-                        //MyApplication.prefs.setString("Login", "fail")
 
                     }
                 }
 
-                override fun onFailure(call: Call<RepLogin>, t: Throwable) {
+                override fun onFailure(call: Call<RepUser>, t: Throwable) {
                     Log.d("ERR", "onFailure 에러: " + t.message.toString())
                     MyApplication.prefs.setString("Login", "fail")
                 }

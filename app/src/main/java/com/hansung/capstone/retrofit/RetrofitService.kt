@@ -6,7 +6,6 @@ import com.hansung.capstone.board.ModifyPost
 import com.hansung.capstone.board.Posts
 import com.hansung.capstone.board.RePModifyProfileImage
 import okhttp3.MultipartBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,7 +31,7 @@ interface RetrofitService {
     fun send(
 
         @Query("email") email: String
-    ):Call<String>
+    ):Call<RepUser>
     @POST("/api/email/confirm")
     fun confirm(
         @Query("email") email: String,
@@ -75,7 +74,7 @@ interface RetrofitService {
     @POST("/api/users/signin")
     fun login(
         @Body reqLogin: ReqLogin
-    ): Call<RepLogin>
+    ): Call<RepUser>
 
     @Headers("accept: application/json", "content-type: application/json")
     @POST("/api/users/signup")
@@ -94,9 +93,6 @@ interface RetrofitService {
     fun doublecheckNickName(
         @Query("nickname") nickname: String?
     ): Call<RepDoubleCheckNickName>
-    @Headers("accept: application/json", "content-type: application/json")
-    @GET("/api/users/test")
-    fun test(@Header("Authorization")accessToken:String): Call<String>
 
 
     @PUT("/api/users/modifyPW")
@@ -111,10 +107,6 @@ interface RetrofitService {
         @Body reqModifyNick: ReqModifyNick
     ): Call<RepModifyNick>
 
-    @GET("profile-image/{id}")
-    fun getProfileImage(
-        @Path("id") id: Long
-    ): Call<ResponseBody>
 
     @Multipart
     @POST("/api/community/post/create")

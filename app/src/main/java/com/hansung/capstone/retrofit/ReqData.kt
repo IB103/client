@@ -3,7 +3,7 @@ package com.hansung.capstone.retrofit
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import okhttp3.MultipartBody
+
 
 data class ReqModifyPost(
     var postId:Long,
@@ -56,23 +56,8 @@ val username:String,
 val birthday:String
 
 )
-data class ReqDoubleCheckID(
-    @SerializedName("email")
-    val email:String
-)
-data class ReqDoubleCheckNickName(
-    @SerializedName("email")
-    val email:String,
-    @SerializedName("nickname")
-    val nickname:String
 
-)
-data class ReqWriting(
-    @SerializedName("title")
-    val title: String,
-    @SerializedName("content")
-    val content:String
-)
+
 data class ReqModifyPW(
     @SerializedName("email")
     val email:String,

@@ -38,12 +38,12 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewHolder = holder as PostCommentsHolder
-        viewHolder.bind(resultDetailPost.data.commentList[position],position=position)
+        viewHolder.bind(resultDetailPost.data.commentList[position])
     }
 
     inner class PostCommentsHolder(private val binding: ItemPostDetailCommentsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(items: Comments,position: Int) {
+        fun bind(items: Comments) {
             if(items.userId.toInt()==-1){
                 binding.CommentContent.text="삭제된 댓글입니다."
                 binding.recommentBt.isVisible=false
@@ -53,7 +53,6 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
             }else {
                 binding.recommentBt.setOnClickListener {
                     context.commentId = items.id.toInt()
-                    context.setPosition(position)
                     context.keyBordShow(1)
                 }
 //                binding.delelteComment.isVisible =
@@ -92,7 +91,7 @@ class PostCommentsAdapter(private val resultDetailPost: ResultGetPostDetail, pri
             }
             else
                 binding.PostDetailReComment.visibility= View.GONE
-            context.setLastPosition(totalComments)
+
         }
     }
     private fun showDialog(){

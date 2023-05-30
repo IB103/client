@@ -78,7 +78,7 @@ class MyStory: AppCompatActivity() {
                     Log.d("getPostMyStory:", "성공 : ${response.body().toString()}")
                     val body = response.body()
                     totalPage=body!!.totalPage
-                    adapter.setInitItems(body!!.data as ArrayList<Posts>)
+                    adapter.setInitItems(body.data as ArrayList<Posts>)
 
                 }
                 override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {

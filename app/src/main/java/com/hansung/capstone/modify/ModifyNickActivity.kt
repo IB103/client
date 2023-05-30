@@ -35,11 +35,6 @@ class ModifyNickActivity:AppCompatActivity(){
             val nickname = binding.modifyNick.text.toString()
                     CheckNick().doubleCheckNick(nickname, binding.commentNick, binding.changeBt)
         }
-
-//        binding.checkPW.setOnClickListener {
-//            val pw = binding.modifyPW.text.toString()
-//            ModifyPW().modifyPW(pw)
-//        }
         binding.changeBt.setOnClickListener {
             val nickname = binding.modifyNick.text.toString()
             if (Token().checkToken()) {

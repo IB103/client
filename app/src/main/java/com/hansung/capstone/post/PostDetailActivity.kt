@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View.VISIBLE
@@ -43,7 +42,6 @@ class PostDetailActivity : AppCompatActivity() {
         var heartCheck: Int = 0
         var title_m = ""
         var content_m = ""
-        var position = 0
         var lastPosition = 0
         var imageList_m = listOf<Int?>()
 
@@ -57,7 +55,7 @@ class PostDetailActivity : AppCompatActivity() {
     val api = CommunityService.create()
     lateinit var body: ResultGetPostDetail
     private var commentActivity = 0
-    lateinit var resultComment: RecyclerView
+    private lateinit var resultComment: RecyclerView
     var noImage = -1
     var commentId: Int = 0
     var reCommentId: Long = 0
@@ -65,7 +63,7 @@ class PostDetailActivity : AppCompatActivity() {
     var id = MyApplication.prefs.getLong("userId", 0)
     private val linearLayoutManager = LinearLayoutManager(this)
     private var moveCheck: Int = 0
-
+    private var comment:String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,45 +83,17 @@ class PostDetailActivity : AppCompatActivity() {
                     ""
                 ) != "" && binding.InsertComment.text != null
             ) {
-                val comment = binding.InsertComment.text.toString()
+                comment = binding.InsertComment.text.toString()
                 binding.InsertComment.text = null
                 softKeyboardHide()
                 val totalItemCount =
                     (binding.PostDetailComment.adapter as PostCommentsAdapter).itemCount
                 Log.d("LastPosition", "$totalItemCount")
 
-                val commentAction = {
-                    // Log.d("checking345","#")
-                    when (commentActivity) {
-                        0 -> {//binding.PostDetailComment.scrollToPosition(14)
-                            PostComment(this@PostDetailActivity).postComment(
-                                comment,
-                                postId,
-                                binding
-                            )
-                            Log.d("LastPosition", "$lastPosition")
-                            Handler().postDelayed(
-                                Runnable { binding.PostDetailComment.scrollToPosition(15) },
-                                200
-                            )
-                        }
-                        1 -> {
-                            PostReComment(this@PostDetailActivity).post(
-                                comment,
-                                postId,
-                                commentId.toLong(),
-                                binding
-                            )
-                            resultComment.scrollToPosition(position)
-                        }
-                        2 -> ModifyComment().modify(commentId.toLong(), comment)
-                        3 -> ModifyReComment().modify(reCommentId, comment)
-
-                    }
-                    commentActivity = 0
-                }
                 if (Token().checkToken()) {
-                    Token().issueNewToken(commentAction)
+                    Token().issueNewToken{
+                        commentAction()
+                    }
                 } else {
                     commentAction()
                 }
@@ -138,7 +108,31 @@ class PostDetailActivity : AppCompatActivity() {
 
         getPostDetails(postId)
     }
+    private fun commentAction(){
+        when (commentActivity) {
+            0 -> {//binding.PostDetailComment.scrollToPosition(14)
+                PostComment(this@PostDetailActivity).postComment(
+                    comment,
+                    postId,
+                    binding
+                )
+                Log.d("LastPosition", "$lastPosition")
 
+            }
+            1 -> {
+                PostReComment(this@PostDetailActivity).post(
+                    comment,
+                    postId,
+                    commentId.toLong(),
+                    binding
+                )
+            }
+            2 -> ModifyComment().modify(commentId.toLong(), comment)
+            3 -> ModifyReComment().modify(reCommentId, comment)
+
+        }
+        commentActivity = 0
+    }
     private fun getPostDetails(postId: Long) {
         api.getPostDetail(postId)
             .enqueue(object : Callback<ResultGetPostDetail> {
@@ -365,14 +359,16 @@ class PostDetailActivity : AppCompatActivity() {
         return MyApplication.prefs.getLong("userId",0)!=0L
 
     }
-    fun setPosition(int: Int) {
-        position = int
-    }
 
-    fun setLastPosition(int: Int) {
-        lastPosition = int
+    private fun checkToken(){
+        if(Token().checkToken()){
+            Token().issueNewToken {
+                deletePost()
+            }
+        }else {
+            deletePost()
+        }
     }
-
     private fun deletePost() {
         val accessToken = MyApplication.prefs.getString("accessToken", "")
 
@@ -450,7 +446,7 @@ class PostDetailActivity : AppCompatActivity() {
         builder.setTitle("글 활동")
         val listener = DialogInterface.OnClickListener { _, which ->
             if (dataArr[which] == "삭제하기") {
-                deletePost()
+               checkToken()
             } else if (dataArr[which] == "수정하기") {
                 MainActivity.getInstance()?.setModifyCheck(true)
                 MainActivity.getInstance()?.setModifyInform(title_m, content_m, imageList_m)

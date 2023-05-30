@@ -33,7 +33,6 @@ class DeleteComment {
                         // 통신이 실패한 경우
                         Log.d("ERR deleteComment", "onResponse 실패" + body?.toString())
                     }
-
                 }
                 override fun onFailure(call: Call<ResDelete>, t: Throwable) {
                     Log.d("deleteComment:", "실패 : $t")

@@ -1,7 +1,6 @@
 package com.hansung.capstone.mypage
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -25,7 +24,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.hansung.capstone.*
 import com.hansung.capstone.board.BoardAdapterDecoration
 import com.hansung.capstone.databinding.FragmentMypageBinding
-import com.hansung.capstone.linechart.GetRecordData
+import com.hansung.capstone.barchart.GetRecordData
 import com.hansung.capstone.modify.ModifyMyInfo
 import com.hansung.capstone.retrofit.RetrofitService
 import com.hansung.capstone.retrofit.RidingData
@@ -48,13 +47,12 @@ class MyPageFragment : Fragment() {
     var requestY=0
     private val requestCode = 100
     lateinit var binding: FragmentMypageBinding
-    private val defaultGalleryRequestCode = 0
-    private var filePart: MultipartBody.Part? = null
     private var ridingDataList: MutableList<RidingData> = mutableListOf()
     private var monthRidingDataList: List<RidingData> = emptyList()
     private var flag=false
-    val convertedDate: MutableList<String> = mutableListOf()
-    var convertedTime : MutableList<String> = mutableListOf()
+    private val convertedDate: MutableList<String> = mutableListOf()
+    private var convertedTime : MutableList<String> = mutableListOf()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,6 +68,7 @@ class MyPageFragment : Fragment() {
             visibleLogin()
         } else {
             binding.modifyInfo.visibility=View.VISIBLE
+
             //visibleProfile()
         }
         return binding.root
@@ -105,24 +104,18 @@ class MyPageFragment : Fragment() {
             startActivity(intent)
         }
         var isInitialSelection = true  //spinner selector
-        val select_x = resources.getStringArray(R.array.select_x)
-        //val adapterX = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, select_x)
-        val adapterX = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, select_x)
+        val selectX = resources.getStringArray(R.array.select_x)
+        val adapterX = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, selectX)
         binding.userContainer.select_x.adapter=adapterX
         binding.userContainer.select_x.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Log.d("seleceted", "$position")
                 if (isInitialSelection) {
                     isInitialSelection = false
-                    return  // Skip initial selection
+                    return
                 } else {
                     when (position) {
-                        0 -> {
-                            requestX = 0
-                        }
-                        1 -> {
-                            requestX = 1
-                        }
+                        0 -> requestX = 0
+                        1 -> requestX = 1
                     }
                     Log.d("position1", "@@@@@@@@@@@@@@@@")
                     if(!flag)
@@ -130,35 +123,22 @@ class MyPageFragment : Fragment() {
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                // 아무것도 선택되지 않았을 때의 처리
-                //isInitialSelection = true
             }
         }
         var isInitialSelectionY = true
-        val select_y = resources.getStringArray(R.array.select_y)
-       // val adapterY = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, select_y)
-        val adapterY = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, select_y)
+        val selectY = resources.getStringArray(R.array.select_y)
+        val adapterY = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, selectY)
         binding.userContainer.select_y.adapter=adapterY
         binding.userContainer.select_y.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Log.d("position","$position")
                 if (isInitialSelectionY) {
                     isInitialSelectionY = false
-                    return  // Skip initial selection
+                    return
                 } else {
                     when (position) {
-                        0 -> {
-                            requestY = 0
-                            // drawDistance(ridingDataList)
-                        }
-                        1 -> {
-                            requestY = 1
-                            // drawTime(ridingDataList)
-                        }
-                        2 -> {
-                            requestY = 2
-                            // drawCalorie(ridingDataList)
-                        }
+                        0 -> requestY = 0
+                        1 -> requestY = 1
+                        2 -> requestY = 2
                     }
                     Log.d("position2", "@@@@@@@@@@@@@@@@")
                     if(!flag)
@@ -166,8 +146,6 @@ class MyPageFragment : Fragment() {
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                // 아무것도 선택되지 않았을 때의 처리
-               // isInitialSelectionY = true
             }
         }
         //내가 쓴 글
@@ -189,7 +167,6 @@ class MyPageFragment : Fragment() {
 //                binding.userContainer.chart.visibility=View.VISIBLE
 //                binding.userContainer.noResult.visibility = View.GONE
                 sumData(result)// 한달 누적 정보
-                result.add(1,RidingData(12L,12F,"2023-05-30",13))
                 adapter.addData(result)
             } else {
 //                binding.userContainer.chart.visibility=View.GONE
@@ -207,14 +184,13 @@ class MyPageFragment : Fragment() {
             val intent = Intent(activity, LoginActivity::class.java)
             @Suppress("DEPRECATION")
             startActivityForResult(intent, requestCode)
-            // startForResult.launch(intent)
         }
     }
 
     private fun request(period:Int){
         GetRecordData().getRidingData(period) { result ->
             if (result.isNotEmpty()) {
-                Log.d("repeat0", "@@@@@@@@@@@@@@@@")
+                Log.d("repeat0", "$result")
                 binding.userContainer.chart.visibility=View.VISIBLE
                 binding.userContainer.noResult.visibility = View.GONE
                 this.ridingDataList = result
@@ -223,9 +199,7 @@ class MyPageFragment : Fragment() {
                 }.toMutableList()
                 convertedTime=Utility.convertMsList(ridingTime)
                 val now = LocalDateTime.now()
-
                 convertedDate.clear() // 기존 데이터 초기화
-
                 for (i in 0..period) {
                     val value = now.minusDays((period - i).toLong()).format(DateTimeFormatter.ofPattern("MM-dd"))
                     convertedDate.add(i, value)
@@ -243,22 +217,20 @@ class MyPageFragment : Fragment() {
                 binding.userContainer.chart.visibility=View.INVISIBLE
                 binding.userContainer.noResult.visibility = View.VISIBLE
             }
-
             flag = false
         }
     }
     private fun requestData(int: Int) { // record 요청
-        var period = 6
+        var period = 7
         if (int == 1) period = 29
-
         if (!flag) {
             flag = true
-            Log.d("period", "$period")
             if(Token().checkToken()){
                 Token().issueNewToken {
                     request(period=period)
                 }
-            }else request(period=period)
+            }else {
+                request(period=period)}
 
         }
     }
@@ -272,38 +244,64 @@ class MyPageFragment : Fragment() {
         val zero=0
         var barEntry:BarEntry
         for(i in 0 until convertedDate.size){
-            if(ridingDataList.isNotEmpty()){
-
+            barEntry = if(ridingDataList.isNotEmpty()){
                 if(ridingDataList[0].createdDate.substring(5 until 10).equals(convertedDate[i])){
-                    Log.d("repeat3","${convertedDate[i]}")
-                    Log.d("repeat4","${ridingDataList[0].createdDate}")
-                    barEntry = BarEntry(i.toFloat(), ridingDataList.removeAt(0).calorie.toFloat()
+                    BarEntry(i.toFloat(), ridingDataList.removeAt(0).calorie.toFloat()
                     )
-                }
-                else{
+                } else{
 
-                    barEntry = BarEntry(i.toFloat(), zero.toFloat())
+                    BarEntry(i.toFloat(), zero.toFloat())
                 }
 
-            }else  barEntry = BarEntry(i.toFloat(), zero.toFloat())
+            }else BarEntry(i.toFloat(), zero.toFloat())
             entries.add(barEntry)
         }
         val barDataSet = BarDataSet(entries, title)
-        // val xAxisLabels =ridingDataList. // x축의 레이블로 사용할 문자열 배열
-        val xAxis = barChart.xAxis // barChart는 BarChart 객체입니다.
-        // xAxis.valueFormatter = IndexAxisValueFormatter(xAxisLabels)
-        val leftAxis: YAxis = barChart.getAxisLeft()
-        // y축 값 변환 로직을 여기에 추가합니다
+        val leftAxis: YAxis = barChart.axisLeft
         leftAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
-                // 원하는 값 변환 로직을 구현합니다
-                // 예를 들어, 소수점 자리를 제한하거나 단위를 추가할 수 있습니다
                 return String.format("%.0f kcal", value)
             }
         }
 
         val data = BarData(barDataSet)
         barDataSet.color = Color.parseColor("#87D5AA")
+        barChart.data = data
+        // initBarDataSet(barDataSet)
+        barChart.invalidate()
+    }
+    private fun drawDistance(ridingDataList: MutableList<RidingData>) {
+        val barChart=binding.userContainer.chart
+        initBarChart(barChart)
+        barChart.setScaleEnabled(false)
+        val entries:ArrayList<BarEntry> = ArrayList()
+        val title="거리"
+        val zero=0
+        var barEntry: BarEntry
+        for(i in 0 until convertedDate.size){
+            barEntry = if(ridingDataList.isNotEmpty()){
+
+                if(ridingDataList[0].createdDate.substring(5 until 10).equals(convertedDate[i])){
+                    BarEntry(i.toFloat(), ridingDataList.removeAt(0).ridingDistance)
+                } else{
+
+                    BarEntry(i.toFloat(), zero.toFloat())
+                }
+
+            }else BarEntry(i.toFloat(), zero.toFloat())
+            entries.add(barEntry)
+        }
+
+        val leftAxis: YAxis = barChart.axisLeft
+
+        leftAxis.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return String.format("%.0f km", value)
+            }
+        }
+        val barDataSet = BarDataSet(entries, title)
+        barDataSet.color = Color.parseColor("#87D5AA")
+        val data = BarData(barDataSet)
         barChart.data = data
         // initBarDataSet(barDataSet)
         barChart.invalidate()
@@ -317,27 +315,21 @@ class MyPageFragment : Fragment() {
         val zero=0
         var barEntry:BarEntry
         for(i in 0 until convertedDate.size){
-            if(ridingDataList.isNotEmpty()){
+            barEntry = if(ridingDataList.isNotEmpty()){
                 if(ridingDataList[0].createdDate.substring(5 until 10).equals(convertedDate[i])){
-                    barEntry = BarEntry(i.toFloat(),ridingDataList.removeAt(0).ridingTime.toFloat()
+                    BarEntry(i.toFloat(),ridingDataList.removeAt(0).ridingTime.toFloat()
                     )
 
+                } else{
+                    BarEntry(i.toFloat(), zero.toFloat())
                 }
-                else{
-                    barEntry = BarEntry(i.toFloat(), zero.toFloat())
-                }
-            }else  barEntry = BarEntry(i.toFloat(), zero.toFloat())
+            }else BarEntry(i.toFloat(), zero.toFloat())
 
             entries.add(barEntry)
         }
 
         val barDataSet = BarDataSet(entries, title)
-        // val xAxisLabels =ridingDataList. // x축의 레이블로 사용할 문자열 배열
-
-        val xAxis = barChart.xAxis // barChart는 BarChart 객체입니다.
-        // xAxis.valueFormatter = IndexAxisValueFormatter(xAxisLabels)
-        val leftAxis: YAxis = barChart.getAxisLeft()
-       // leftAxis.valueFormatter = IndexAxisValueFormatter(convertedTime)
+        val leftAxis: YAxis = barChart.axisLeft
         binding.userContainer.horizontal_scroll_view.post{
             binding.userContainer.horizontal_scroll_view.scrollTo(
                 binding.userContainer.chart.width,0
@@ -366,75 +358,7 @@ class MyPageFragment : Fragment() {
         barChart.invalidate()
     }
     @SuppressLint("ClickableViewAccessibility")
-    private fun drawDistance(ridingDataList: MutableList<RidingData>) {
-        val barChart=binding.userContainer.chart
-        initBarChart(barChart)
-        barChart.setScaleEnabled(false)
-        val entries:ArrayList<BarEntry> = ArrayList()
-        val title="거리"
 
-        val zero=0
-        var barEntry:BarEntry
-        for(i in 0 until convertedDate.size){
-            if(ridingDataList.isNotEmpty()){
-
-                if(ridingDataList[0].createdDate.substring(5 until 10).equals(convertedDate[i])){
-                    barEntry = BarEntry(i.toFloat(), ridingDataList.removeAt(0).ridingDistance)
-                }
-                else{
-
-                    barEntry = BarEntry(i.toFloat(), zero.toFloat())
-                }
-
-            }else  barEntry = BarEntry(i.toFloat(), zero.toFloat())
-            entries.add(barEntry)
-        }
-
-//        for (i in 0 until createdDate.size){
-//            if(ridingDataList.isNotEmpty()){
-//                if(ridingDataList[0].createdDate.format())
-//            }
-//            if ridingDataList 가 존재한다면:
-//                if ridingDataList[0].createdDate.format() ("5/25") 가 createdDate[i]랑 같다면 {
-//                    val barEntry = BarEntry(i.toFloat(), ridingDataList.remove(0).ridingDistance)
-//                }
-//                else: val barEntry = BarEntry(i.toFloat(), 0)
-//            else: val barEntry = BarEntry(i.toFloat(), 0)
-//            entries.add(barEntry)
-
- //       }
-        val leftAxis: YAxis = barChart.getAxisLeft()
-
-// y축 값 변환 로직을 여기에 추가합니다
-        leftAxis.valueFormatter = object : ValueFormatter() {
-            override fun getFormattedValue(value: Float): String {
-                // 원하는 값 변환 로직을 구현합니다.
-                // 예를 들어, 소수점 자리를 제한하거나 단위를 추가할 수 있습니다.
-                return String.format("%.0f km", value)
-            }
-        }
-        val barDataSet = BarDataSet(entries, title)
-       // val xAxisLabels =ridingDataList. // x축의 레이블로 사용할 문자열 배열
-        barDataSet.color = Color.parseColor("#87D5AA")
-
-        val xAxis = barChart.xAxis // barChart는 BarChart 객체입니다.
-       // xAxis.valueFormatter = IndexAxisValueFormatter(xAxisLabels)
-
-        val data = BarData(barDataSet)
-        barChart.data = data
-       // initBarDataSet(barDataSet)
-        barChart.invalidate()
-    }
-    private fun initBarDataSet(barDataSet: BarDataSet) {
-        //Changing the color of the bar
-        barDataSet.color = Color.parseColor("#304567")
-        //Setting the size of the form in the legend
-        barDataSet.formSize = 15f
-        //showing the value of the bar, default true if not set
-        barDataSet.setDrawValues(false)
-        //setting the text size of the value of the bar
-        barDataSet.valueTextSize = 12f
-    }
     private fun initBarChart(barChart: BarChart) {
 
         //hiding the grey background of the chart, default false if not set
@@ -446,15 +370,15 @@ class MyPageFragment : Fragment() {
         barChart.setTouchEnabled(false)
         //remove the description label text located at the lower right corner
         val description = Description()
-        description.setEnabled(false)
-        barChart.setDescription(description)
+        description.isEnabled = false
+        barChart.description = description
 
-        //X, Y 바의 애니메이션 효과
         barChart.animateY(1000)
         barChart.animateX(1000)
         //바텀 좌표 값
-        val xAxis: XAxis = barChart.getXAxis()
+        val xAxis: XAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
+        convertedDate.removeAt(0)
         xAxis.valueFormatter = IndexAxisValueFormatter(convertedDate)
         //set the horizontal distance of the grid line
         xAxis.granularity = 1f
@@ -464,17 +388,17 @@ class MyPageFragment : Fragment() {
         //hiding the vertical grid lines, default true if not set
         xAxis.setDrawGridLines(false)
         //좌측 값 hiding the left y-axis line, default true if not set
-        val leftAxis: YAxis = barChart.getAxisLeft()
+        val leftAxis: YAxis = barChart.axisLeft
         leftAxis.setDrawAxisLine(false)
         leftAxis.textColor = Color.BLACK
 
 
-        //우측 값 hiding the right y-axis line, default true if not set
-        val rightAxis: YAxis = barChart.getAxisRight()
+
+        val rightAxis: YAxis = barChart.axisRight
         rightAxis.setDrawAxisLine(false)
         rightAxis.isEnabled=false
-        //바차트의 타이틀
-        val legend: Legend = barChart.getLegend()
+
+        val legend: Legend = barChart.legend
         //setting the shape of the legend form to line, default square shape
         legend.form = Legend.LegendForm.LINE
         //setting the text size of the legend
@@ -488,13 +412,16 @@ class MyPageFragment : Fragment() {
         //setting the location of legend outside the chart, default false if not set
         legend.setDrawInside(false)
     }
+        @SuppressLint("SetTextI18n")
         private fun sumData(data:List<RidingData>){
             this.monthRidingDataList=data
-            binding.userContainer.monthDistance.text= String.format("%.2f",monthRidingDataList.sumByDouble { it.ridingDistance.toDouble() })+"km"
-            val totalTime=monthRidingDataList.sumByDouble { it.ridingTime.toDouble() }
+            binding.userContainer.monthDistance.text= String.format("%.2f",
+                monthRidingDataList.sumOf { it.ridingDistance.toDouble() })+"km"
+            val totalTime= monthRidingDataList.sumOf { it.ridingTime.toDouble() }
             val changedValue=Utility.convertMs(totalTime.toLong())
             binding.userContainer.monthTime.text=changedValue
-            binding.userContainer.monthC.text=String.format("%d",monthRidingDataList.sumBy{ it.calorie })+"calorie"
+            binding.userContainer.monthC.text=String.format("%d",
+                monthRidingDataList.sumOf { it.calorie })+"calorie"
         }
     private fun getProfileImage() {
         val profileImageId = MyApplication.prefs.getLong("profileImageId", 0)
@@ -504,27 +431,6 @@ class MyPageFragment : Fragment() {
             .centerCrop()
             .into(binding.userContainer.profile_container.profileImage)
     }
-
-
-    @SuppressLint("Recycle")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == this.requestCode) {
-            if (resultCode == Activity.RESULT_OK || MyApplication.prefs.getString("email","")!="") {
-                Log.d("resultCode","$resultCode")
-                Log.d(">>>>>>>>>>>>>>cc", MyApplication.prefs.getString("email", ""))
-                Log.d("FINISH",">>>>>>>>>>>>>>")
-                visibleProfile()
-            } else {
-                Log.d("resultCode","$resultCode")
-                Log.d("Fail",">>>>>>>>>>>>>>")
-                visibleLogin()
-            }
-        }
-
-    }
-
 
     override fun onResume() {
         super.onResume()

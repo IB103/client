@@ -18,11 +18,10 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hansung.capstone.*
 import com.hansung.capstone.databinding.FragmentHomeBinding
-import com.hansung.capstone.linechart.GetRecordData
+import com.hansung.capstone.barchart.GetRecordData
 import com.hansung.capstone.mypage.MyPageFragment
 import com.hansung.capstone.retrofit.RankData
 import com.hansung.capstone.retrofit.RetrofitService
-import com.hansung.capstone.retrofit.RidingData
 import com.hansung.capstone.retrofit.Weather
 import kotlinx.android.synthetic.main.view_profile.view.*
 import retrofit2.Call
@@ -48,7 +47,6 @@ class HomeFragment : Fragment() {
     private lateinit var profileImage: ImageView
     private lateinit var mLocationManager: LocationManager
     private lateinit var mLocationListener: LocationListener
-    private lateinit var dataList: List<RidingData>
     private val minDistance: Float = 100f
     var service = RetrofitService.create()
     val retrofit: Retrofit = Retrofit.Builder()
@@ -58,7 +56,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -67,22 +65,6 @@ class HomeFragment : Fragment() {
     @SuppressLint("SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // lineChart=binding.chart
-        val noImage:Long=-1
-//        if(MyApplication.prefs.getLong("userId", 0)!=null){
-//         GetRecordData().getRidingData(7){result ->
-//             if (result.isNotEmpty()) {
-//                 this.ridingDataList = result
-////                 ranking(result)
-//               // draw(result)
-//             } else {
-//                 binding.noDataComment.visibility = View.VISIBLE
-//                 binding.noDataImage.visibility = View.VISIBLE
-//             }
-
-
-        //}
-
 //        val navController: NavController = Navigation.findNavController(view)
 
 //        val navHostFragment =
@@ -139,111 +121,21 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-@SuppressLint("ClickableViewAccessibility")
-//private fun draw(ridingDataList:List<RidingData>) {
-//    binding.noDataComment.visibility = View.GONE
-//    binding.noDataImage.visibility = View.GONE
-//    binding.chart.visibility = View.VISIBLE
-//    //if(ridingDataList.isNotEmpty()){
-//    Log.d("ready", "$ridingDataList")
-//
-//    val entries = ridingDataList.map { Entry(it.ridingTime.toFloat(), it.ridingDistance) }
-//    val dataSet = LineDataSet(entries, "라이딩 기록")
-//    val markerView = CustomMarkerView(requireContext(), R.layout.marker_layout)
-//    val lineData = LineData(dataSet)
-//    val lineChart = binding.chart
-//    lineChart.marker = markerView
-//    val xAxis = lineChart.xAxis
-//    lineChart.data = lineData
-//    lineChart.invalidate()
-//    xAxis.apply {
-//        setDrawGridLines(false)
-//        setDrawAxisLine(true)
-//        setDrawLabels(true)
-//        position = XAxis.XAxisPosition.BOTTOM
-//        textColor = resources.getColor(R.color.black, null)
-//        textSize = 10f
-//        labelRotationAngle = 0f
-//        setLabelCount(10, true)
-//    }
-//
-//    lineChart.apply {
-//
-//        axisRight.isEnabled = false   //y축 사용여부
-//        axisLeft.isEnabled = true
-//        legend.isEnabled = false    //legend 사용여부
-//        description.isEnabled = false //주석
-//        isScaleYEnabled = false //y축 줌 사용여부
-//        isScaleXEnabled = false //x축 줌 사용여부
-//    }
-//
-//    dataSet.apply {
-//        color = resources.getColor(R.color.maincolor, null)
-//        circleRadius = 3f
-//        lineWidth = 1f
-//        setCircleColor(resources.getColor(R.color.maincolor, null))
-//        setDrawHighlightIndicators(false)
-//        setDrawValues(false) // 숫자표시
-//        valueTextColor = resources.getColor(R.color.black, null)
-//        valueFormatter = DefaultValueFormatter(2)  // 소숫점 자릿수 설정
-//        valueTextSize = 10f
-//
-//    }
-//    lineChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-//        override fun onValueSelected(e: Entry?, h: Highlight?) {
-//            if (e != null) {
-//                lineChart.highlightValue(h) // 하이라이트 표시
-//            }
-////                markerView.refreshContent(e.x, e.y)
-////                lineChart.highlightValue(h)
-////                lineChart.invalidate()
-////            } else {
-////                lineChart.highlightValue(null)
-////                lineChart.invalidate()
-////            }
-//        }
-//
-//        override fun onNothingSelected() {
-//            //  lineChart.marker = null
-////            lineChart.highlightValue(null)
-////            lineChart.invalidate()
-//        }
-//    })
-//
-//    lineChart.setOnTouchListener { v, event ->
-//        if (event.action == MotionEvent.ACTION_DOWN) {
-//            val highlight = lineChart.getHighlightByTouchPoint(event.x, event.y)
-//            if (highlight == null) {
-//                // 좌표 지점이 아닌 곳을 터치했을 때 MarkerView를 숨김
-//
-//            }
-//        }
-//        false
-//    }
-//}
 private fun requestData(){
-    Log.d("request1","###############")
     GetRecordData().getRankData { result ->
         if (result.isNotEmpty()) {
             binding.noDataComment.visibility=View.GONE
-            //binding.noDataImage.visibility=View.GONE
             binding.rankLayout.visibility=View.VISIBLE
             this.ridingDataList = result
             ranking(result)
-            // draw(result)
         } else {
-            Log.d("request2","###############")
             binding.noDataComment.visibility=View.VISIBLE
-            // binding.noDataImage.visibility=View.VISIBLE
-            binding.rankLayout.visibility=View.GONE
-            // binding.chart.visibility=View.GONE
         }
     }
 }
+   @SuppressLint("SetTextI18n")
    private fun ranking(data:MutableList<RankData>){
         val size = data.size
-       Log.d("size","$size")
         binding.firstDistance.text = String.format("%.2f", data[0].totalDistance) + "km"
         binding.firstNick.text = data[0].userNickname
         getProfileImage(data[0].profileImageId,binding.rank1Image)
@@ -310,19 +202,30 @@ private fun requestData(){
                   val weatherDescription = weather.weather.firstOrNull()?.description ?: "Unknown"
 
                   temperature.text = "$temper ℃"
-                  weatherState.text = weatherDescription
-                  if (weatherDescription.contains("rain")||weatherDescription.contains("Rain")||weatherDescription.contains("drizzle"))
-                      weatherIcon.setImageResource(R.drawable.rain)
-                  else if (weatherDescription.contains("clouds")||weatherDescription.contains("mist")||weatherDescription.contains("Smoke"))
-                      weatherIcon.setImageResource(R.drawable.cloud)
-                  else if (weatherDescription.contains("clear"))
-                      weatherIcon.setImageResource(R.drawable.clear)
-                  else if (weatherDescription.contains("Tornado")||weatherDescription.contains("Squall"))
-                      weatherIcon.setImageResource(R.drawable.windy)
-                  else if (weatherDescription.contains("thunderstorm"))
-                      weatherIcon.setImageResource(R.drawable.thunderstorm)
-                  else if (weatherDescription.contains("sand"))
-                      weatherIcon.setImageResource(R.drawable.sand)
+                  if (weatherDescription.contains("rain")||weatherDescription.contains("Rain")||weatherDescription.contains("drizzle")){
+                      weatherState.text = "비"
+                      binding.ridingImage.setImageResource(R.drawable.rest)
+                      weatherIcon.setImageResource(R.drawable.rain)}
+                  else if (weatherDescription.contains("clouds")||weatherDescription.contains("mist")||weatherDescription.contains("Smoke")){
+                      weatherState.text = "흐림"
+                      binding.ridingImage.setImageResource(R.drawable.biking)
+                      weatherIcon.setImageResource(R.drawable.cloud)}
+                  else if (weatherDescription.contains("clear")){
+                      weatherState.text = "맑음"
+                      binding.ridingImage.setImageResource(R.drawable.biking)
+                      weatherIcon.setImageResource(R.drawable.clear)}
+                  else if (weatherDescription.contains("Tornado")||weatherDescription.contains("Squall")){
+                      weatherState.text = "바람"
+                      binding.ridingImage.setImageResource(R.drawable.rest)
+                      weatherIcon.setImageResource(R.drawable.windy)}
+                  else if (weatherDescription.contains("thunderstorm")){
+                      weatherState.text = "번개"
+                      binding.ridingImage.setImageResource(R.drawable.rest)
+                      weatherIcon.setImageResource(R.drawable.thunderstorm)}
+                  else if (weatherDescription.contains("sand")){
+                      weatherState.text = "황사"
+                      binding.ridingImage.setImageResource(R.drawable.rest)
+                      weatherIcon.setImageResource(R.drawable.sand)}
               }
               override fun onFailure(call: Call<Weather>, t: Throwable) {
                   Log.d("onFailure", "실패 ")

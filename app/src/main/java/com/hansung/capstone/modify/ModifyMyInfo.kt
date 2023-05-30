@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.hansung.capstone.modify
 
 import android.annotation.SuppressLint
@@ -35,7 +37,7 @@ class ModifyMyInfo:AppCompatActivity() {
     companion object {
         private const val MODIFY_REQUEST_CODE = 123
         private const val MODIFYPWACT_REQUEST_CODE = 12
-        private val defaultGalleryRequestCode = 0
+        private const val defaultGalleryRequestCode = 0
     }
     private val binding by lazy { ActivityModifymyinfoBinding.inflate(layoutInflater) }
     var api= RetrofitService.create()
@@ -86,7 +88,7 @@ class ModifyMyInfo:AppCompatActivity() {
                 if(response.code()==200){
                     val result: RepLogOut =response.body()!!
                     MainActivity.getInstance()!!.setLoginState(0)
-                    Log.d("resultlogOut","$result")
+                    Log.d("resultLogOut","$result")
                     finish()
                     // setData(result.data)
                 }
@@ -100,9 +102,12 @@ class ModifyMyInfo:AppCompatActivity() {
     private  fun logOut(){
         if (Token().checkToken()) {
             Token().issueNewToken {
+
                requestLogOut()
             }
-        }else requestLogOut()
+        }else {
+
+            requestLogOut()}
     }
     private fun info(){
 
@@ -178,6 +183,7 @@ class ModifyMyInfo:AppCompatActivity() {
             }
         })
     }
+    @SuppressLint("Recycle")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MODIFY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
