@@ -100,6 +100,7 @@ class FindIdActivity:AppCompatActivity() {
                             }
                         } else {
                             // 통신이 실패한 경우
+                            message()
                             Log.d("ERR findID", "onResponse 실패")
                         }
                     }

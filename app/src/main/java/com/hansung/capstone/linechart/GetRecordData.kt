@@ -16,6 +16,7 @@ class GetRecordData {
         val accessToken= MyApplication.prefs.getString("accessToken", "")
 
             val user_id=MyApplication.prefs.getLong("userId",0)
+
             service.getRecord(accessToken = "Bearer $accessToken",user_id ,int.toLong()).enqueue(object:Callback<RepGetRecord>{
                 override fun onResponse(call: Call<RepGetRecord>, response: Response<RepGetRecord>) {
                     if(response.code()==200){
@@ -32,11 +33,10 @@ class GetRecordData {
             })
     }
     fun getRankData(callback: (result: MutableList<RankData>) -> Unit){
+            service.getRank().enqueue(object:Callback<RepRank>{
 
-            val accessToken=MyApplication.prefs.getString("accessToken","")
-        Log.d("accessToken","$accessToken")
-            service.getRank(accessToken = "Bearer $accessToken").enqueue(object:Callback<RepRank>{
                 override fun onResponse(call: Call<RepRank>, response: Response<RepRank>) {
+                    Log.d("checkRankData","###########")
                     if(response.code()==200){
                         val result:RepRank=response.body()!!
                         Log.d("result","${result.data}")

@@ -80,11 +80,6 @@ class HomeFragment : Fragment() {
 //                 binding.noDataImage.visibility = View.VISIBLE
 //             }
 
-        if(Token().checkToken()){
-            Token().issueNewToken {
-                requestData()
-            }
-        }else requestData()
 
         //}
 
@@ -101,6 +96,7 @@ class HomeFragment : Fragment() {
             weatherIcon = weatherIc
             this@HomeFragment.profileImage =profileImage
         }
+        requestData()
         getWeatherInCurrentLocation()
         binding.goRiding.setOnClickListener {
             if(MyApplication.prefs.getString("accessToken", "") != ""){
@@ -227,6 +223,7 @@ class HomeFragment : Fragment() {
 //    }
 //}
 private fun requestData(){
+    Log.d("request1","###############")
     GetRecordData().getRankData { result ->
         if (result.isNotEmpty()) {
             binding.noDataComment.visibility=View.GONE
@@ -236,6 +233,7 @@ private fun requestData(){
             ranking(result)
             // draw(result)
         } else {
+            Log.d("request2","###############")
             binding.noDataComment.visibility=View.VISIBLE
             // binding.noDataImage.visibility=View.VISIBLE
             binding.rankLayout.visibility=View.GONE
@@ -268,7 +266,6 @@ private fun requestData(){
            profileImage.setImageResource(R.drawable.user)
         Glide.with(requireActivity())
             .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
-//            .override(200, 200)
             .centerCrop()
             .into(profileImage)
     }
@@ -338,7 +335,7 @@ private fun requestData(){
         if(MyApplication.prefs.getString("email","")!=""){
             binding.tvNick.text=MyApplication.prefs.getString("nickname","")
            binding.tvEmail.text= MyApplication.prefs.getString("email","")
-            getProfileImage(MyApplication.prefs.getLong("userId",0L),binding.profileImage)
+            getProfileImage(MyApplication.prefs.getLong("profileImageId",0L),binding.profileImage)
         }else{
             binding.tvNick.text="비회원"
             binding.tvEmail.text= ""

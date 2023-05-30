@@ -10,7 +10,8 @@ import retrofit2.Response
 import java.time.LocalDateTime
 
 class Token {
-
+    private val firstValue=MyApplication.prefs.getString("accessToken","")
+    private val firstValue2=MyApplication.prefs.getString("refreshToken","")
     var service = RetrofitService.create()
     private val expiresIn = 30 * 60 * 1000//300//30분으로 수정->30 * 60 * 1000
     fun set(){
@@ -18,7 +19,6 @@ class Token {
         MyApplication.prefs.setLong("tokenTime",currentTime)
     }
     fun checkToken():Boolean{
-Log.d("checkingtoken","${MyApplication.prefs.getString("accessToken","")}")
         val tokenTime=MyApplication.prefs.getLong("tokenTime",0)
         val expirationTime = tokenTime + expiresIn
         val isExpired = expirationTime < System.currentTimeMillis()
@@ -42,6 +42,8 @@ Log.d("checkingtoken","${MyApplication.prefs.getString("accessToken","")}")
                         MyApplication.prefs.setLong("tokenTime", currentTime)
                         MyApplication.prefs.setString("accessToken", result.data.accessToken)
                         MyApplication.prefs.setString("refreshToken", result.data.refreshToken)
+                        Log.d("diff","${firstValue.equals(result.data.accessToken)}")
+                        Log.d("diff2","${firstValue2.equals(result.data.refreshToken)}")
                         if (callback != null) {
                             callback()
                         } // 토큰 발급 후 콜백 함수 실행

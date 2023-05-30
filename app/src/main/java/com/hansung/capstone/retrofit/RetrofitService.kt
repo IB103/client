@@ -20,7 +20,7 @@ interface RetrofitService {
     ): Call<RepLogOut>
     @GET("/api/users/riding/rank")
     fun getRank(
-        @Header("Authorization") accessToken:String
+
     ): Call<RepRank>
     @GET("/api/users/riding/record-history")
     fun getRecord(
@@ -30,12 +30,11 @@ interface RetrofitService {
     ): Call<RepGetRecord>
     @POST("/api/email/send")
     fun send(
-        @Header("Authorization")accessToken:String,
+
         @Query("email") email: String
     ):Call<String>
     @POST("/api/email/confirm")
     fun confirm(
-        @Header("Authorization")accessToken:String,
         @Query("email") email: String,
         @Query("code") code: String
     ):Call<RepConfirm>

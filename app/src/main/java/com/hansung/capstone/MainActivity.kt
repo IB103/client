@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         var showPost:Posts?=null
         var commentCount=0
         var deleteCount=0
-        var login:Boolean=false
+        var login=-1
         var position:Int=-1
         var stateCheck=-1
         var modifyCheck=false
@@ -155,9 +155,9 @@ class MainActivity : AppCompatActivity() {
     fun getDeletedCommentCount():Int{
         return deleteCount
     }
-    fun setLoginState(bool:Boolean){
-        login=bool
-    } fun getLoginState():Boolean{
+    fun setLoginState(int:Int){//0 logout//1 loginatLoginPage //2 login at community
+        login=int
+    } fun getLoginState():Int{
         return login
 
     }

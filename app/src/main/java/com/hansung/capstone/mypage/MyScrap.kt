@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hansung.capstone.CommunityService
 import com.hansung.capstone.MainActivity
 import com.hansung.capstone.MyApplication
+import com.hansung.capstone.Token
 import com.hansung.capstone.board.*
 import com.hansung.capstone.databinding.ActivityMyscrapBinding
 import retrofit2.Call
@@ -38,23 +39,25 @@ class MyScrap: AppCompatActivity() {
 
         swipe.setOnRefreshListener {
             page=0
-            api.getPostMyScrap(id,0).enqueue(object : Callback<ResultGetPosts> {
-                    override fun onResponse(
-                        call: Call<ResultGetPosts>,
-                        response: Response<ResultGetPosts>
-                    ) {
-                        Log.d("getPostMyScrap:", "성공 : ${response.body().toString()}")
-                        val body = response.body()
-                        val board: ArrayList<Posts> = ArrayList()
-                        board.addAll(body!!.data)
-                        adapter.renewItems((body.data as ArrayList<Posts>))
 
-                    }
-
-                    override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
-                        Log.d("getPostMyScrap:", "실패 : $t")
-                    }
-                })
+        checkToken()
+//            api.getPostMyScrap(accessToken = "Bearer $accessToken",id,0).enqueue(object : Callback<ResultGetPosts> {
+//                    override fun onResponse(
+//                        call: Call<ResultGetPosts>,
+//                        response: Response<ResultGetPosts>
+//                    ) {
+//                        Log.d("getPostMyScrap:", "성공 : ${response.body().toString()}")
+//                        val body = response.body()
+//                        val board: ArrayList<Posts> = ArrayList()
+//                        board.addAll(body!!.data)
+//                        adapter.renewItems((body.data as ArrayList<Posts>))
+//
+//                    }
+//
+//                    override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
+//                        Log.d("getPostMyScrap:", "실패 : $t")
+//                    }
+//                })
             swipe.isRefreshing = false
         }
         resultAllPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -62,26 +65,35 @@ class MyScrap: AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
                 // 스크롤 끝까지 도달 새로운 데이터 로드
                 if (!recyclerView.canScrollVertically(1)&&page<totalPage-1) {
-                   getAllPost(++page)
+                   page++
+                    checkToken()
                 }
             }
         })
-        api.getPostMyScrap(id,page=page++)
-            .enqueue(object : Callback<ResultGetPosts> {
-                override fun onResponse(
-                    call: Call<ResultGetPosts>,
-                    response: Response<ResultGetPosts>
-                ) {
-                    Log.d("getPostMyScrap:", "성공 : ${response.body().toString()}")
-                    val body = response.body()
-                    totalPage=body!!.totalPage
-                    adapter.setInitItems((body!!.data as ArrayList<Posts>))
-                }
-                override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
-                    Log.d("getPostMyScrap:", "실패 : $t")
-                }
-            })
+        getAllPost(page)
+//        api.getPostMyScrap(id,page=page++)
+//            .enqueue(object : Callback<ResultGetPosts> {
+//                override fun onResponse(
+//                    call: Call<ResultGetPosts>,
+//                    response: Response<ResultGetPosts>
+//                ) {
+//                    Log.d("getPostMyScrap:", "성공 : ${response.body().toString()}")
+//                    val body = response.body()
+//                    totalPage=body!!.totalPage
+//                    adapter.setInitItems((body!!.data as ArrayList<Posts>))
+//                }
+//                override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
+//                    Log.d("getPostMyScrap:", "실패 : $t")
+//                }
+//            })
 
+    }
+    private fun checkToken(){
+        if(Token().checkToken()){
+            Token().issueNewToken {
+                getAllPost(page)
+            }
+        }else getAllPost(page)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -94,7 +106,8 @@ class MyScrap: AppCompatActivity() {
     }
     @Suppress("DEPRECATION")
     private fun getAllPost(page:Int){//다음 페이지 요청
-        api.getPostMyScrap(id,page)
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+        api.getPostMyScrap(accessToken = "Bearer $accessToken",id,page)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
                     call: Call<ResultGetPosts>,

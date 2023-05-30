@@ -33,11 +33,12 @@ class FindPwActivity:AppCompatActivity() {
         binding.closeView.setOnClickListener { finish() }
         binding.reqEmailSend.setOnClickListener {
         binding.reqEmailSend.isEnabled=false
-            if(Token().checkToken()){
-                Token().issueNewToken {
-                    sendEmail()
-                }
-            }else sendEmail()
+//            if(Token().checkToken()){
+//                Token().issueNewToken {
+//                    sendEmail()
+//                }
+//            }else
+             sendEmail()
 
 
 
@@ -74,10 +75,7 @@ class FindPwActivity:AppCompatActivity() {
     }
     private fun sendEmail(){
         val email=binding.getId.text.toString()
-
-        val accessToken= MyApplication.prefs.getString("accessToken", "")
-
-        service.send(accessToken = "Bearer $accessToken",email).enqueue(object : Callback<String> {
+        service.send(email).enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
@@ -129,9 +127,7 @@ class FindPwActivity:AppCompatActivity() {
     private fun confirmValue(){
         val email=binding.getId.text.toString()
         val value=binding.getValue.text.toString()
-        val accessToken= MyApplication.prefs.getString("accessToken", "")
-
-        service.confirm(accessToken = "Bearer $accessToken",email,value).enqueue(object : Callback<RepConfirm> {
+        service.confirm(email,value).enqueue(object : Callback<RepConfirm> {
             @SuppressLint("Range", "ResourceAsColor", "SuspiciousIndentation")
             override fun onResponse(
                 call: Call<RepConfirm>,

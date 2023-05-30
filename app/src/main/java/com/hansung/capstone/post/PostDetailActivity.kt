@@ -220,6 +220,7 @@ class PostDetailActivity : AppCompatActivity() {
                         0
                     }
                     binding.HeartB.setOnClickListener {
+                        if(check()){
                         api.checkFavorite(id, postId)
                             .enqueue(object : Callback<ResponseBody> {
                                 override fun onResponse(
@@ -257,9 +258,14 @@ class PostDetailActivity : AppCompatActivity() {
                                     heartCheck = 0
                                 }
                             }
+                        }}else{
+                            val intent = Intent(this@PostDetailActivity, LoginActivity::class.java)
+                            intent.putExtra("loginNeeded", true)
+                            startActivity(intent)
                         }
                     }
                     binding.StarB.setOnClickListener {
+                        if(check()){
                         api.checkScrap(id, postId)
                             .enqueue(object : Callback<ResultRespond> {
                                 override fun onResponse(
@@ -289,6 +295,10 @@ class PostDetailActivity : AppCompatActivity() {
                                     scrapCheck = 0
                                 }
                             }
+                        }} else {
+                            val intent = Intent(this@PostDetailActivity, LoginActivity::class.java)
+                            intent.putExtra("loginNeeded", true)
+                            startActivity(intent)
                         }
                     }
                     if (body.data.courseId.toInt() == 0) {
@@ -351,7 +361,10 @@ class PostDetailActivity : AppCompatActivity() {
                 }
             })
     }
+    private fun check():Boolean{
+        return MyApplication.prefs.getLong("userId",0)!=0L
 
+    }
     fun setPosition(int: Int) {
         position = int
     }
@@ -452,6 +465,13 @@ class PostDetailActivity : AppCompatActivity() {
         builder.show()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(MainActivity.getInstance()?.getLoginState()==1){
+            Toast.makeText(this,"로그인 되었습니다.",Toast.LENGTH_SHORT).show()
+            MainActivity.getInstance()?.setLoginState(-1)
+    }
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

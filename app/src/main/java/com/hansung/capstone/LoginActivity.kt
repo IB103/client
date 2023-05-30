@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
     private var kakaoNickname: String? = null
     var service = RetrofitService.create()
     private var loginNeeded:Boolean=false
-   var completeSignUp=false
+
     companion object {
         private const val MODIFYPWACT_REQUEST_CODE = 12
         private const val SIGNUP_REQUEST_CODE = 123
@@ -48,62 +48,9 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "로그인이 필요한 활동입니다", Toast.LENGTH_SHORT).show()
         }
 
-        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-            if (error != null) {
-                //Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
-
-            } else if (tokenInfo != null) {
-                //Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
-                Log.d("1", "$tokenInfo")
-                updateKakaoLoginInfo()
-                val intent = Intent(this, MyPageFragment::class.java)
-                setResult(RESULT_OK, intent)
-            }
-        }
-        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            if (error != null) {
-                when {
-                    error.toString() == AuthErrorCause.AccessDenied.toString() -> {
-                        Toast.makeText(this, "접근이 거부 됨(동의 취소)", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == AuthErrorCause.InvalidClient.toString() -> {
-                        Toast.makeText(this, "유효하지 않은 앱", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == AuthErrorCause.InvalidGrant.toString() -> {
-                        Toast.makeText(this, "인증 수단이 유효하지 않아 인증할 수 없는 상태", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    error.toString() == AuthErrorCause.InvalidRequest.toString() -> {
-                        Toast.makeText(this, "요청 파라미터 오류", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == AuthErrorCause.InvalidScope.toString() -> {
-                        Toast.makeText(this, "유효하지 않은 scope ID", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == AuthErrorCause.Misconfigured.toString() -> {
-                        Toast.makeText(this, "설정이 올바르지 않음(android key hash)", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    error.toString() == AuthErrorCause.ServerError.toString() -> {
-                        Toast.makeText(this, "서버 내부 에러", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == AuthErrorCause.Unauthorized.toString() -> {
-                        Toast.makeText(this, "앱이 요청 권한이 없음", Toast.LENGTH_SHORT).show()
-                    }
-                    else -> { // Unknown
-                        Toast.makeText(this, "기타 에러", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } else if (token != null) {
-                Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
-                //  val intent = Intent(this, SecondActivity::class.java)
-                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                finish()
-            }
-        }
         binding.findId.setOnClickListener {
             val intent = Intent(this, FindIdActivity::class.java)
             startActivity(intent)
-
         }
         binding.findPw.setOnClickListener {
             val intent = Intent(this, FindPwActivity::class.java)
@@ -128,22 +75,30 @@ class LoginActivity : AppCompatActivity() {
                                 Log.d("로그인", "닉네임" + result.data.nickname)
                                 MyApplication.prefs.setString("email", email)
                                 MyApplication.prefs.setString("nickname", result.data.nickname)
-                                MyApplication.prefs.setString("accessToken", result.data.tokenInfo.accessToken)
-                                MyApplication.prefs.setString("refreshToken", result.data.tokenInfo.refreshToken)
+                                MyApplication.prefs.setString(
+                                    "accessToken",
+                                    result.data.tokenInfo.accessToken
+                                )
+                                MyApplication.prefs.setString(
+                                    "refreshToken",
+                                    result.data.tokenInfo.refreshToken
+                                )
                                 MyApplication.prefs.setString("username", result.data.username)
-                                MyApplication.prefs.setLong("profileImageId", result.data.profileImageId)
-                                MyApplication.prefs.setLong("userId",result.data.userId)
+                                MyApplication.prefs.setLong(
+                                    "profileImageId",
+                                    result.data.profileImageId
+                                )
+                                MyApplication.prefs.setLong("userId", result.data.userId)
                                 token.set()
                                 setResult(RESULT_OK)
-                                MainActivity.getInstance()!!.setLoginState(true)
+                                MainActivity.getInstance()!!.setLoginState(1)
                                 finish()
-                            } else {
-                                Log.d("ERR", "실패: " + result?.toString())
                             }
                         }
                     } else {
                         Log.d("ERR", "onResponse 실패")
-                        MyApplication.prefs.setString("Login", "fail")
+                        Toast.makeText(this@LoginActivity,"아이디 또는 비밀번호를\n 다시 확인해주세요.",Toast.LENGTH_SHORT).show()
+                        //MyApplication.prefs.setString("Login", "fail")
 
                     }
                 }
@@ -154,44 +109,14 @@ class LoginActivity : AppCompatActivity() {
                 }
             })
         }
-        binding.kakaologinBt.setOnClickListener {
-            if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-                UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
-            } else {
-                UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
-            }
-        }
+
         binding.tvSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivityForResult(intent, SIGNUP_REQUEST_CODE)
 
         }
     }
-    private fun updateKakaoLoginInfo() {
-        UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                Log.e(ContentValues.TAG, "사용자 정보 요청 실패", error)
-            } else if (user != null) {
-                kakaoEmail = "${user.kakaoAccount?.email}"
-                MyApplication.prefs.setString("id", "$kakaoEmail")
-                Log.d("kakaoEmail:", MyApplication.prefs.getString("id", ""))
-                kakaoNickname = user.kakaoAccount?.profile?.nickname
-                MyApplication.prefs.setString("nickname", "$kakaoNickname")
-                MyApplication.prefs.setString("state", "kakao")
-                val intent = Intent(this, MyPageFragment::class.java)
-                setResult(RESULT_OK, intent)
-                finish()
-                Log.i(
-                    ContentValues.TAG, "사용자 정보 요청 성공" +
-                            "\n번호: ${user.id}" +
-                            "\n이메일: ${user.kakaoAccount?.email}" +
-                            "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                            "\n프로필: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
-                )
-            }
-        }
 
-    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SIGNUP_REQUEST_CODE && resultCode == Activity.RESULT_OK) {

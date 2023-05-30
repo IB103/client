@@ -186,9 +186,14 @@ class MyPageFragment : Fragment() {
         }
         GetRecordData().getRidingData(30) { result ->
             if (result.isNotEmpty()) {
+//                binding.userContainer.chart.visibility=View.VISIBLE
+//                binding.userContainer.noResult.visibility = View.GONE
                 sumData(result)// 한달 누적 정보
+                result.add(1,RidingData(12L,12F,"2023-05-30",13))
                 adapter.addData(result)
             } else {
+//                binding.userContainer.chart.visibility=View.GONE
+//                binding.userContainer.noResult.visibility = View.VISIBLE
             }
         }
     }
@@ -205,10 +210,12 @@ class MyPageFragment : Fragment() {
             // startForResult.launch(intent)
         }
     }
+
     private fun request(period:Int){
         GetRecordData().getRidingData(period) { result ->
             if (result.isNotEmpty()) {
                 Log.d("repeat0", "@@@@@@@@@@@@@@@@")
+                binding.userContainer.chart.visibility=View.VISIBLE
                 binding.userContainer.noResult.visibility = View.GONE
                 this.ridingDataList = result
                 val ridingTime=result.map{ridingData ->
@@ -233,6 +240,7 @@ class MyPageFragment : Fragment() {
                     2 -> drawCalorie(ridingDataList)
                 }
             } else {
+                binding.userContainer.chart.visibility=View.INVISIBLE
                 binding.userContainer.noResult.visibility = View.VISIBLE
             }
 
@@ -293,7 +301,9 @@ class MyPageFragment : Fragment() {
                 return String.format("%.0f kcal", value)
             }
         }
+
         val data = BarData(barDataSet)
+        barDataSet.color = Color.parseColor("#87D5AA")
         barChart.data = data
         // initBarDataSet(barDataSet)
         barChart.invalidate()
@@ -352,7 +362,7 @@ class MyPageFragment : Fragment() {
         barDataSet.valueFormatter = valueFormatter
         val data = BarData(barDataSet)
         barChart.data = data
-
+        barDataSet.color = Color.parseColor("#87D5AA")
         barChart.invalidate()
     }
     @SuppressLint("ClickableViewAccessibility")
@@ -405,6 +415,7 @@ class MyPageFragment : Fragment() {
         }
         val barDataSet = BarDataSet(entries, title)
        // val xAxisLabels =ridingDataList. // x축의 레이블로 사용할 문자열 배열
+        barDataSet.color = Color.parseColor("#87D5AA")
 
         val xAxis = barChart.xAxis // barChart는 BarChart 객체입니다.
        // xAxis.valueFormatter = IndexAxisValueFormatter(xAxisLabels)
@@ -425,6 +436,7 @@ class MyPageFragment : Fragment() {
         barDataSet.valueTextSize = 12f
     }
     private fun initBarChart(barChart: BarChart) {
+
         //hiding the grey background of the chart, default false if not set
         barChart.setDrawGridBackground(false)
         //remove the bar shadow, default false if not set
@@ -518,8 +530,10 @@ class MyPageFragment : Fragment() {
         super.onResume()
        //  if(monthRidingDataList.isNotEmpty())
             //sumData(monthRidingDataList)
-        if(MainActivity.getInstance()?.getLoginState()!!)
+        if(MainActivity.getInstance()?.getLoginState()==1)
             commentLogin()
+        else if(MainActivity.getInstance()?.getLoginState()==0)
+            commentLogOut()
         if(MyApplication.prefs.getString("email", "")!="")
             visibleProfile()
         else  visibleLogin()
@@ -527,7 +541,10 @@ class MyPageFragment : Fragment() {
 
     private fun commentLogin(){
         Toast.makeText(requireActivity(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show()
-        MainActivity.getInstance()!!.setLoginState(false)
+        MainActivity.getInstance()!!.setLoginState(-1)
+    } private fun commentLogOut(){
+        Toast.makeText(requireActivity(),"로그아웃 되었습니다.",Toast.LENGTH_SHORT).show()
+        MainActivity.getInstance()!!.setLoginState(-1)
     }
 
     override fun onDestroy() {

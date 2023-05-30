@@ -66,6 +66,7 @@ interface CommunityService {
 
     @GET("api/community/post/list/scrap")
     fun getPostMyScrap(
+        @Header("Authorization")accessToken:String,
         @Query("userId") userId: Long,
         @Query("page") page: Int
     ): Call<ResultGetPosts>

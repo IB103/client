@@ -85,7 +85,8 @@ class ModifyMyInfo:AppCompatActivity() {
             override fun onResponse(call: Call<RepLogOut>, response: Response<RepLogOut>) {
                 if(response.code()==200){
                     val result: RepLogOut =response.body()!!
-                    Log.d("result","$result")
+                    MainActivity.getInstance()!!.setLoginState(0)
+                    Log.d("resultlogOut","$result")
                     finish()
                     // setData(result.data)
                 }
