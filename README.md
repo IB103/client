@@ -39,7 +39,7 @@
 앱의 메인 화면입니다.
 |앱 시작|코스만들기1|코스만들기2|
 |:---:|:---:|:---:|
-|<img width="250" src="https://github.com/IB103/client/assets/92325898/0859372f-ba5d-4574-9992-7332ba30e308"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/15670d0f-0252-4fdf-90ae-71b0f392e463"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/60385915-8740-4969-8533-c3e6bc116cff"/>|
+|<img width="230" src="https://github.com/IB103/client/assets/92325898/0859372f-ba5d-4574-9992-7332ba30e308"/>|<img width="230" src="https://github.com/IB103/client/assets/92325898/15670d0f-0252-4fdf-90ae-71b0f392e463"/>|<img width="230" src="https://github.com/IB103/client/assets/92325898/60385915-8740-4969-8533-c3e6bc116cff"/>|
 - 앱 시작: 앱을 실행하면 로고 이후에 로그인 상태창과 라이딩 버튼, 코스만들기 버튼, 현 위치의 날씨 정보, 거리 기록 순위 등을 보여줍니다.
 - 코스만들기: 장소를 선택하면 자전거 길찾기를 통해 코스를 만들어주고 이를 게시판에 공유할 수 있습니다.
 
@@ -47,7 +47,7 @@
 선택한 지역에 등록된 코스를 좋아요 순으로 추천해줍니다.
 |코스 상세|지역 변경|
 |:---:|:---:|
-|<img width="250" src="https://github.com/IB103/client/assets/92325898/104252e6-f8a1-463c-bfa3-04bc5dd495c8"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/a166b6ff-a41a-4b60-bbbe-6683180c8f17"/>|
+|<img width="230" src="https://github.com/IB103/client/assets/92325898/104252e6-f8a1-463c-bfa3-04bc5dd495c8"/>|<img width="230" src="https://github.com/IB103/client/assets/92325898/a166b6ff-a41a-4b60-bbbe-6683180c8f17"/>|
 - 코스 상세: 장소의 위치와 경로를 확인할 수 있으며 정보 조회와 길찾기 기능을 제공합니다. 하단의 버튼을 클릭하면 게시글로 이동합니다.
 - 위치 변경: 지도에서 기준 지역를 선택할 수 있고 선택한 지역의 코스를 추천받을 수 있습니다.
 
@@ -77,9 +77,9 @@
 사용자에 관한 정보를 표시하고 설정합니다.
 |회원가입|프로필 사진 변경, 닉네임 변경|비밀번호 변경|
 |:---:|:---:|:---:|
-|<img width="250" src="https://github.com/IB103/client/assets/92325898/181ea6f9-97de-4de6-b841-0407a07bdc49"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/9153ffed-86f4-4b2d-8ef4-a79c7d63b6ae"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/3e87c23f-1e5b-4402-83fc-bb382775bf09"/>|
+|<img width="230" src="https://github.com/IB103/client/assets/92325898/181ea6f9-97de-4de6-b841-0407a07bdc49"/>|<img width="230" src="https://github.com/IB103/client/assets/92325898/9153ffed-86f4-4b2d-8ef4-a79c7d63b6ae"/>|<img width="230" src="https://github.com/IB103/client/assets/92325898/3e87c23f-1e5b-4402-83fc-bb382775bf09"/>|
 |내가 쓴 글, 스크랩한 글|그래프 조정|로그인 요청|
-|<img width="250" src="https://github.com/IB103/client/assets/92325898/ab550e8d-746a-44a2-ab4f-8ba9f485d017"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/14b9be19-19b8-43d5-bd2b-6c87e0d25da1"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/25186fff-33b2-4221-9d4b-a45f37271839"/>|
+|<img width="230" src="https://github.com/IB103/client/assets/92325898/ab550e8d-746a-44a2-ab4f-8ba9f485d017"/>|<img width="230" src="https://github.com/IB103/client/assets/92325898/14b9be19-19b8-43d5-bd2b-6c87e0d25da1"/>|<img width="230" src="https://github.com/IB103/client/assets/92325898/25186fff-33b2-4221-9d4b-a45f37271839"/>|
 - 회원가입: 이메일, 비밀번호, 닉네임, 성명, 생년월일 등을 입력하고 회원가입합니다. 이때 이메일과 닉네임은 중복체크가 필요합니다.
 - 나의 정보 수정하기:
     - 프로필 사진 변경: 프로필 사진을 변경합니다.
