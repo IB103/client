@@ -41,7 +41,6 @@ class Token {
         val jsonObject = JSONObject(jsonPayload)
         return jsonObject.optLong("exp", 0)
     }
-
     fun checkToken():Boolean{
         val expirationTime=MyApplication.prefs.getLong("tokenTime",0)
         println("시간 확인 $expirationTime")
@@ -51,7 +50,6 @@ class Token {
         println("waiting ${(expirationTime-currentTimestamp)/60}")
         return currentTimestamp >= expirationTime// true 만료  //false  유효
     }
-
     fun issueNewToken(callback: (() -> Unit)?) {
 
         service.reissue(

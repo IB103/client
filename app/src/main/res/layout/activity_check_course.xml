@@ -35,7 +35,7 @@
         android:layout_height="250dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingHorizontal="100dp"
+        android:paddingHorizontal="70dp"
         app:layout_constraintBottom_toTopOf="@+id/movePostButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

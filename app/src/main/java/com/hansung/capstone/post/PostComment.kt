@@ -25,17 +25,12 @@ class PostComment(private val context: PostDetailActivity) {
             override fun onResponse(call: Call<RepComment>, response: Response<RepComment>) {
                 if (response.isSuccessful) {
                     val result = response.body()
-                    if (response.code() == 201) {
-                        if (result?.code == 100) {
+                    if (response.code() == 200) {
                             Log.d("INFO comment", "success $result")
-                            //MyApplication.prefs.setInt("commentCount",++count)
                             context.commentSuccess(1)
                             MainActivity.getInstance()?.setCommentCount(1)
                             Log.d("commentCount","${ MainActivity.getInstance()?.getCommentCount()}")
                             postComments(postId,binding)
-                        } else {
-                            Log.d("ERR", "댓글 작성 실패 " + result.toString())
-                        }
                     }
                 } else {
                     // 통신이 실패한 경우

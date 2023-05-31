@@ -444,8 +444,17 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-
+//=======
+//        if(this.ridingDataList.isNotEmpty()){
+//            when (requestY) {
+//                0 -> {
+//                    drawDistance(ridingDataList)
+//                }
+//                1 -> drawTime(ridingDataList)
+//                2 -> drawCalorie(ridingDataList)
+//            }
+//        }
+//>>>>>>> Stashed changes
         if(MainActivity.getInstance()?.getLoginState()==1)
             commentLogin()
         else if(MainActivity.getInstance()?.getLoginState()==0)

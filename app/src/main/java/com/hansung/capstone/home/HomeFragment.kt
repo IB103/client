@@ -3,9 +3,11 @@ package com.hansung.capstone.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,17 +19,23 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.*
 import com.hansung.capstone.*
+import com.hansung.capstone.R
 import com.hansung.capstone.databinding.FragmentHomeBinding
 import com.hansung.capstone.barchart.GetRecordData
 import com.hansung.capstone.mypage.MyPageFragment
 import com.hansung.capstone.retrofit.*
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
 import kotlinx.android.synthetic.main.view_profile.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 
@@ -39,6 +47,7 @@ class HomeFragment : Fragment() {
         const val WEATHER_REQUEST: Int = 102
     }
 
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var requestLocationPermissionLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permission ->
             if (permission.all { it.value }) {
@@ -73,8 +82,9 @@ class HomeFragment : Fragment() {
     private lateinit var temperature: TextView
     private lateinit var weatherIcon: ImageView
     private lateinit var profileImage: ImageView
-    private lateinit var mLocationManager: LocationManager
-    private lateinit var mLocationListener: LocationListener
+
+    //    private lateinit var mLocationManager: LocationManager
+//    private lateinit var mLocationListener: LocationListener
     private val minDistance: Float = 100f
     var service = RetrofitService.create()
     val retrofit: Retrofit = Retrofit.Builder()
@@ -376,8 +386,7 @@ class HomeFragment : Fragment() {
             PermissionUtils.checkPermissions(requireActivity(), Permissions.permissionsLocation)
         if (permissionCheckResult.isEmpty()) { // 권한이 모두 승인된 상태면
             locationUpdate()
-        }
-        else {
+        } else {
             Toast.makeText(
                 MyApplication.applicationContext(),
                 "앱 이용을 위해 권한을 허용해주세요.",
@@ -441,34 +450,62 @@ class HomeFragment : Fragment() {
                 Log.d("onFailure", "실패 ")
             }
         })
-//=======
-//                temperature.text = "$temper ℃"
-//                weatherState.text = weatherDescription
-//                if (weatherDescription.contains("rain") || weatherDescription.contains("Rain") || weatherDescription.contains(
-//                        "drizzle"
-//                    )
-//                )
-//                    weatherIcon.setImageResource(R.drawable.rain)
-//                else if (weatherDescription.contains("clouds") || weatherDescription.contains("mist") || weatherDescription.contains(
-//                        "Smoke"
-//                    )
-//                )
-//                    weatherIcon.setImageResource(R.drawable.cloud)
-//                else if (weatherDescription.contains("clear"))
-//                    weatherIcon.setImageResource(R.drawable.clear)
-//                else if (weatherDescription.contains("Tornado") || weatherDescription.contains("Squall"))
-//                    weatherIcon.setImageResource(R.drawable.windy)
-//                else if (weatherDescription.contains("thunderstorm"))
-//                    weatherIcon.setImageResource(R.drawable.thunderstorm)
-//                else if (weatherDescription.contains("sand"))
-//                    weatherIcon.setImageResource(R.drawable.sand)
-//            }
-//
-//            override fun onFailure(call: Call<Weather>, t: Throwable) {
-////                Log.d("onFailure", "실패 ")
-//            }
-//        })
-//>>>>>>> Stashed changes
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    fun doWeather(lat: Double, lng: Double) {
+        val client = retrofit.create(RetrofitService::class.java)
+        client.getWeather(
+            lat.toString(),
+            lng.toString(),
+            API_KEY
+        ).enqueue(object : Callback<Weather> {
+            //  @SuppressLint("Range")
+            @SuppressLint("SetTextI18n")
+            override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+                val weather = response.body()
+                val value = weather!!.main.temperature - 273.15 // 온도 단위를 섭씨로 변환
+                val temper = (value * 10.0).roundToInt() / 10.0
+                val weatherDescription = weather.weather.firstOrNull()?.description ?: "Unknown"
+
+                temperature.text = "$temper ℃"
+                if (weatherDescription.contains("rain") || weatherDescription.contains("Rain") || weatherDescription.contains(
+                        "drizzle"
+                    )
+                ) {
+                    weatherState.text = "비"
+                    binding.ridingImage.setImageResource(R.drawable.rest)
+                    weatherIcon.setImageResource(R.drawable.rain)
+                } else if (weatherDescription.contains("clouds") || weatherDescription.contains("mist") || weatherDescription.contains(
+                        "Smoke"
+                    )
+                ) {
+                    weatherState.text = "흐림"
+                    binding.ridingImage.setImageResource(R.drawable.biking)
+                    weatherIcon.setImageResource(R.drawable.cloud)
+                } else if (weatherDescription.contains("clear")) {
+                    weatherState.text = "맑음"
+                    binding.ridingImage.setImageResource(R.drawable.biking)
+                    weatherIcon.setImageResource(R.drawable.clear)
+                } else if (weatherDescription.contains("Tornado") || weatherDescription.contains("Squall")) {
+                    weatherState.text = "바람"
+                    binding.ridingImage.setImageResource(R.drawable.rest)
+                    weatherIcon.setImageResource(R.drawable.windy)
+                } else if (weatherDescription.contains("thunderstorm")) {
+                    weatherState.text = "번개"
+                    binding.ridingImage.setImageResource(R.drawable.rest)
+                    weatherIcon.setImageResource(R.drawable.thunderstorm)
+                } else if (weatherDescription.contains("sand")) {
+                    weatherState.text = "황사"
+                    binding.ridingImage.setImageResource(R.drawable.rest)
+                    weatherIcon.setImageResource(R.drawable.sand)
+                }
+            }
+
+            override fun onFailure(call: Call<Weather>, t: Throwable) {
+                Log.d("onFailure", "실패 ")
+            }
+        })
     }
 
     override fun onResume() {
@@ -496,8 +533,9 @@ class HomeFragment : Fragment() {
         //if(ridingDataList.isNotEmpty())
         //ranking(ridingDataList)
 
-        if (MyApplication.prefs.getString("latitude", "") != "")
-            doWeather()
+//        if (MyApplication.prefs.getString("latitude", "") != "")
+//            doWeather()
+
 //        else
 //            checkWeatherLocationPermissions()
 
@@ -506,30 +544,42 @@ class HomeFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
-    fun locationUpdate(){
+    fun locationUpdate() {
         val permissionCheckResult =
             PermissionUtils.checkPermissions(requireActivity(), Permissions.permissionsLocation)
         if (permissionCheckResult.isEmpty()) { // 권한이 모두 승인된 상태면
-            mLocationManager =
-                requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//            mLocationManager =
+//                requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//
+//            mLocationListener = LocationListener { location ->
+//                MyApplication.prefs.setString("latitude", "${location.latitude}")
+//                MyApplication.prefs.setString("longitude", "${location.longitude}")
+//                doWeather()
+//            }
+//            mLocationManager.requestLocationUpdates(
+//                LocationManager.NETWORK_PROVIDER,
+//                MIN_TIME,
+//                minDistance,
+//                mLocationListener
+//            )
+//            mLocationManager.requestLocationUpdates(
+//                LocationManager.GPS_PROVIDER,
+//                MIN_TIME,
+//                minDistance,
+//                mLocationListener
+//            )
 
-            mLocationListener = LocationListener { location ->
-                MyApplication.prefs.setString("latitude", "${location.latitude}")
-                MyApplication.prefs.setString("longitude", "${location.longitude}")
-                doWeather()
-            }
-            mLocationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                MIN_TIME,
-                minDistance,
-                mLocationListener
-            )
-            mLocationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                MIN_TIME,
-                minDistance,
-                mLocationListener
-            )
+            fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(MyApplication.applicationContext())
+            fusedLocationClient!!.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        Log.d("locationResult", "${location.latitude} ${location.longitude}")
+                        doWeather(location.latitude, location.longitude)
+                    }
+                }
+
+            fusedLocationClient = null
         }
     }
 

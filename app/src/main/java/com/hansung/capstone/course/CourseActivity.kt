@@ -156,6 +156,7 @@ class CourseActivity : AppCompatActivity() {
         // 첫 번째 주소
         searchAddress(waypoints[0]) { originAddress ->
             if (originAddress != null) {
+                val accessToken= MyApplication.prefs.getString("accessToken", "")
                 origin = originAddress
                 region = origin
                 // 두 번째 주소
@@ -204,6 +205,7 @@ class CourseActivity : AppCompatActivity() {
                                 )
                                 val service = RetrofitService.create()
                                 service.coursePostCreate(
+                                    accessToken = "Bearer $accessToken",
                                     requestDTO = postReqCoursePost,
                                     imageList,
                                     thumbnail
@@ -217,7 +219,6 @@ class CourseActivity : AppCompatActivity() {
                                             Log.d("coursePostCreate","${response.body()}")
                                             Log.d("coursePostCreate","$response")
                                             if (response.isSuccessful) {
-//                                                Log.d("coursePostCreate","${response.body()}")
                                                 binding.progressCourse.visibility = View.GONE
                                                 Toast.makeText(
                                                     this@CourseActivity,

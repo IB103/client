@@ -173,6 +173,7 @@ interface RetrofitService {
     @Multipart
     @POST("/api/user-course/create")
     fun coursePostCreate(
+        @Header("Authorization") accessToken: String,
         @Part("requestDTO") requestDTO: ReqCoursePost,
         @Part imageList: List<MultipartBody.Part>,
         @Part thumbnail: MultipartBody.Part
