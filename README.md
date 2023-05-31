@@ -12,16 +12,8 @@
 
 [https://github.com/IB103/server](https://github.com/IB103/server)
 
-## 목차
-
-### 1.  소개
-
-### 2. 상세 기능
-
-### 3. 기대 효과
-
 ## 1. 소개
-
+<img width="30%" src="https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce"/>
 ### 자전거 타는 사람들을 위한 코스 공유 커뮤니티 어플리케이션
 
 1. 직접 주행하거나 장소 검색을 이용하여 자전거 코스를 만든 후 커뮤니티에 만든 코스를 공유할 수 있습니다.
