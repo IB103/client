@@ -1,6 +1,6 @@
 # 자전GO
 
-<img width="50%" src="https://github.com/IB103/client/assets/92325898/8e798d97-9923-4765-a077-d0921de7ae2e"/>
+<img width="70%" src="https://github.com/IB103/client/assets/92325898/8e798d97-9923-4765-a077-d0921de7ae2e"/>
 
 ## 팀 구성
 
@@ -14,7 +14,7 @@
 
 ## 1. 소개
 
-<img width="50%" src="https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce"/>
+<img width="30%" src="https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce"/>
 
 ### 자전GO는 자전거타는 사람들을 위한 코스 공유 커뮤니티 어플리케이션입니다.
 
