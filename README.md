@@ -1,6 +1,6 @@
 # 자전GO
 
-<img width="80%" src="[https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce](https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce)"/>
+<img width="80%" src="https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce"/>
 
 ## 팀 구성
 
@@ -34,7 +34,7 @@
 
 - 구조
     
-    <img width="80%" height=” ” src="[https://github.com/IB103/client/assets/92325898/d16f0595-13ad-4588-a09b-a769edb2162d](https://github.com/IB103/client/assets/92325898/d16f0595-13ad-4588-a09b-a769edb2162d)"/>
+    <img width="80%" src="https://github.com/IB103/client/assets/92325898/d16f0595-13ad-4588-a09b-a769edb2162d"/>
     
 - 사용된 언어, 개발 도구
     - 개발 언어: Kotlin, Java, SQL
