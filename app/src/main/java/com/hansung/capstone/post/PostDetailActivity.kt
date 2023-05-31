@@ -215,7 +215,9 @@ class PostDetailActivity : AppCompatActivity() {
                     }
                     binding.HeartB.setOnClickListener {
                         if(check()){
-                        api.checkFavorite(id, postId)
+
+                            val accessToken= MyApplication.prefs.getString("accessToken", "")
+                        api.checkFavorite(accessToken = "Bearer $accessToken",id, postId)
                             .enqueue(object : Callback<ResponseBody> {
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
@@ -259,8 +261,8 @@ class PostDetailActivity : AppCompatActivity() {
                         }
                     }
                     binding.StarB.setOnClickListener {
-                        if(check()){
-                        api.checkScrap(id, postId)
+                        if(check()){  val accessToken= MyApplication.prefs.getString("accessToken", "")
+                        api.checkScrap(accessToken = "Bearer $accessToken",id, postId)
                             .enqueue(object : Callback<ResultRespond> {
                                 override fun onResponse(
                                     call: Call<ResultRespond>,

@@ -181,6 +181,7 @@ class HomeFragment : Fragment() {
     private fun requestData() {
         GetRecordData().getRankData { result ->
             if (result.isNotEmpty()) {
+                println("rank data $result")
                 binding.noDataComment.visibility = View.GONE
                 binding.rankLayout.visibility = View.VISIBLE
                 this.ridingDataList = result
@@ -319,12 +320,15 @@ class HomeFragment : Fragment() {
 
     private fun getProfileImage(profileImageId: Long, profileImage: ImageView) {
         val noImage: Long = -1
+        println("user porilfeID $profileImageId")
         if (profileImageId == noImage)
             profileImage.setImageResource(R.drawable.user)
-        Glide.with(requireActivity())
-            .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
-            .centerCrop()
-            .into(profileImage)
+        else {
+            Glide.with(requireActivity())
+                .load("${MyApplication.getUrl()}profile-image/$profileImageId") // 불러올 이미지 url
+                .centerCrop()
+                .into(profileImage)
+        }
     }
 
     @SuppressLint("MissingPermission")

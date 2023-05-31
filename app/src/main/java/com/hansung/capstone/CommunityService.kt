@@ -80,12 +80,14 @@ interface CommunityService {
 
     @GET("api/community/post/favorite")
     fun checkFavorite(
+        @Header("Authorization")accessToken:String,
         @Query("userId") userId: Long,
         @Query("postId") postId: Long
     ): Call<ResponseBody>
 
     @GET("api/community/post/scrap")
     fun checkScrap(
+        @Header("Authorization")accessToken:String,
         @Query("userId") userId: Long,
         @Query("postId") postId: Long
     ): Call<ResultRespond>

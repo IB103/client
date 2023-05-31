@@ -2,6 +2,7 @@ package com.hansung.capstone
 
 
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.hansung.capstone.retrofit.RespondToken
 import com.hansung.capstone.retrofit.RetrofitService
@@ -47,15 +48,17 @@ class Token {
         val currentTimestamp = Instant.now().epochSecond
         println("지금 $currentTimestamp")
         println("result ${currentTimestamp >= expirationTime}")
+        println("waiting ${(expirationTime-currentTimestamp)/60}")
         return currentTimestamp >= expirationTime// true 만료  //false  유효
     }
 
     fun issueNewToken(callback: (() -> Unit)?) {
-        println("$$$$$$$$$$$$")
+
         service.reissue(
             accessToken = "Bearer ${MyApplication.prefs.getString("accessToken","")}",
             refreshToken = MyApplication.prefs.getString("refreshToken","")
         ).enqueue(object : Callback<RespondToken> {
+            @SuppressLint("SuspiciousIndentation")
             override fun onResponse(call: Call<RespondToken>, response: Response<RespondToken>) {
                 if (response.isSuccessful) {
                     val result: RespondToken = response.body()!!
@@ -68,7 +71,7 @@ class Token {
                         } // 토큰 발급 후 콜백 함수 실행
 
                 } else {
-                    Log.d("ERR", "onResponse test 실패 ${response.body().toString()}")
+                    Log.d("ERR newToken", "onResponse  실패 ${response.body().toString()}")
                 }
             }
 

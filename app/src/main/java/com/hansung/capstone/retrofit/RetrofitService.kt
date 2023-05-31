@@ -180,6 +180,7 @@ interface RetrofitService {
 
     @POST("/api/users/riding/record")
     fun recordRidingData(
+        @Header("Authorization") accessToken: String,
         @Body reqRidingData: ReqRidingData
     ): Call<RepRidingData>
 

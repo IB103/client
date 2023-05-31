@@ -167,17 +167,6 @@ class MyPageFragment : Fragment() {
             Log.d("position3","@@@@@@@@@@@@@@@@")
             requestData(requestX)
         }
-        GetRecordData().getRidingData(30) { result ->
-            if (result.isNotEmpty()) {
-//                binding.userContainer.chart.visibility=View.VISIBLE
-//                binding.userContainer.noResult.visibility = View.GONE
-                sumData(result)// 한달 누적 정보
-                adapter.addData(result)
-            } else {
-//                binding.userContainer.chart.visibility=View.GONE
-//                binding.userContainer.noResult.visibility = View.VISIBLE
-            }
-        }
     }
 
 
@@ -193,9 +182,11 @@ class MyPageFragment : Fragment() {
     }
 
     private fun request(period:Int){
+        println("period $period")
         GetRecordData().getRidingData(period) { result ->
             if (result.isNotEmpty()) {
                 Log.d("repeat0", "$result")
+                println("$ data ${result}")
                 binding.userContainer.chart.visibility=View.VISIBLE
                 binding.userContainer.noResult.visibility = View.GONE
                 this.ridingDataList = result
@@ -226,16 +217,19 @@ class MyPageFragment : Fragment() {
         }
     }
     private fun requestData(int: Int) { // record 요청
-        var period = 7
+        var period = 6
         if (int == 1) period = 29
         if (!flag) {
             flag = true
             if(Token().checkToken()){
                 Token().issueNewToken {
                     request(period=period)
+                    requestMonthData()
                 }
             }else {
-                request(period=period)}
+                request(period=period)
+                requestMonthData()
+            }
 
         }
     }
@@ -283,6 +277,8 @@ class MyPageFragment : Fragment() {
         val title="거리"
         val zero=0
         var barEntry: BarEntry
+        println("ridingDataList % ${ridingDataList}")
+        println("convertedTime % ${convertedDate}")
         for(i in 0 until convertedDate.size){
             barEntry = if(ridingDataList.isNotEmpty()){
 
@@ -363,7 +359,19 @@ class MyPageFragment : Fragment() {
         barChart.invalidate()
     }
     @SuppressLint("ClickableViewAccessibility")
-
+    private fun requestMonthData(){
+        GetRecordData().getRidingData(30) { result ->
+            if (result.isNotEmpty()) {
+                binding.userContainer.chart.visibility=View.VISIBLE
+                binding.userContainer.noResult.visibility = View.GONE
+                sumData(result)// 한달 누적 정보
+                adapter.addData(result)
+            } else {
+                binding.userContainer.chart.visibility=View.GONE
+                binding.userContainer.noResult.visibility = View.VISIBLE
+            }
+        }
+    }
     private fun initBarChart(barChart: BarChart) {
 
         //hiding the grey background of the chart, default false if not set
@@ -383,7 +391,6 @@ class MyPageFragment : Fragment() {
         //바텀 좌표 값
         val xAxis: XAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        convertedDate.removeAt(0)
         xAxis.valueFormatter = IndexAxisValueFormatter(convertedDate)
         //set the horizontal distance of the grid line
         xAxis.granularity = 1f
@@ -396,8 +403,6 @@ class MyPageFragment : Fragment() {
         val leftAxis: YAxis = barChart.axisLeft
         leftAxis.setDrawAxisLine(false)
         leftAxis.textColor = Color.BLACK
-
-
 
         val rightAxis: YAxis = barChart.axisRight
         rightAxis.setDrawAxisLine(false)
@@ -439,14 +444,16 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-       //  if(monthRidingDataList.isNotEmpty())
-            //sumData(monthRidingDataList)
+
+
         if(MainActivity.getInstance()?.getLoginState()==1)
             commentLogin()
         else if(MainActivity.getInstance()?.getLoginState()==0)
             commentLogOut()
-        if(MyApplication.prefs.getString("email", "")!="")
+        if(MyApplication.prefs.getString("email", "")!=""){
             visibleProfile()
+
+        }
         else  visibleLogin()
     }
 

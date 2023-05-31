@@ -49,6 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="8dp"
+        android:textColor="@color/black"
         android:text="제목을 입력하세요."
         android:textSize="18dp"
         android:textStyle="bold"
@@ -62,12 +63,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="8dp"
-        android:text="내용을 입력하세요"
+        android:text="내용을 입력하세요."
+        android:textColor="@color/black"
         android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view3"
         tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="*"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:textColor="#E61837"
+        app:layout_constraintStart_toEndOf="@+id/courseT"
+        app:layout_constraintTop_toTopOf="@+id/courseT" />
 
     <TextView
         android:id="@+id/editImg"
@@ -76,6 +88,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="8dp"
         android:text="사진을 올려주세요. (선택)"
+        android:textColor="@color/black"
         android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,14 +103,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTitle" />
+
     <EditText
         android:id="@+id/editTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:color/transparent"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/element_edit_box"
         android:ems="10"
+        android:textColor="@color/black"
         android:hint="제목을 입력하세요. (최대 20자)"
         android:inputType="textPersonName"
         android:maxLength="20"
@@ -112,6 +127,9 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/element_edit_box"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/courseT"
@@ -129,6 +147,7 @@
             android:maxLength="1000"
             android:padding="15dp"
             android:textSize="14sp"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingConstraints"
@@ -223,6 +242,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="*"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:textColor="#E61837"
+        app:layout_constraintStart_toEndOf="@+id/titleT"
+        app:layout_constraintTop_toTopOf="@+id/titleT" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

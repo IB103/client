@@ -455,7 +455,8 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
             )
             Log.d("reqRidingData", reqRidingData.toString())
             val api = RetrofitService.create()
-            api.recordRidingData(reqRidingData).enqueue(object :
+            val accessToken= MyApplication.prefs.getString("accessToken", "")
+            api.recordRidingData(accessToken = "Bearer $accessToken",reqRidingData).enqueue(object :
                 Callback<RepRidingData> {
                 override fun onResponse(
                     call: Call<RepRidingData>,
