@@ -203,65 +203,11 @@ class CourseActivity : AppCompatActivity() {
                                     content,
                                     imageInfoList
                                 )
-                                val service = RetrofitService.create()
-                                service.coursePostCreate(
-                                    accessToken = "Bearer $accessToken",
-                                    requestDTO = postReqCoursePost,
-                                    imageList,
-                                    thumbnail
-                                )
-                                    .enqueue(object :
-                                        Callback<RepCoursePost> {
-                                        override fun onResponse(
-                                            call: Call<RepCoursePost>,
-                                            response: Response<RepCoursePost>
-                                        ) {
-                                            Log.d("coursePostCreate","${response.body()}")
-                                            Log.d("coursePostCreate","$response")
-                                            if (response.isSuccessful) {
-                                                binding.progressCourse.visibility = View.GONE
-                                                Toast.makeText(
-                                                    this@CourseActivity,
-                                                    "코스 등록이 완료되었습니다.",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                // 게시판으로 이동하는 함수 필요
-                                                val moveToBoardFragment =
-                                                    Intent(
-                                                        this@CourseActivity,
-                                                        MainActivity::class.java
-                                                    )
-                                                moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                                moveToBoardFragment.putExtra(
-                                                    OPEN_BOARD_FRAGMENT,
-                                                    3
-                                                )
-                                                startActivity(moveToBoardFragment)
-                                                finish()
-                                            } else {
-//                                                Log.d("coursePostCreate","${response.body()}")
-                                                binding.progressCourse.visibility = View.GONE
-                                                Toast.makeText(
-                                                    this@CourseActivity,
-                                                    "코스 등록 실패",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-
-                                        override fun onFailure(
-                                            call: Call<RepCoursePost>,
-                                            t: Throwable
-                                        ) {
-                                            Log.d("coursePostCreate","$t")
-                                            binding.progressCourse.visibility = View.GONE
-                                            Toast.makeText(
-                                                this@CourseActivity,
-                                                "코스 등록 실패",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    })
+                                if(Token().checkToken()){
+                                    Token().issueNewToken {
+                                        createCourse(postReqCoursePost=postReqCoursePost,imageInfoList=imageInfoList )
+                                    }
+                                }else createCourse(postReqCoursePost=postReqCoursePost,imageInfoList=imageInfoList)
                             }
                         }
                     } else {
@@ -273,7 +219,68 @@ class CourseActivity : AppCompatActivity() {
             }
         }
     }
+    private fun createCourse(postReqCoursePost:ReqCoursePost,imageInfoList: List<ImageInfo>,){
+        val service = RetrofitService.create()
+        val accessToken = MyApplication.prefs.getString("accessToken", "")
+        service.coursePostCreate(
+            accessToken = "Bearer $accessToken",
+            requestDTO = postReqCoursePost,
+            imageList,
+            thumbnail
+        )
+            .enqueue(object :
+                Callback<RepCoursePost> {
+                override fun onResponse(
+                    call: Call<RepCoursePost>,
+                    response: Response<RepCoursePost>
+                ) {
+                    Log.d("coursePostCreate","${response.body()}")
+                    Log.d("coursePostCreate","$response")
+                    if (response.isSuccessful) {
+                        binding.progressCourse.visibility = View.GONE
+                        Toast.makeText(
+                            this@CourseActivity,
+                            "코스 등록이 완료되었습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        // 게시판으로 이동하는 함수 필요
+                        val moveToBoardFragment =
+                            Intent(
+                                this@CourseActivity,
+                                MainActivity::class.java
+                            )
+                        moveToBoardFragment.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        moveToBoardFragment.putExtra(
+                            OPEN_BOARD_FRAGMENT,
+                            3
+                        )
+                        startActivity(moveToBoardFragment)
+                        finish()
+                    } else {
+//                                                Log.d("coursePostCreate","${response.body()}")
+                        binding.progressCourse.visibility = View.GONE
+                        Toast.makeText(
+                            this@CourseActivity,
+                            "코스 등록 실패",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
 
+                override fun onFailure(
+                    call: Call<RepCoursePost>,
+                    t: Throwable
+                ) {
+                    Log.d("coursePostCreate","$t")
+                    binding.progressCourse.visibility = View.GONE
+                    Toast.makeText(
+                        this@CourseActivity,
+                        "코스 등록 실패",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

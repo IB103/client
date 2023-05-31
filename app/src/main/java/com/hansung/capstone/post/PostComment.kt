@@ -25,7 +25,7 @@ class PostComment(private val context: PostDetailActivity) {
             override fun onResponse(call: Call<RepComment>, response: Response<RepComment>) {
                 if (response.isSuccessful) {
                     val result = response.body()
-                    if (response.code() == 200) {
+                    if (response.code() == 201) {
                             Log.d("INFO comment", "success $result")
                             context.commentSuccess(1)
                             MainActivity.getInstance()?.setCommentCount(1)

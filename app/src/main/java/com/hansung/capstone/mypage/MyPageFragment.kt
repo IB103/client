@@ -444,17 +444,16 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//=======
-//        if(this.ridingDataList.isNotEmpty()){
-//            when (requestY) {
-//                0 -> {
-//                    drawDistance(ridingDataList)
-//                }
-//                1 -> drawTime(ridingDataList)
-//                2 -> drawCalorie(ridingDataList)
-//            }
-//        }
-//>>>>>>> Stashed changes
+        if(this.ridingDataList.isNotEmpty()){
+            when (requestY) {
+                0 -> {
+                    drawDistance(ridingDataList)
+                }
+                1 -> drawTime(ridingDataList)
+                2 -> drawCalorie(ridingDataList)
+            }
+        }
+
         if(MainActivity.getInstance()?.getLoginState()==1)
             commentLogin()
         else if(MainActivity.getInstance()?.getLoginState()==0)
@@ -474,9 +473,6 @@ class MyPageFragment : Fragment() {
         MainActivity.getInstance()!!.setLoginState(-1)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        adapter.remove()
-    }
+
 
 }

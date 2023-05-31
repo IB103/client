@@ -69,7 +69,6 @@ class BoardFragment : Fragment() {
             category="total"
 //            updateUI(false)
             page=0
-            resultAllPost.scrollToPosition(0)
            init()
 
         }
@@ -77,7 +76,6 @@ class BoardFragment : Fragment() {
             DecorateButton(this@BoardFragment).decoCourseBt()
             category="course"
             page=0
-            resultAllPost.scrollToPosition(0)
 //            updateUI(false)
             initCourseData()
 
@@ -88,7 +86,6 @@ class BoardFragment : Fragment() {
             page=0
 //            updateUI(true)
             binding.postB.isEnabled=true
-            resultAllPost.scrollToPosition(0)
             initFreeData()
 
         }
@@ -121,7 +118,7 @@ class BoardFragment : Fragment() {
     private fun init() {
         MainActivity.getInstance()!!.setDeletedCommentCount(-1)
         MainActivity.getInstance()!!.setCommentCount(-1)
-
+        resultAllPost.scrollToPosition(0)
         api.getAllPost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
@@ -168,7 +165,7 @@ class BoardFragment : Fragment() {
     private fun initFreeData() {
         MainActivity.getInstance()!!.setDeletedCommentCount(-1)
         MainActivity.getInstance()!!.setCommentCount(-1)
-
+        resultAllPost.scrollToPosition(0)
         api.getAllFreePost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
@@ -216,7 +213,7 @@ class BoardFragment : Fragment() {
     private fun initCourseData() {
         MainActivity.getInstance()!!.setDeletedCommentCount(-1)
         MainActivity.getInstance()!!.setCommentCount(-1)
-
+        resultAllPost.scrollToPosition(0)
         api.getAllCoursePost(0)
             .enqueue(object : Callback<ResultGetPosts> {
                 @SuppressLint("SuspiciousIndentation")
@@ -283,9 +280,7 @@ class BoardFragment : Fragment() {
                initCategory()
 
            }
-           2->{Toast.makeText(activity, "게시글이 수정됐습니다", Toast.LENGTH_SHORT).show()
-               page=0
-           }
+
        }
          if(MainActivity.getInstance()?.getCommentCount()!=0||MainActivity.getInstance()?.getDeletedCommentCount()!=0
            ){

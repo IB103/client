@@ -239,7 +239,7 @@ class WriteActivity : AppCompatActivity() {
                     MainActivity.getInstance()?.setModifyCheck(false)
                     MainActivity.getInstance()?.stateCheck(2)
                     binding.progressWrite.visibility = View.GONE
-                    Toast.makeText(this@WriteActivity, "게시글 수정 완료", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@WriteActivity, "게시글이 수정됐습니다.", Toast.LENGTH_SHORT)
                         .show()
                     finish()
                 } else {

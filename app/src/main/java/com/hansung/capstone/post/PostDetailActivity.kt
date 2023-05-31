@@ -109,6 +109,7 @@ class PostDetailActivity : AppCompatActivity() {
         getPostDetails(postId)
     }
     private fun commentAction(){
+        println("what")
         when (commentActivity) {
             0 -> {//binding.PostDetailComment.scrollToPosition(14)
                 PostComment(this@PostDetailActivity).postComment(

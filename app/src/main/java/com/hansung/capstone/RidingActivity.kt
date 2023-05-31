@@ -454,41 +454,14 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
                 userId = MyApplication.prefs.getLong("userId", 0),
             )
             Log.d("reqRidingData", reqRidingData.toString())
-            val api = RetrofitService.create()
-            val accessToken= MyApplication.prefs.getString("accessToken", "")
-            api.recordRidingData(accessToken = "Bearer $accessToken",reqRidingData).enqueue(object :
-                Callback<RepRidingData> {
-                override fun onResponse(
-                    call: Call<RepRidingData>,
-                    response: Response<RepRidingData>
-                ) {
-                    if (response.isSuccessful) {
-                        val result: RepRidingData? = response.body()
-                        Log.d(
-                            "recordRidingData######################################",
-                            "onResponse: $result"
-                        )
-                        Toast.makeText(
-                            this@RidingActivity,
-                            "라이딩 기록이 저장되었습니다.",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    } else {
-                        Log.d(
-                            "recordRidingData######################################",
-                            "onResponse: error"
-                        )
-                    }
-                }
 
-                override fun onFailure(
-                    call: Call<RepRidingData>,
-                    t: Throwable
-                ) {
-                    Log.d("onFailure", "onFailure")
+            if(Token().checkToken()){
+                Token().issueNewToken {
+                    recordRidingData(reqRidingData = reqRidingData)
                 }
-            })
+            }else recordRidingData(reqRidingData = reqRidingData)
+
+
             dialog.dismiss()
             if (pathOverlay.size > 1) {
                 courseDialog(context)
@@ -508,7 +481,43 @@ class RidingActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         alertDialog.show()
     }
+private fun recordRidingData(reqRidingData: ReqRidingData){
+    val api = RetrofitService.create()
+    val accessToken= MyApplication.prefs.getString("accessToken", "")
+    api.recordRidingData(accessToken = "Bearer $accessToken",reqRidingData).enqueue(object :
+        Callback<RepRidingData> {
+        override fun onResponse(
+            call: Call<RepRidingData>,
+            response: Response<RepRidingData>
+        ) {
+            if (response.isSuccessful) {
+                val result: RepRidingData? = response.body()
+                Log.d(
+                    "recordRidingData######################################",
+                    "onResponse: $result"
+                )
+                Toast.makeText(
+                    this@RidingActivity,
+                    "라이딩 기록이 저장되었습니다.",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            } else {
+                Log.d(
+                    "recordRidingData######################################",
+                    "onResponse: error"
+                )
+            }
+        }
 
+        override fun onFailure(
+            call: Call<RepRidingData>,
+            t: Throwable
+        ) {
+            Log.d("onFailure", "onFailure")
+        }
+    })
+}
     private fun courseDialog(context: Context) {
         val alertDialog = AlertDialog.Builder(context)
         alertDialog.setMessage("코스를 등록하시겠습니까?")
