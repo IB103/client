@@ -79,7 +79,6 @@
 |:---:|:---:|:---:|
 |<img width="250" src="https://github.com/IB103/client/assets/92325898/181ea6f9-97de-4de6-b841-0407a07bdc49"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/9153ffed-86f4-4b2d-8ef4-a79c7d63b6ae"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/3e87c23f-1e5b-4402-83fc-bb382775bf09"/>|
 |내가 쓴 글, 스크랩한 글|그래프 조정|로그인 요청|
-|:---:|:---:|:---:|
 |<img width="250" src="https://github.com/IB103/client/assets/92325898/ab550e8d-746a-44a2-ab4f-8ba9f485d017"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/14b9be19-19b8-43d5-bd2b-6c87e0d25da1"/>|<img width="250" src="https://github.com/IB103/client/assets/92325898/25186fff-33b2-4221-9d4b-a45f37271839"/>|
 - 회원가입: 이메일, 비밀번호, 닉네임, 성명, 생년월일 등을 입력하고 회원가입합니다. 이때 이메일과 닉네임은 중복체크가 필요합니다.
 - 나의 정보 수정하기:
