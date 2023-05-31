@@ -1,6 +1,6 @@
 # 자전GO
 
-<img width="80%" src="https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce"/>
+<img width="50%" src="https://github.com/IB103/client/assets/92325898/a2d184b8-0c83-4ac5-8d9e-674896055cce"/>
 
 ## 팀 구성
 
