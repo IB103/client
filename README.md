@@ -40,7 +40,7 @@
 
 ## 2. 상세 기능
 
-    <img width="20%" src="https://github.com/IB103/client/assets/92325898/bbf466db-852f-4a9e-ada2-3bd30777232f"/>
+    ![시작_AdobeExpress](https://github.com/IB103/client/assets/92325898/bbf466db-852f-4a9e-ada2-3bd30777232f)
 ## 3. 기대 효과
 
 - 처음 가보는 지역에서도 인기있는 자전거 코스를 선택하여 주행할 수 있습니다.
