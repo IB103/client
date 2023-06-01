@@ -219,7 +219,7 @@ class CourseActivity : AppCompatActivity() {
             }
         }
     }
-    private fun createCourse(postReqCoursePost:ReqCoursePost,imageInfoList: List<ImageInfo>,){
+    private fun createCourse(postReqCoursePost:ReqCoursePost,imageInfoList: List<ImageInfo>){
         val service = RetrofitService.create()
         val accessToken = MyApplication.prefs.getString("accessToken", "")
         service.coursePostCreate(

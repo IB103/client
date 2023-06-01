@@ -111,14 +111,12 @@ class PostDetailActivity : AppCompatActivity() {
     private fun commentAction(){
         println("what")
         when (commentActivity) {
-            0 -> {//binding.PostDetailComment.scrollToPosition(14)
+            0 -> {
                 PostComment(this@PostDetailActivity).postComment(
                     comment,
                     postId,
                     binding
                 )
-                Log.d("LastPosition", "$lastPosition")
-
             }
             1 -> {
                 PostReComment(this@PostDetailActivity).post(
@@ -216,22 +214,12 @@ class PostDetailActivity : AppCompatActivity() {
                     }
                     binding.HeartB.setOnClickListener {
                         if(check()){
-
-                            val accessToken= MyApplication.prefs.getString("accessToken", "")
-                        api.checkFavorite(accessToken = "Bearer $accessToken",id, postId)
-                            .enqueue(object : Callback<ResponseBody> {
-                                override fun onResponse(
-                                    call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>,
-                                ) {
-                                    Log.d("checkFavorite", "성공 : ${response.body().toString()}")
-//                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
+                            if(Token().checkToken()){
+                                Token().issueNewToken {
+                                    checkFavorite()
                                 }
+                            }else checkFavorite()
 
-                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                    Log.d("checkFavorite:", "실패 : $t")
-                                }
-                            })
                         runOnUiThread {
                             when (heartCheck) {
                                 0 -> {
@@ -262,23 +250,13 @@ class PostDetailActivity : AppCompatActivity() {
                         }
                     }
                     binding.StarB.setOnClickListener {
-                        if(check()){  val accessToken= MyApplication.prefs.getString("accessToken", "")
-                        api.checkScrap(accessToken = "Bearer $accessToken",id, postId)
-                            .enqueue(object : Callback<ResultRespond> {
-                                override fun onResponse(
-                                    call: Call<ResultRespond>,
-                                    response: Response<ResultRespond>,
-                                ) {
-                                    if (response.isSuccessful) {
-                                        Log.d("checkScrap", "성공 : ${response.body().toString()}")
-//                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
-                                    }
+                        if(check()){
+                            if(Token().checkToken()){
+                                Token().issueNewToken {
+                                    checkScrap()
                                 }
+                            }else checkScrap()
 
-                                override fun onFailure(call: Call<ResultRespond>, t: Throwable) {
-                                    Log.d("checkScrap:", "실패 : $t")
-                                }
-                            })
                         runOnUiThread {
                             when (scrapCheck) {
                                 0 -> {
@@ -361,6 +339,42 @@ class PostDetailActivity : AppCompatActivity() {
     private fun check():Boolean{
         return MyApplication.prefs.getLong("userId",0)!=0L
 
+    }
+    private fun checkFavorite(){
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+        api.checkFavorite(accessToken = "Bearer $accessToken",id, postId)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>,
+                ) {
+                    Log.d("checkFavorite", "성공 : ${response.body().toString()}")
+//                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.d("checkFavorite:", "실패 : $t")
+                }
+            })
+    }
+    private fun checkScrap(){
+        val accessToken= MyApplication.prefs.getString("accessToken", "")
+        api.checkScrap(accessToken = "Bearer $accessToken",id, postId)
+            .enqueue(object : Callback<ResultRespond> {
+                override fun onResponse(
+                    call: Call<ResultRespond>,
+                    response: Response<ResultRespond>,
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d("checkScrap", "성공 : ${response.body().toString()}")
+//                                    body?.data?.postVoterId?.let { it1 -> heartChange(it1) }
+                    }
+                }
+
+                override fun onFailure(call: Call<ResultRespond>, t: Throwable) {
+                    Log.d("checkScrap:", "실패 : $t")
+                }
+            })
     }
 
     private fun checkToken(){

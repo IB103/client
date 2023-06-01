@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.hansung.capstone.CommunityService
-import com.hansung.capstone.MainActivity
-import com.hansung.capstone.MyApplication
-import com.hansung.capstone.R
+import com.hansung.capstone.*
 import com.hansung.capstone.board.*
 import com.hansung.capstone.databinding.ActivityMystoryBinding
 import retrofit2.Call
@@ -40,23 +37,7 @@ class MyStory: AppCompatActivity() {
 
         swipe.setOnRefreshListener {
             page=0
-            api.getPostMyStory(nickname,0)
-                .enqueue(object : Callback<ResultGetPosts> {
-                    override fun onResponse(
-                        call: Call<ResultGetPosts>,
-                        response: Response<ResultGetPosts>
-                    ) {
-                        Log.d("getPostMyStory:", "성공 : ${response.body().toString()}")
-                         body = response.body()
-                       val board: ArrayList<Posts> = ArrayList()
-                        board.addAll(body!!.data)
-                        adapter.renewItems((body!!.data as ArrayList<Posts>))
-                    }
-
-                    override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
-                        Log.d("getPostMyStory:", "실패 : $t")
-                    }
-                })
+            checkToken()
             swipe.isRefreshing = false
 
         }
@@ -65,32 +46,24 @@ class MyStory: AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
                 // 스크롤 끝까지 도달 새로운 데이터 로드
                 if (!recyclerView.canScrollVertically(1)&&page<totalPage-1){//) {
-                   getAllPost(page++)
+                   page++
+                    checkToken()
                 }
             }
         })
         Log.d("nickname", MyApplication.prefs.getString("nickname",""))
-        api.getPostMyStory(nickname = nickname,page=page++)
-            .enqueue(object : Callback<ResultGetPosts> {
-                override fun onResponse(
-                    call: Call<ResultGetPosts>,
-                    response: Response<ResultGetPosts>
-                ) {
-                    Log.d("getPostMyStory:", "성공 : ${response.body().toString()}")
-                    val body = response.body()
-                    totalPage=body!!.totalPage
-                    adapter.setInitItems(body.data as ArrayList<Posts>)
-
-                }
-                override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {
-                    Log.d("getPostMyStory:", "실패 : $t")
-                }
-            })
-
+        checkToken()
 
     }
+    private fun checkToken(){
+        if(Token().checkToken())
+        Token().issueNewToken {
+            getAllPost(page)
+        }else getAllPost(page)
+    }
     private fun getAllPost(page:Int){
-        api.getPostMyStory(nickname,page)
+        val accessToken = MyApplication.prefs.getString("accessToken", "")
+        api.getPostMyStory(accessToken = "Bearer $accessToken",nickname,page)
             .enqueue(object : Callback<ResultGetPosts> {
                 override fun onResponse(
                     call: Call<ResultGetPosts>,
@@ -99,7 +72,9 @@ class MyStory: AppCompatActivity() {
                     Log.d("getAllPost:", "성공 : ${response.body().toString()}")
                     body = response.body()
                     totalPage=body!!.totalPage
+                    if(page>0)
                    adapter.moreItems(body!!.data as ArrayList<Posts>)
+                    else adapter.setInitItems(body!!.data as ArrayList<Posts>)
                 }
 
                 override fun onFailure(call: Call<ResultGetPosts>, t: Throwable) {

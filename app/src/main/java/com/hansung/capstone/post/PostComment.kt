@@ -29,7 +29,6 @@ class PostComment(private val context: PostDetailActivity) {
                             Log.d("INFO comment", "success $result")
                             context.commentSuccess(1)
                             MainActivity.getInstance()?.setCommentCount(1)
-                            Log.d("commentCount","${ MainActivity.getInstance()?.getCommentCount()}")
                             postComments(postId,binding)
                     }
                 } else {

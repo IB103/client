@@ -19,7 +19,6 @@ class PostReComment(private val context: PostDetailActivity) {
     val service = RetrofitService.create()
     var result: RepComment? = null
     val api = CommunityService.create()
-   // var count= MyApplication.prefs.getInt("commentCount",0)
     fun post(str: String, postId: Long,commentId:Long,binding: ActivityPostDetailBinding) {
        val accessToken= MyApplication.prefs.getString("accessToken", "")
         val userId = MyApplication.prefs.getLong("userId", 0)

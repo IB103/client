@@ -20,11 +20,6 @@ interface RetrofitService {
 
     @GET("/api/users/riding/rank")
     fun getRank(
-//        <<<<<<< Updated upstream
-
-//    =======
-//    @Header("Authorization") accessToken: String
-//    >>>>>>> Stashed changes
     ): Call<RepRank>
 
     @GET("/api/users/riding/record-history")
@@ -42,15 +37,6 @@ interface RetrofitService {
 
     @POST("/api/email/confirm")
     fun confirm(
-//=======
-//        @Header("Authorization") accessToken: String,
-//        @Query("email") email: String
-//    ): Call<String>
-//
-//    @POST("/api/email/confirm")
-//    fun confirm(
-//        @Header("Authorization") accessToken: String,
-//>>>>>>> Stashed changes
         @Query("email") email: String,
         @Query("code") code: String
     ): Call<RepConfirm>
@@ -114,12 +100,7 @@ interface RetrofitService {
     fun doublecheckNickName(
         @Query("nickname") nickname: String?
     ): Call<RepDoubleCheckNickName>
-//    =======
-//
-//    @Headers("accept: application/json", "content-type: application/json")
-//    @GET("/api/users/test")
-//    fun test(@Header("Authorization") accessToken: String): Call<String>
-//    >>>>>>> Stashed changes
+
 
 
     @PUT("/api/users/modifyPW")

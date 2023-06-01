@@ -10,7 +10,6 @@ import retrofit2.Response
 class GetRecordData {
     var service=RetrofitService.create()
     internal fun getRidingData(int:Int,callback: (result: MutableList<RidingData>) -> Unit){
-    println("get Riding Data start")
         val accessToken= MyApplication.prefs.getString("accessToken", "")
             val userid=MyApplication.prefs.getLong("userId",0)
             service.getRecord(accessToken = "Bearer $accessToken",userid ,int.toLong()).enqueue(object:Callback<RepGetRecord>{
@@ -19,7 +18,6 @@ class GetRecordData {
                         val result:RepGetRecord=response.body()!!
                         Log.d("record Data","${result.data}")
                         callback(result.data as MutableList<RidingData>)
-                        // setData(result.data)
                     }else{
 
                     }

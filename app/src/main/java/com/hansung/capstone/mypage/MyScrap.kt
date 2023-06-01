@@ -71,7 +71,7 @@ class MyScrap : AppCompatActivity() {
                 }
             }
         })
-        getAllPost(page)
+        checkToken()
 //        api.getPostMyScrap(id,page=page++)
 //            .enqueue(object : Callback<ResultGetPosts> {
 //                override fun onResponse(
@@ -122,10 +122,11 @@ class MyScrap : AppCompatActivity() {
                     body = response.body()
                     totalPage = body!!.totalPage
                     if (body?.data!!.isNotEmpty()) {
+                        if(page>0){
                         adapter.run {
                             moreItems((body!!.data as ArrayList<Posts>))
 
-                        }
+                        }}else adapter.setInitItems((body!!.data as ArrayList<Posts>))
                     }
                 }
 

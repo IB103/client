@@ -67,6 +67,7 @@ interface CommunityService {
     @Headers("accept: application/json", "content-type: application/json")
     @GET("api/community/post/list/nickname")
     fun getPostMyStory(
+        @Header("Authorization")accessToken:String,
         @Query("nickname") nickname: String,
         @Query("page") page: Int
     ): Call<ResultGetPosts>

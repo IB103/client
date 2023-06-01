@@ -130,25 +130,15 @@ class WriteActivity : AppCompatActivity() {
             if (Token().checkToken()) {
 
                 Token().issueNewToken {
-                    println("만료")
                     if (MainActivity.getInstance()?.getModifyCheck()!!)
                         modify(title, userId, content)
                     else createPost(userId, title, content)
                 }
             } else {
-                println("만료안됨")
                 if (MainActivity.getInstance()?.getModifyCheck()!!)
                     modify(title, userId, content)
                 else createPost(userId, title, content)
             }
-//=======
-//            } else {
-//                if (MainActivity.getInstance()?.getModifyCheck()!!)
-//                    modify(title, userId, content)
-//                else createPost(userId, title, content)
-//            }
-//>>>>>>> Stashed changes
-
         }
     }
 
@@ -178,28 +168,6 @@ class WriteActivity : AppCompatActivity() {
                                 finish()
                             } else {
                                 Log.d("ERR", "실패: $response")
-//=======
-//        val accessToken = MyApplication.prefs.getString("accessToken", "")
-//        service.postCreate(accessToken = "Bearer $accessToken", requestDTO = postReqPost, imageList)
-//            .enqueue(object : Callback<RepPost> {
-//                override fun onResponse(call: Call<RepPost>, response: Response<RepPost>) {
-//                    if (response.isSuccessful) {
-//                        Log.d("req", "OK")
-//                        val result: RepPost? = response.body()
-//                        if (response.code() == 201) {
-//                            if (result?.code == 100) {
-//                                Log.d("게시글 작성", "성공: $title")
-//                                MainActivity.getInstance()?.stateCheck(1)
-//                                binding.progressWrite.visibility = View.GONE
-//                                Toast.makeText(this@WriteActivity, "게시글 작성 완료", Toast.LENGTH_SHORT).show()
-//                                //MainActivity.getInstance()?.writeCheck(true)
-//                                finish()
-//                            } else {
-//                                Log.d("ERR", "실패: " + result?.toString())
-//                                binding.progressWrite.visibility = View.GONE
-//                                Toast.makeText(this@WriteActivity, "게시글 작성 실패", Toast.LENGTH_SHORT).show()
-//                            }
-//>>>>>>> Stashed changes
                             }
                         } else {
                             Log.d("ERR", "onResponse 실패")
@@ -229,7 +197,6 @@ class WriteActivity : AppCompatActivity() {
             requestDTO = putModifyPost,
             imageList
         ).enqueue(object : Callback<ModifyPost> {
-            //  @SuppressLint("Range")
             override fun onResponse(
                 call: Call<ModifyPost>,
                 response: Response<ModifyPost>
@@ -260,27 +227,11 @@ class WriteActivity : AppCompatActivity() {
 
     private fun modifyActivity() {
         binding.writebutton.isEnabled = true
-        Log.d("modify", "e")
-//        if(MainActivity.getInstance()?.getCategory()=="FREE"){
-//            binding.freeCategory.setTextColor(Color.parseColor("#01DFD7"))
-//            binding.courseCategory.setTextColor(Color.parseColor("#A4A4A4"))
-//            binding.freeCategory.background=ContextCompat.getDrawable(this,R.drawable.press_border)
-//            binding.courseCategory.background=ContextCompat.getDrawable(this,R.drawable.normal_border)
-//            category="FREE"
-//        }else if(MainActivity.getInstance()?.getCategory()=="COURSE"){
-//            binding.courseCategory.setTextColor(Color.parseColor("#01DFD7"))
-//            binding.freeCategory.setTextColor(Color.parseColor("#A4A4A4"))
-//            binding.courseCategory.background=ContextCompat.getDrawable(this,R.drawable.press_border)
-//            binding.freeCategory.background=ContextCompat.getDrawable(this,R.drawable.normal_border)
-//            category="COURSE"
-//        }
         binding.editTitle.setText(MainActivity.getInstance()?.modifyTitle)
         binding.editWriting.setText(MainActivity.getInstance()?.modifyContent)
         countImage = MainActivity.getInstance()?.modifyImagelist!!.size
         if (countImage > 0) {
             addImageId(countImage)
-            //imageAdapter.setItem(MainActivity.getInstance()?.modify_imageList as List<Int>)
-            //imageIdList.addAll(MainActivity.getInstance()?.modify_imageList.to)
         }
 
     }
@@ -300,21 +251,9 @@ class WriteActivity : AppCompatActivity() {
     @SuppressLint("Recycle")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        //val imageView=findViewById<ImageView>(R.id.imageView)
         if (resultCode == Activity.RESULT_OK && requestCode == defaultGalleryRequestCode) {
             val photoUri: Uri = data?.data!!
             ++countImage
-            //setImage(photoUri!!)
-//            var bitmap: Bitmap? = null
-//            try {
-//                bitmap = MediaStore.Images.Media.getBitmap(contentResolver, photoUri)
-//                //bitmap = rotateImage(bitmap, 90)
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//            }
-            //val a="${MyApplication.getUrl()}images/1"//test
-            // imageView.setImageBitmap(bitmap)
-            //val photo: Uri =a.toUri()//test
             imageAdapter.addItem(photoUri)
             Log.d("data.path", "${data.data?.path}")
             Log.d("data", "${this.photoUri}")
@@ -337,15 +276,6 @@ class WriteActivity : AppCompatActivity() {
             filePart =
                 MultipartBody.Part.createFormData("imageList", filename, requestBody)
             imageList.add(filePart!!)
-//=======
-//            val outputStream = FileOutputStream(file)
-//            inputStream?.copyTo(outputStream)
-//            val requestBody =
-//                RequestBody.create(MediaType.parse(contentResolver.getType(photoUri)!!), file)
-//            filePart = MultipartBody.Part.createFormData("imageList", filename, requestBody)
-//            imageList.add(filePart!!)
-//
-//>>>>>>> Stashed changes
         }
     }
 
@@ -354,7 +284,6 @@ class WriteActivity : AppCompatActivity() {
         Glide.with(this)
             .load(uri)
             .apply(RequestOptions().override(200, 200)) // 이미지 크기 조정
-
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -450,15 +379,6 @@ class WriteActivity : AppCompatActivity() {
                         cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                 }
             }
-//            try {
-//                if (cursor != null && cursor.moveToFirst()) {
-//                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-//                }
-//            } finally {
-//                if (cursor != null) {
-//                    cursor.close()
-//                }
-//            }
         }
         if (result == null) {
             result = uri.lastPathSegment
